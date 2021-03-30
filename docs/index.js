@@ -1,12 +1,5 @@
 'use strict'
 
-import * as helper from './scripts/helper.js'
-import * as preproc from './scripts/preprocess.js'
-import * as viz from './scripts/viz.js'
-import * as legend from './scripts/legend.js'
-import * as hover from './scripts/hover.js'
-import * as util from './scripts/util.js'
-
 import * as d3Chromatic from 'd3-scale-chromatic'
 
 /**
