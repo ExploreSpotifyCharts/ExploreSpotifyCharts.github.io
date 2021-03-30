@@ -1,6 +1,7 @@
 'use strict'
 
 import * as d3Chromatic from 'd3-scale-chromatic'
+import {MDCRipple} from '@material/ripple';
 
 /**
  * @file This file is the entry-point for the the code for TP3 for the course INF8808.
@@ -14,6 +15,8 @@ import * as d3Chromatic from 'd3-scale-chromatic'
   let graphSize
 
   const margin = { top: 35, right: 200, bottom: 35, left: 200 }
+
+  const buttonRipple = new MDCRipple(document.querySelector('.mdc-button'));
 
   const xScale = d3.scaleBand().padding(0.05)
   const yScale = d3.scaleBand().padding(0.2)

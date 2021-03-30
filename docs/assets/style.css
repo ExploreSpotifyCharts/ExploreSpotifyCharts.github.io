@@ -1,3 +1,7 @@
+@use "@material/button";
+
+@include button.core-styles;
+
 body {
     font-family: 'Roboto Slab', 'sans-serif';
     font-size: 16px;
