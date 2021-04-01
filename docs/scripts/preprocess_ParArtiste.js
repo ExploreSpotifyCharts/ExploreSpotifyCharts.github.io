@@ -1,8 +1,9 @@
 //API -------------------------------------------------------------------------------------------------------
 /**
- * Get data for Explorer par artiste for a period and organized by track
+ * Get data for Explorer par artiste for a period and a country
  *
  * @param {object[]} data The data for the country selected (can be 'global')
+ * @param {string} artiste The artist name of interest
  * @param {Date} start The start date to considered data selected
  * @param {Date} end The end date to considered data selected
  * @returns {object[]} Table of objects containing the data of interest
