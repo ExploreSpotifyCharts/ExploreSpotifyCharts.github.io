@@ -50,6 +50,23 @@ ul > li:first-child {
     color: #1db954;
 }
 
+#sidebarTitle {
+    font-size: medium;
+    border-bottom: 1px solid white;
+    margin: auto;
+    width: 150px;
+}
+
+#headerTitle {
+    font-size: medium;
+    border-bottom: 1px solid white;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    width: 300px;
+}
+
+
+
 
 
 
