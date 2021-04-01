@@ -15,9 +15,8 @@ export function ExplorerParPays_Track(data, start, end)
   var data_processed = reduceDataPerTrackName(data, start, end)
 
   //Sort on count_total_streams and get top k
-  var k = 15
-  data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams'])
-    //.slice(0,k)
+  var k = 200
+  data_processed = data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams']).slice(0,k)
 
   //Add one entry for total (per day and global) and Compute % for each track
   data_processed = addTotalEntry_computeProportion(data_processed)
@@ -41,9 +40,8 @@ export function ExplorerParPays_Artist(data, start, end)
   var data_processed = reduceDataPerArtist(data, start, end)
 
   //Sort on count_total_streams and get top k
-  var k = 15
-  data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams'])
-    //.slice(0,k)
+  var k = 200
+  data_processed = data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams']).slice(0,k)
 
   //Add one entry for total (per day and global) and Compute % for each track
   data_processed = addTotalEntry_computeProportion(data_processed)
