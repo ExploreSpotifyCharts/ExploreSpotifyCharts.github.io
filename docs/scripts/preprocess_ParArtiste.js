@@ -20,31 +20,11 @@ export function ExplorerParArtiste(data, artiste, start, end)
   //Add one entry for total (per day and global) and Compute % for each track
   data_processed = addTotalEntry_computeProportion(data_processed)
 
-  return data_processed
-}
+  //Add zeros on missing dates
+  data_processed = fillMissingDates(data_processed, start, end)
 
-/**
- * Get data for Explorer par pays for a period and organized by artist
- *
- * @param {object[]} data The data for the country selected (can be 'global')
- * @param {Date} start The start date to considered data selected
- * @param {Date} end The end date to considered data selected
- * @returns {object[]} Table of objects containing the data of interest
- */
-export function ExplorerParPays_Artist(data, start, end) 
-{ 
-  if (!end) { end = start }
-  
-  //Reduce by track name
-  var data_processed = reduceDataPerArtist(data, start, end)
-
-  //Sort on count_total_streams and get top k
-  var k = 15
-  data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams'])
-    //.slice(0,k)
-
-  //Add one entry for total (per day and global) and Compute % for each track
-  data_processed = addTotalEntry_computeProportion(data_processed)
+  //Sort on streams on date
+  data_processed = sortStreamsOnDate(data_processed)
 
   return data_processed
 }
@@ -121,6 +101,36 @@ function addTotalEntry_computeProportion(data)
       }
     }
   )
+  return data
+}
 
+function fillMissingDates(data, start, end)
+{
+  for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
+    var dateISO = d.toISOString().split('T')[0]
+    data.forEach(line =>
+      {
+        if (typeof line[1]['Streams'][dateISO] == 'undefined')
+        {
+          line[1]['Streams'][dateISO] = 0
+        }
+      }
+    )
+  }
+  return data
+}
+
+function sortStreamsOnDate(data)
+{
+  data.forEach(line =>
+    {
+      var sorted = Object.keys(line[1]['Streams'])
+        .sort()
+        .reduce(function (acc, key) { 
+        acc[key] = line[1]['Streams'][key];
+        return acc;
+        }, {});
+      line[1]['Streams'] = sorted
+    })
   return data
 }
