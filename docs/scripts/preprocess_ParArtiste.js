@@ -1,13 +1,13 @@
 //API -------------------------------------------------------------------------------------------------------
 /**
- * Get data for Explorer par pays for a period and organized by track
+ * Get data for Explorer par artiste for a period and organized by track
  *
  * @param {object[]} data The data for the country selected (can be 'global')
  * @param {Date} start The start date to considered data selected
  * @param {Date} end The end date to considered data selected
  * @returns {object[]} Table of objects containing the data of interest
  */
-export function ExplorerParArtiste(data, artiste, start, end) 
+export function ExplorerParArtiste(data, artiste, start, end=null) 
 { 
   if (!end) { end = start }
   

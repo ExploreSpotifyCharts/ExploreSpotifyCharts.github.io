@@ -7,7 +7,7 @@
  * @param {Date} end The end date to considered data selected
  * @returns {object[]} Table of objects containing the data of interest
  */
-export function ExplorerParPays_Track(data, start, end) 
+export function ExplorerParPays_Track(data, start, end=null) 
 { 
   if (!end) { end = start }
   
@@ -38,7 +38,7 @@ export function ExplorerParPays_Track(data, start, end)
  * @param {Date} end The end date to considered data selected
  * @returns {object[]} Table of objects containing the data of interest
  */
-export function ExplorerParPays_Artist(data, start, end) 
+export function ExplorerParPays_Artist(data, start, end=null) 
 { 
   if (!end) { end = start }
   
