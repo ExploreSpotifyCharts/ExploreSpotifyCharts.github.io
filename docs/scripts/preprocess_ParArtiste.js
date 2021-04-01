@@ -12,7 +12,7 @@ export function ExplorerParArtiste(data, artiste, start, end)
   if (!end) { end = start }
   
   //Reduce by track name
-  var data_processed = reduceDataPerTrackName(data, artiste, start, end)
+  let data_processed = reduceDataPerTrackName(data, artiste, start, end)
 
   //Sort on count_total_streams and get top k
   data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams'])
@@ -42,13 +42,13 @@ function isDateToBeConsidered(d, start, end)
 
 function reduceDataPerTrackName(data, artiste, start, end)
 {
-  var data_processed = data.reduce(function (acc, line) {
+  let data_processed = data.reduce(function (acc, line) {
     if (line['Artist'] == artiste)
     {
-      var date = new Date(line['date'])
+      const date = new Date(line['date'])
       if (isValidDate(date) && isDateToBeConsidered(date, start, end))
       {
-        var dateISO = date.toISOString().split('T')[0]
+        const dateISO = date.toISOString().split('T')[0]
         if (typeof acc[line['Track Name']] == 'undefined')
         {
           acc[line['Track Name']] = {}
@@ -67,7 +67,7 @@ function reduceDataPerTrackName(data, artiste, start, end)
 function addTotalEntry_computeProportion(data)
 {
   //Add one entry for total (per day and global)
-  var newEntry = []
+  let newEntry = []
   newEntry[0] = 'TOTAL STREAMS COUNT'
   newEntry[1] = {}
   newEntry[1]['Streams'] = {}
@@ -106,8 +106,8 @@ function addTotalEntry_computeProportion(data)
 
 function fillMissingDates(data, start, end)
 {
-  for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
-    var dateISO = d.toISOString().split('T')[0]
+  for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+    const dateISO = d.toISOString().split('T')[0]
     data.forEach(line =>
       {
         if (typeof line[1]['Streams'][dateISO] == 'undefined')
@@ -124,7 +124,7 @@ function sortStreamsOnDate(data)
 {
   data.forEach(line =>
     {
-      var sorted = Object.keys(line[1]['Streams'])
+      let sorted = Object.keys(line[1]['Streams'])
         .sort()
         .reduce(function (acc, key) { 
         acc[key] = line[1]['Streams'][key];

@@ -12,10 +12,10 @@ export function ExplorerParPays_Track(data, start, end)
   if (!end) { end = start }
   
   //Reduce by track name
-  var data_processed = reduceDataPerTrackName(data, start, end)
+  let data_processed = reduceDataPerTrackName(data, start, end)
 
   //Sort on count_total_streams and get top k
-  var k = 200
+  const k = 200
   data_processed = data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams']).slice(0,k)
 
   //Add one entry for total (per day and global) and Compute % for each track
@@ -43,10 +43,10 @@ export function ExplorerParPays_Artist(data, start, end)
   if (!end) { end = start }
   
   //Reduce by track name
-  var data_processed = reduceDataPerArtist(data, start, end)
+  let data_processed = reduceDataPerArtist(data, start, end)
 
   //Sort on count_total_streams and get top k
-  var k = 200
+  const k = 200
   data_processed = data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams']).slice(0,k)
 
   //Add one entry for total (per day and global) and Compute % for each track
@@ -74,11 +74,11 @@ function isDateToBeConsidered(d, start, end)
 
 function reduceDataPerTrackName(data, start, end)
 {
-  var data_processed = data.reduce(function (acc, line) {
-    var date = new Date(line['date'])
+  let data_processed = data.reduce(function (acc, line) {
+    const date = new Date(line['date'])
     if (isValidDate(date) && isDateToBeConsidered(date, start, end))
     {
-      var dateISO = date.toISOString().split('T')[0]
+      const dateISO = date.toISOString().split('T')[0]
       if (typeof acc[line['Track Name']] == 'undefined')
       {
         acc[line['Track Name']] = {}
@@ -96,11 +96,11 @@ function reduceDataPerTrackName(data, start, end)
 
 function reduceDataPerArtist(data, start, end)
 {
-  var data_processed = data.reduce(function (acc, line) {
-    var date = new Date(line['date'])
+  let data_processed = data.reduce(function (acc, line) {
+    const date = new Date(line['date'])
     if (isValidDate(date) && isDateToBeConsidered(date, start, end))
     {
-      var dateISO = date.toISOString().split('T')[0]
+      const dateISO = date.toISOString().split('T')[0]
       if (typeof acc[line['Artist']] == 'undefined')
       {
         acc[line['Artist']] = {}
@@ -122,7 +122,7 @@ function reduceDataPerArtist(data, start, end)
 function addTotalEntry_computeProportion(data)
 {
   //Add one entry for total (per day and global)
-  var newEntry = []
+  let newEntry = []
   newEntry[0] = 'TOTAL STREAMS COUNT'
   newEntry[1] = {}
   newEntry[1]['Streams'] = {}
@@ -162,8 +162,8 @@ function addTotalEntry_computeProportion(data)
 
 function fillMissingDates(data, start, end)
 {
-  for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
-    var dateISO = d.toISOString().split('T')[0]
+  for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+    const dateISO = d.toISOString().split('T')[0]
     data.forEach(line =>
       {
         if (typeof line[1]['Streams'][dateISO] == 'undefined')
@@ -180,7 +180,7 @@ function sortStreamsOnDate(data)
 {
   data.forEach(line =>
     {
-      var sorted = Object.keys(line[1]['Streams'])
+      let sorted = Object.keys(line[1]['Streams'])
         .sort()
         .reduce(function (acc, key) { 
         acc[key] = line[1]['Streams'][key];
