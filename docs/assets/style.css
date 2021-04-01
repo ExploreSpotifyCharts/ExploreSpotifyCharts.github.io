@@ -3,31 +3,37 @@
 
 * { 
     margin: 0px;
+    color: white;
+}
+
+body {
+    background-color: #353535; 
 }
 
 .rightSideWrapper {
     width: 85%; /*same as header*/
-	float: right; 
+	float: right;
 }
 
 header {
     position: fixed;
 	width: 85%;	
 	height: 100px;  
-    background-color: #fff;
+    background-color: #292929;
 }
 
 .sidebar {
     position: fixed; 
 	height: 100%;
 	width: 15%; /*same as header minus 100%*/
-	margin: 0px;  
+	margin: 0px;
+    background-color: #000;  
 }
 
 main {
     height: 400px;
     order: 1;
-    flex: 0 1 100%; 
+    flex: 0 1 100%;
 }
 
 .viz-container{
@@ -35,5 +41,15 @@ main {
 	display: flex;
 	flex-flow: row wrap;
 }
+
+ul {
+    list-style-type: none;
+}
+
+ul > li:first-child {
+    color: #1db954;
+}
+
+
 
 
