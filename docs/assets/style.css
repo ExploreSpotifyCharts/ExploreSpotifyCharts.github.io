@@ -1,5 +1,3 @@
-@use "@material/button";
-@include button.core-styles;
 
 * { 
     margin: 0px;
@@ -60,7 +58,11 @@ li {
     padding-bottom: 5px;
 }
 
-ul > li:first-child { /*For example*/
+li:hover {
+    cursor: pointer;
+}
+
+li.selected { 
     color: #1db954;
     font-weight: 550;
 }
@@ -77,6 +79,20 @@ ul > li:first-child { /*For example*/
     border-bottom: 1px solid white;
     margin: 20px auto 5px 60px;
     width: 300px;
+}
+
+form {
+    display: flex;
+}
+
+input {
+    background-color: #292929;
+    border: none;
+    margin: 5px;
+}
+
+option {
+    color: black;
 }
 
 .titre-viz {

@@ -1,10 +1,11 @@
 'use strict'
 
 //import * as d3Chromatic from 'd3-scale-chromatic'
-//import {MDCRipple} from '@material/ripple';
+import * as material from '@material/ripple';
 import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
 import * as helper from './scripts/helper.js'
+import * as interactivity from './scripts/interactivity.js'
 
 /**
  * @file This file is the entry-point for the the code for Team 3 project for the course INF8808.
@@ -12,6 +13,10 @@ import * as helper from './scripts/helper.js'
  * @author Marine Carpe
  * @author Tanguy Gloaguen
  */
+
+ function navigate(event) {
+  console.log(event)
+}
 
 (function (d3) {
 
@@ -36,23 +41,27 @@ import * as helper from './scripts/helper.js'
     'us', 'uy'
   ]
   */
-
+ 
 //Chargement des fichiers
  const country = 'fr'
- d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
-    const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
-    console.log(data_preprocessed_countrytrack)
-    //here we can continue with the data -> viz
+//  d3.csv('./'+country+'.csv', d3.autoType).then(function (data) {
+//     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
+//     console.log(data_preprocessed_countrytrack)
+//     //here we can continue with the data -> viz
 
-    const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
-    console.log(data_preprocessed_countryartist)
-    //here we can continue with the data -> viz
+//     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
+//     console.log(data_preprocessed_countryartist)
+//     //here we can continue with the data -> viz
 
-    const artiste = 'Orelsan'
-    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
-    console.log(data_preprocessed_artist)
-    //here we can continue with the data -> viz
- })
+//     const artiste = 'Orelsan'
+//     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
+//     console.log(data_preprocessed_artist)
+//     //here we can continue with the data -> viz
+//  })
+
+ //Mise en place de l'intéraction
+ interactivity.initialize()
+
 
 //Mise en place de la viz
 const margin = {
