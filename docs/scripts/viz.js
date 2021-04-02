@@ -17,13 +17,13 @@ const scaleYOffSet = 10
     //Minimum de stream sur un jour
     let min_stream = Number.POSITIVE_INFINITY
     data.forEach(function(d){
-        const min_current = d3.min(Object.values(d[1].Streams))
+        const min_current = d3.min(Object.values(d.Streams))
         min_stream = Math.min(min_stream, min_current)
     })
     //Maximum de stream sur un jour
     let max_stream = Number.NEGATIVE_INFINITY
     data.forEach(function(d){
-        const max_current = d3.max(Object.values(d[1].Streams))
+        const max_current = d3.max(Object.values(d.Streams))
         max_stream = Math.max(max_stream, max_current)
     })
 

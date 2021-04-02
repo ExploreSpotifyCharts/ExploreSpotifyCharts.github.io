@@ -71,12 +71,12 @@ const g = helper.generateG(margin)
   })
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'Angele'
+  const artiste = 'Angèle'
   d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
     console.log(data_preprocessed_artist)
     helper.appendTitle(artiste)
-    viz.appendColorScale(data_preprocessed_artist)
+    viz.appendColorScale(data_preprocessed_artist, svgWidth)
   })
 
   //EXPLORER PAR TITRE
