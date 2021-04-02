@@ -21,5 +21,8 @@
  */
  export function appendTitle (g, title) {
     g.append('text')
+     .attr('class', 'titre-viz')
+     .attr('fill', 'white')
      .text(title)
+     
   }

@@ -25,7 +25,7 @@ h1{
 header {
     position: fixed;
 	width: 85%;	
-	height: 150px;  
+	height: 120px;  
     background-color: #292929;
 }
 
@@ -44,7 +44,7 @@ main {
 }
 
 .viz-container{
-    margin-top: 100px; /*same as header height*/
+    margin-top: 120px; /*same as header height*/
 	display: flex;
 	flex-flow: row wrap;
 }
@@ -77,6 +77,10 @@ ul > li:first-child { /*For example*/
     border-bottom: 1px solid white;
     margin: 20px auto 5px 60px;
     width: 300px;
+}
+
+.titre-viz {
+    font-size: 20px;
 }
 
 
