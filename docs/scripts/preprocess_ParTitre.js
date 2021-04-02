@@ -8,18 +8,18 @@
  * @param {Date} end The end date to considered data selected
  * @returns {object[]} Table of objects containing the data of interest
  */
-export function ExplorerParTitre(data_countries, titre, start, end=null) 
-{
-  console.log(data_countries)
 
+export function ExplorerParTitre(data_countries, country_codes, start, end=null) 
+{
   if (!end) { end = start }
 
   let data_processed = []
-  data_countries.forEach(data_country =>
+  data_countries.forEach((data_country, index) =>
     {
-      const country_code = data_country[0]['region']
-      //Filter on track name
-      let data_country_preprocessed = data_country.filter(line => line['Track Name'] == titre)
+      const country_code = country_codes[index]
+      let data_country_preprocessed = data_country
+      //Filter on track name //normally, already filtered so chill
+      //data_country_preprocessed = data_country.filter(line => line['Track Name'] == titre)
 
       //Filter on date
       data_country_preprocessed = data_country_preprocessed.filter(line => isValidDate(new Date(line['date'])) && isDateToBeConsidered(new Date(line['date']), start, end))

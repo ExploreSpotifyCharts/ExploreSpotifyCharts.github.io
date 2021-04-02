@@ -1,89 +1,78 @@
 'use strict'
 
-import * as d3Chromatic from 'd3-scale-chromatic'
-import {MDCRipple} from '@material/ripple';
+//import * as d3Chromatic from 'd3-scale-chromatic'
+//import {MDCRipple} from '@material/ripple';
+import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
+import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
+import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 
 /**
- * @file This file is the entry-point for the the code for TP3 for the course INF8808.
- * @author Olivia Gélinas
- * @version v1.0.0
+ * @file This file is the entry-point for the the code for Team 3 project for the course INF8808.
+ * @author Justine Marlow
+ * @author Marine Carpe
+ * @author Tanguy Gloaguen
  */
 
 (function (d3) {
-  let bounds
-  let svgSize
-  let graphSize
 
-  const margin = { top: 35, right: 200, bottom: 35, left: 200 }
+  /*var countries = [
+    'global',
+    'ar', 'at', 'au',
+    'be', 'bo', 'br',
+    'ca', 'ch', 'cl', 'co', 'cr', 'cz',
+    'de', 'dk', 'do',
+    'ec', 'es',
+    'fi', 'fr',
+    'gb', 'gr', 'gt',
+    'hk', 'hn', 'hu',
+    'id', 'ie', 'is', 'it',
+    'jp',
+    'lt', 'lv',
+    'mx', 'my',
+    'nl', 'no', 'nz',
+    'pa', 'ph', 'pl', 'pt', 'py',
+    'se', 'sg', 'sk', 'sv',
+    'tr', 'tw',
+    'us', 'uy'
+  ]
+  */
 
-  const buttonRipple = new MDCRipple(document.querySelector('.mdc-button'));
+  var countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us']
+  const titre = 'Trop beau'
+  let call_countries = []
+  countries.forEach(country => call_countries.push(d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
+    const data_filtered = data.filter(line => line['Track Name'] == titre)
+    console.log(data_filtered)
+    return data_filtered
+ })))
 
-  const xScale = d3.scaleBand().padding(0.05)
-  const yScale = d3.scaleBand().padding(0.2)
-  const colorScale = d3.scaleSequential(d3Chromatic.interpolateYlGnBu)
-
-  d3.csv('./arbres.csv', d3.autoType).then(function (data) {
-    const neighborhoodNames = preproc.getNeighborhoodNames(data)
-    data = preproc.filterYears(data, 2010, 2020)
-
-    data = preproc.summarizeYearlyCounts(data)
-    data = preproc.fillMissingData(data, neighborhoodNames, 2010, 2020, util.range)
-
-    viz.setColorScaleDomain(colorScale, data)
-
-    legend.initGradient(colorScale)
-    legend.initLegendBar()
-    legend.initLegendAxis()
-
-    const g = helper.generateG(margin)
-
-    helper.appendAxes(g)
-    viz.appendRects(data)
-
-    setSizing()
-    build()
-
-    /**
-     *   This function handles the graph's sizing.
-     */
-    function setSizing () {
-      bounds = d3.select('.graph').node().getBoundingClientRect()
-
-      svgSize = {
-        width: bounds.width,
-        height: 550
-      }
-
-      graphSize = {
-        width: svgSize.width - margin.right - margin.left,
-        height: svgSize.height - margin.bottom - margin.top
-      }
-
-      helper.setCanvasSize(svgSize.width, svgSize.height)
-    }
-
-    /**
-     *   This function builds the graph.
-     */
-    function build () {
-      viz.updateXScale(xScale, data, graphSize.width, util.range)
-      viz.updateYScale(yScale, neighborhoodNames, graphSize.height)
-
-      viz.drawXAxis(xScale)
-      viz.drawYAxis(yScale, graphSize.width)
-
-      viz.rotateXTicks()
-
-      viz.updateRects(xScale, yScale, colorScale)
-
-      hover.setRectHandler(xScale, yScale, hover.rectSelected, hover.rectUnselected, hover.selectTicks, hover.unselectTicks)
-
-      legend.draw(margin.left / 2, margin.top + 5, graphSize.height - 10, 15, 'url(#gradient)', colorScale)
-    }
-
-    window.addEventListener('resize', () => {
-      setSizing()
-      build()
-    })
+  Promise.all(call_countries)
+    .then(function(files) {
+    const data_preprocessed_titre = preprocess_ParTitre.ExplorerParTitre(files, countries, new Date('2017-01-01'), new Date('2020-04-20'))
+    console.log(data_preprocessed_titre)
+    //here we can continue with the data -> viz
   })
+    .catch(function(err) {
+    // handle error here
+    console.log(err)
+  })
+
+  /*
+  const country = 'fr'
+  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
+     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_countrytrack)
+     //here we can continue with the data -> viz
+ 
+     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_countryartist)
+     //here we can continue with the data -> viz
+ 
+     const artiste = 'Orelsan'
+     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_artist)
+     //here we can continue with the data -> viz
+  })
+  */
+  
 })(d3)
