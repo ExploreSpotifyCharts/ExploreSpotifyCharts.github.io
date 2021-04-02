@@ -12,8 +12,14 @@ export function ExplorerParArtiste(data, artiste, start, end=null)
 { 
   if (!end) { end = start }
   
+  //Filter on artist
+  let data_processed = data.filter(line => line['Artist'] == artiste)
+
+  //Filter on date
+  data_processed = data_processed.filter(line => isValidDate(new Date(line['date'])) && isDateToBeConsidered(new Date(line['date']), start, end))
+  
   //Reduce by track name
-  let data_processed = reduceDataPerTrackName(data, artiste, start, end)
+  data_processed = reduceDataPerTrackName(data_processed)
 
   //Sort on count_total_streams and get top k
   data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams'])
@@ -41,25 +47,19 @@ function isDateToBeConsidered(d, start, end)
   return (d.getTime() >= start.getTime()) && (d.getTime() <= end.getTime())
 }
 
-function reduceDataPerTrackName(data, artiste, start, end)
+function reduceDataPerTrackName(data)
 {
   let data_processed = data.reduce(function (acc, line) {
-    if (line['Artist'] == artiste)
+    const date = new Date(line['date'])
+    const dateISO = date.toISOString().split('T')[0]
+    if (typeof acc[line['Track Name']] == 'undefined')
     {
-      const date = new Date(line['date'])
-      if (isValidDate(date) && isDateToBeConsidered(date, start, end))
-      {
-        const dateISO = date.toISOString().split('T')[0]
-        if (typeof acc[line['Track Name']] == 'undefined')
-        {
-          acc[line['Track Name']] = {}
-          acc[line['Track Name']]['Streams'] = {}
-          acc[line['Track Name']]['Count_total_streams'] = 0
-        }
-        acc[line['Track Name']]['Streams'][dateISO] = line['Streams']
-        acc[line['Track Name']]['Count_total_streams'] += line['Streams']
-      }
+      acc[line['Track Name']] = {}
+      acc[line['Track Name']]['Streams'] = {}
+      acc[line['Track Name']]['Count_total_streams'] = 0
     }
+    acc[line['Track Name']]['Streams'][dateISO] = line['Streams']
+    acc[line['Track Name']]['Count_total_streams'] += line['Streams']
     return acc
   }, {})
   return Object.entries(data_processed)

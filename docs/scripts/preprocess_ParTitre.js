@@ -17,9 +17,16 @@ export function ExplorerParTitre(data_countries, titre, start, end=null)
   let data_processed = []
   data_countries.forEach(data_country =>
     {
-      let data_country_preprocessed = reduceDataPerTrackName(data_country, titre, start, end)
-      console.log(data_country_preprocessed)
-      data_processed.push(data_country_preprocessed[0])
+      const country_code = data_country[0]['region']
+      //Filter on track name
+      let data_country_preprocessed = data_country.filter(line => line['Track Name'] == titre)
+
+      //Filter on date
+      data_country_preprocessed = data_country_preprocessed.filter(line => isValidDate(new Date(line['date'])) && isDateToBeConsidered(new Date(line['date']), start, end))
+      
+      //Reduce
+      data_country_preprocessed = reduceData(data_country_preprocessed, country_code) //there we only get one element
+      data_processed.push(data_country_preprocessed)
     })
 
   //Sort on count_total_streams and get top k
@@ -35,7 +42,6 @@ export function ExplorerParTitre(data_countries, titre, start, end=null)
   data_processed = sortStreamsOnDate(data_processed)
 
   return data_processed
-
 }
 
 
@@ -49,28 +55,25 @@ function isDateToBeConsidered(d, start, end)
   return (d.getTime() >= start.getTime()) && (d.getTime() <= end.getTime())
 }
 
-function reduceDataPerTrackName(data, titre, start, end)
+function reduceData(data, country_code)
 {
-  let data_processed = data.reduce(function (acc, line) {
-    if (line['Track Name'] == titre)
+  let output = []
+  output.push(country_code)
+  output.push({})
+
+  output[1]['Streams'] = {}
+  output[1]['Count_total_streams'] = 0
+
+  data.forEach(line =>
     {
       const date = new Date(line['date'])
-      if (isValidDate(date) && isDateToBeConsidered(date, start, end))
-      {
-        const dateISO = date.toISOString().split('T')[0]
-        if (typeof acc[line['region']] == 'undefined')
-        {
-          acc[line['region']] = {}
-          acc[line['region']]['Streams'] = {}
-          acc[line['region']]['Count_total_streams'] = 0
-        }
-        acc[line['region']]['Streams'][dateISO] = line['Streams']
-        acc[line['region']]['Count_total_streams'] += line['Streams']
-      }
+      const dateISO = date.toISOString().split('T')[0]
+      output[1]['Streams'][dateISO] = line['Streams']
+      output[1]['Count_total_streams'] += line['Streams']
     }
-    return acc
-  }, {})
-  return Object.entries(data_processed)
+  )
+
+  return output
 }
 
 function addTotalEntry_computeProportion(data)
