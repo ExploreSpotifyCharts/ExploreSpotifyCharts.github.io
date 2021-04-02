@@ -1,39 +1,63 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="Description" content="Projet INF8808.">
-        <title>Projet INF8808</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="Description" content="Projet INF8808.">
+      <title>Projet INF8808</title>
 
-        <link rel="stylesheet" href="assets/style.css">
-        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-
-      </head>
+      <link rel="stylesheet" href="assets/style.css">
+      <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    </head>
 
       <body>
-        <header>
-          <h1>
-            Explore Spotify Charts
-          </h1>
-          <h2>
-            Projet INF8808
-          </h2>
-        </header>
-        <main>
-          <div class="mdc-touch-target-wrapper">
-            <button class="mdc-button mdc-button--touch">
-              <span class="mdc-button__ripple"></span>
-              <span class="mdc-button__label">My Accessible Button</span>
-              <span class="mdc-button__touch"></span>
-            </button>
-          </div>
+        <div class='sidebar'>
+          <h1>Explorer par...</h1>
+          <ul>
+            <li>Pays</li>
+            <li>Artiste</li>
+            <li>Titre</li>
+            <li>Tendances</li>
+          </ul>
+        </div>
+        <div class='rightSideWrapper'>
+          <header>
+            <h1>Paramètres</h1>
+          </header>
           <div class="viz-container">
-            <div class="graph" id="heatmap">
-              <svg class="heatmap-svg"></svg>
-            </div>
+            <main>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra suscipit lectus imperdiet consectetur. Nulla varius, mauris at imperdiet mattis, velit odio maximus mauris, eget fringilla mauris ipsum eget sem. Etiam et tincidunt felis. Sed quis lacus a nisl iaculis elementum. Maecenas at est at sem mattis bibendum. Nulla cursus egestas malesuada. Sed consequat lorem ut elit suscipit, ac sollicitudin odio pretium.
+
+                Nulla sit amet pellentesque nibh. Quisque sit amet elit accumsan risus congue venenatis et varius nunc. Donec dui quam, semper nec sagittis non, molestie vitae nisl. Nulla eget mauris accumsan, sagittis est nec, tristique elit. Donec sodales enim venenatis, dapibus lorem in, elementum nisl. Cras vel posuere tortor. In hac habitasse platea dictumst.
+                
+                Nunc vestibulum lobortis quam. Nullam volutpat non augue congue convallis. Suspendisse accumsan urna libero, ut pretium felis malesuada sit amet. In facilisis venenatis ligula ac porta. Donec justo sem, vulputate et enim eu, vestibulum semper ligula. In eu dolor a mauris gravida tristique. Nullam et ante sapien. Vestibulum ut consequat sapien, nec imperdiet nisl. Curabitur mattis diam ut nulla hendrerit vehicula.
+                
+                Maecenas fermentum risus id neque gravida finibus. In ullamcorper nisi quis libero iaculis, vel tempor sapien sodales. Nulla sed mauris leo. Quisque eu vehicula nisl. Mauris hendrerit diam ut pretium accumsan. Sed luctus purus vel arcu tincidunt, eget lacinia mauris tincidunt. Duis vel mi et est pretium fermentum sed mollis felis. Aliquam risus elit, luctus et sodales id, sodales tempus quam. Cras ac lectus eget mauris pulvinar molestie sed at mi. Nullam condimentum hendrerit diam, sed interdum ipsum tristique nec.
+                
+                Praesent fringilla quam at suscipit sollicitudin. Duis id quam nulla. Fusce feugiat purus nisl, sed ultrices enim luctus id. Nunc ut quam fringilla, euismod erat ut, mollis est. Aliquam ut enim tempus, sodales orci tincidunt, egestas sapien. Donec non suscipit mauris, vitae pretium ligula. Maecenas ac pellentesque augue, ac malesuada est. Aliquam sed risus malesuada, pulvinar purus eget, porttitor lectus. Etiam volutpat odio quam, placerat faucibus eros iaculis ac. Nullam eget quam non purus ultrices ultrices. Morbi eu malesuada turpis. Mauris posuere mauris sit amet felis aliquam varius.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra suscipit lectus imperdiet consectetur. Nulla varius, mauris at imperdiet mattis, velit odio maximus mauris, eget fringilla mauris ipsum eget sem. Etiam et tincidunt felis. Sed quis lacus a nisl iaculis elementum. Maecenas at est at sem mattis bibendum. Nulla cursus egestas malesuada. Sed consequat lorem ut elit suscipit, ac sollicitudin odio pretium.
+
+                Nulla sit amet pellentesque nibh. Quisque sit amet elit accumsan risus congue venenatis et varius nunc. Donec dui quam, semper nec sagittis non, molestie vitae nisl. Nulla eget mauris accumsan, sagittis est nec, tristique elit. Donec sodales enim venenatis, dapibus lorem in, elementum nisl. Cras vel posuere tortor. In hac habitasse platea dictumst.
+                
+                Nunc vestibulum lobortis quam. Nullam volutpat non augue congue convallis. Suspendisse accumsan urna libero, ut pretium felis malesuada sit amet. In facilisis venenatis ligula ac porta. Donec justo sem, vulputate et enim eu, vestibulum semper ligula. In eu dolor a mauris gravida tristique. Nullam et ante sapien. Vestibulum ut consequat sapien, nec imperdiet nisl. Curabitur mattis diam ut nulla hendrerit vehicula.
+                
+                Maecenas fermentum risus id neque gravida finibus. In ullamcorper nisi quis libero iaculis, vel tempor sapien sodales. Nulla sed mauris leo. Quisque eu vehicula nisl. Mauris hendrerit diam ut pretium accumsan. Sed luctus purus vel arcu tincidunt, eget lacinia mauris tincidunt. Duis vel mi et est pretium fermentum sed mollis felis. Aliquam risus elit, luctus et sodales id, sodales tempus quam. Cras ac lectus eget mauris pulvinar molestie sed at mi. Nullam condimentum hendrerit diam, sed interdum ipsum tristique nec.
+                
+                Praesent fringilla quam at suscipit sollicitudin. Duis id quam nulla. Fusce feugiat purus nisl, sed ultrices enim luctus id. Nunc ut quam fringilla, euismod erat ut, mollis est. Aliquam ut enim tempus, sodales orci tincidunt, egestas sapien. Donec non suscipit mauris, vitae pretium ligula. Maecenas ac pellentesque augue, ac malesuada est. Aliquam sed risus malesuada, pulvinar purus eget, porttitor lectus. Etiam volutpat odio quam, placerat faucibus eros iaculis ac. Nullam eget quam non purus ultrices ultrices. Morbi eu malesuada turpis. Mauris posuere mauris sit amet felis aliquam varius.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra suscipit lectus imperdiet consectetur. Nulla varius, mauris at imperdiet mattis, velit odio maximus mauris, eget fringilla mauris ipsum eget sem. Etiam et tincidunt felis. Sed quis lacus a nisl iaculis elementum. Maecenas at est at sem mattis bibendum. Nulla cursus egestas malesuada. Sed consequat lorem ut elit suscipit, ac sollicitudin odio pretium.
+
+                Nulla sit amet pellentesque nibh. Quisque sit amet elit accumsan risus congue venenatis et varius nunc. Donec dui quam, semper nec sagittis non, molestie vitae nisl. Nulla eget mauris accumsan, sagittis est nec, tristique elit. Donec sodales enim venenatis, dapibus lorem in, elementum nisl. Cras vel posuere tortor. In hac habitasse platea dictumst.
+                
+                Nunc vestibulum lobortis quam. Nullam volutpat non augue congue convallis. Suspendisse accumsan urna libero, ut pretium felis malesuada sit amet. In facilisis venenatis ligula ac porta. Donec justo sem, vulputate et enim eu, vestibulum semper ligula. In eu dolor a mauris gravida tristique. Nullam et ante sapien. Vestibulum ut consequat sapien, nec imperdiet nisl. Curabitur mattis diam ut nulla hendrerit vehicula.
+                
+                Maecenas fermentum risus id neque gravida finibus. In ullamcorper nisi quis libero iaculis, vel tempor sapien sodales. Nulla sed mauris leo. Quisque eu vehicula nisl. Mauris hendrerit diam ut pretium accumsan. Sed luctus purus vel arcu tincidunt, eget lacinia mauris tincidunt. Duis vel mi et est pretium fermentum sed mollis felis. Aliquam risus elit, luctus et sodales id, sodales tempus quam. Cras ac lectus eget mauris pulvinar molestie sed at mi. Nullam condimentum hendrerit diam, sed interdum ipsum tristique nec.
+                
+                Praesent fringilla quam at suscipit sollicitudin. Duis id quam nulla. Fusce feugiat purus nisl, sed ultrices enim luctus id. Nunc ut quam fringilla, euismod erat ut, mollis est. Aliquam ut enim tempus, sodales orci tincidunt, egestas sapien. Donec non suscipit mauris, vitae pretium ligula. Maecenas ac pellentesque augue, ac malesuada est. Aliquam sed risus malesuada, pulvinar purus eget, porttitor lectus. Etiam volutpat odio quam, placerat faucibus eros iaculis ac. Nullam eget quam non purus ultrices ultrices. Morbi eu malesuada turpis. Mauris posuere mauris sit amet felis aliquam varius.
+              </p>
+            </main>
           </div>
-        </main>
+        </div>
         <script src="https://d3js.org/d3.v5.js"></script>
         <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
         <script type="module" src="index.js"></script>

@@ -1,100 +1,55 @@
 @use "@material/button";
-
 @include button.core-styles;
 
+* { 
+    margin: 0px;
+    color: white;
+}
+
 body {
-    font-family: 'Roboto Slab', 'sans-serif';
-    font-size: 16px;
-    background-color: #fff;
-    color: #2A2B2E;
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    background-color: #353535; 
+}
+
+.rightSideWrapper {
+    width: 85%; /*same as header*/
+	float: right;
 }
 
 header {
-    background-color: #fff;
-    padding: 25px 100px;
-    border-bottom: 2px solid #97939A;
+    position: fixed;
+	width: 85%;	
+	height: 100px;  
+    background-color: #292929;
+}
+
+.sidebar {
+    position: fixed; 
+	height: 100%;
+	width: 15%; /*same as header minus 100%*/
+	margin: 0px;
+    background-color: #000;  
 }
 
 main {
-    height: 100%;
-    padding-right: 25px;
-}
-
-h1 {
-    color: #2A2B2E;
-    font-family: 'Roboto Slab', 'serif';
-    font-size: 56px;
-    margin: 0;
-    font-weight: normal;
-}
-
-h2 {
-    color: #2A2B2E;
-    font-family: 'Roboto Slab', 'serif';
-    font-weight: normal;
-}
-
-svg {
-    background-color: #ffffff;
-}
-
-button {
-    padding: 10px 30px;
-    color: #000;
-    background-color: #fff;
-    border: 1px solid #333;
-    border-radius: 4px;
-    cursor: pointer;
-    outline: 0;
-    font-family: 'Helvetica', 'sans-serif';
-    font-size: 16px;
-}
-
-button:hover, button:active {
-	background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
-	background-color:#f6f6f6;
-}
-
-.title, .axis-text {
-    transform-origin: center;
-    transform-box: fill-box;
-    text-anchor: middle;
+    height: 400px;
+    order: 1;
+    flex: 0 1 100%;
 }
 
 .viz-container{
-    height: 100%;
-    padding: 0 100px;
+    margin-top: 100px; /*same as header height*/
+	display: flex;
+	flex-flow: row wrap;
 }
 
-.graph {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+ul {
+    list-style-type: none;
 }
 
-.tick line{
-    visibility: hidden;
-  }
+ul > li:first-child {
+    color: #1db954;
+}
 
-  .info {
-      pointer-events: none;
-      font-family: 'Roboto';
-  }
 
-  .axis text {
-      font-family: 'Roboto';
-      cursor: default;
-      transform-box: fill-box;
-      transform-origin: center;
-  }
 
-  .axis path {
-      opacity: 0;
-  }
+
