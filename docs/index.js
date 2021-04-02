@@ -56,12 +56,11 @@ import * as helper from './scripts/helper.js'
 
 //Mise en place de la viz
 const margin = {
-  top: 50,
-  right: 100,
+  top: 20,
+  right: 60,
   bottom: 100,
-  left: 80
+  left: 60
 }
-
 const g = helper.generateG(margin)
 
 helper.appendTitle(g, "Titre de la viz")
