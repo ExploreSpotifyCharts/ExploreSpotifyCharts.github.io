@@ -30,6 +30,9 @@ export function ExplorerParPays_Track(data, start, end=null)
   //Sort on streams on date
   data_processed = sortStreamsOnDate(data_processed)
 
+  //Formattage
+  data_processed = formatData(data_processed, 'Track_Name')
+
   return data_processed
 }
 
@@ -63,6 +66,9 @@ export function ExplorerParPays_Artist(data, start, end=null)
 
   //Sort on streams on date
   data_processed = sortStreamsOnDate(data_processed)
+
+  //Formattage
+  data_processed = formatData(data_processed, 'Artist')
 
   return data_processed
 }
@@ -189,4 +195,17 @@ function sortStreamsOnDate(data)
       line[1]['Streams'] = sorted
     })
   return data
+}
+
+function formatData(data, key_name)
+{
+  let data_formatted = data.map(line => {
+    let entry = {}
+    entry[key_name] = line[0]
+    for (const [ key, value ] of Object.entries(line[1])) {
+      entry[key] = value
+    }
+    return entry
+  })
+  return data_formatted
 }

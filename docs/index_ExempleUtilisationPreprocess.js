@@ -16,7 +16,7 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 (function (d3) {
 
   /*var countries = [
-    'global',
+    //'global',
     'ar', 'at', 'au',
     'be', 'bo', 'br',
     'ca', 'ch', 'cl', 'co', 'cr', 'cz',
@@ -37,8 +37,25 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
   ]
   */
 
+  const country = 'fr'
+  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
+     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_countrytrack)
+     //here we can continue with the data -> viz
+ 
+     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_countryartist)
+     //here we can continue with the data -> viz
+ 
+     const artiste = 'Orelsan'
+     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_artist)
+     //here we can continue with the data -> viz
+  })
+
+
   var countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us']
-  const titre = 'Trop beau'
+  const titre = 'Watermelon Sugar'
   let call_countries = []
   countries.forEach(country => call_countries.push(d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
     const data_filtered = data.filter(line => line['Track Name'] == titre)
@@ -56,23 +73,5 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
     // handle error here
     console.log(err)
   })
-
-  /*
-  const country = 'fr'
-  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
-     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
-     console.log(data_preprocessed_countrytrack)
-     //here we can continue with the data -> viz
- 
-     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
-     console.log(data_preprocessed_countryartist)
-     //here we can continue with the data -> viz
- 
-     const artiste = 'Orelsan'
-     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
-     console.log(data_preprocessed_artist)
-     //here we can continue with the data -> viz
-  })
-  */
   
 })(d3)
