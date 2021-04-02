@@ -4,6 +4,7 @@
 //import {MDCRipple} from '@material/ripple';
 import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
+import * as helper from './scripts/helper.js'
 
 /**
  * @file This file is the entry-point for the the code for Team 3 project for the course INF8808.
@@ -36,6 +37,7 @@ import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
   ]
   */
 
+//Chargement des fichiers
  const country = 'fr'
  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
@@ -51,5 +53,17 @@ import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
     console.log(data_preprocessed_artist)
     //here we can continue with the data -> viz
  })
+
+//Mise en place de la viz
+const margin = {
+  top: 50,
+  right: 100,
+  bottom: 100,
+  left: 80
+}
+
+const g = helper.generateG(margin)
+
+helper.appendTitle(g, "Titre de la viz")
   
 })(d3)
