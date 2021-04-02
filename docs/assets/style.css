@@ -4,10 +4,16 @@
 * { 
     margin: 0px;
     color: white;
+    font-family: 'proxima-nova', sans-serif;
 }
 
-body {
+body{
+	font-family: 'proxima_nova_rgregular', Helvetica, Arial, sans-serif;
     background-color: #353535; 
+}
+
+h1{
+   font-family: 'proxima_nova_rgbold', Helvetica, Arial, sans-serif;
 }
 
 .rightSideWrapper {
@@ -46,9 +52,26 @@ ul {
     list-style-type: none;
 }
 
-ul > li:first-child {
+ul > li:first-child { /*For example*/
     color: #1db954;
 }
+
+#sidebarTitle {
+    font-size: medium;
+    border-bottom: 1px solid white;
+    margin: auto;
+    width: 150px;
+}
+
+#headerTitle {
+    font-size: medium;
+    border-bottom: 1px solid white;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    width: 300px;
+}
+
+
 
 
 
