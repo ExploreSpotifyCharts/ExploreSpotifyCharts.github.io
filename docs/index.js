@@ -37,9 +37,11 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
   ]
   */
 
+  const PATH = './assets/data/' //for Tanguy : './'
+
   //EXPLORER PAR PAYS
   const country = 'fr'
-  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
+  d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
      const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
      console.log(data_preprocessed_countrytrack)
      //here we can continue with the data -> viz
@@ -51,7 +53,7 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 
   //EXPLORER PAR ARTISTE
   const artiste = 'Orelsan'
-  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
+  d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
     console.log(data_preprocessed_artist)
     //here we can continue with the data -> viz
@@ -61,7 +63,7 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
   let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
   const titre = 'Trop beau'
   let call_countries = []
-  countries.forEach(country => call_countries.push(d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
+  countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
     const data_filtered = data.filter(line => line['Track Name'] == titre)
     //console.log(data_filtered)
     return data_filtered
