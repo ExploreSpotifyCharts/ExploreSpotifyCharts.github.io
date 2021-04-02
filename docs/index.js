@@ -5,6 +5,7 @@
 import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
 import * as helper from './scripts/helper.js'
+import * as viz from './scripts/viz.js'
 
 /**
  * @file This file is the entry-point for the the code for Team 3 project for the course INF8808.
@@ -14,6 +15,21 @@ import * as helper from './scripts/helper.js'
  */
 
 (function (d3) {
+
+//Constantes de taille pour le placement des éléments
+const margin = {
+  top: 40,
+  right: 60,
+  bottom: 100,
+  left: 60
+}
+const sidebarWidth = 0.15
+const windowWidth = window.innerWidth
+const svgWidth = (windowWidth*(1-sidebarWidth))-margin.left
+
+//Mise en place de la viz
+
+const g = helper.generateG(margin)
 
   /*var files = [
     'global',
@@ -48,21 +64,12 @@ import * as helper from './scripts/helper.js'
     console.log(data_preprocessed_countryartist)
     //here we can continue with the data -> viz
 
-    const artiste = 'Orelsan'
+    //Visualisation Artiste
+    const artiste = 'Harry Styles'
     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
     console.log(data_preprocessed_artist)
-    //here we can continue with the data -> viz
+    helper.appendTitle(artiste)
+    viz.appendColorScale(data_preprocessed_artist, svgWidth)
  })
-
-//Mise en place de la viz
-const margin = {
-  top: 40,
-  right: 60,
-  bottom: 100,
-  left: 60
-}
-const g = helper.generateG(margin)
-
-helper.appendTitle(g, "Titre")
   
 })(d3)
