@@ -15,8 +15,8 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 
 (function (d3) {
 
-  /*var countries = [
-    'global',
+  /*let countries = [
+    //'global',
     'ar', 'at', 'au',
     'be', 'bo', 'br',
     'ca', 'ch', 'cl', 'co', 'cr', 'cz',
@@ -37,14 +37,35 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
   ]
   */
 
-  var countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us']
+  //EXPLORER PAR PAYS
+  const country = 'fr'
+  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
+     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_countrytrack)
+     //here we can continue with the data -> viz
+ 
+     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_countryartist)
+     //here we can continue with the data -> viz
+  })
+
+  //EXPLORER PAR ARTISTE
+  const artiste = 'Orelsan'
+  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
+    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
+    console.log(data_preprocessed_artist)
+    //here we can continue with the data -> viz
+  })
+
+  //EXPLORER PAR TITRE
+  let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
   const titre = 'Trop beau'
   let call_countries = []
   countries.forEach(country => call_countries.push(d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
     const data_filtered = data.filter(line => line['Track Name'] == titre)
-    console.log(data_filtered)
+    //console.log(data_filtered)
     return data_filtered
- })))
+  })))
 
   Promise.all(call_countries)
     .then(function(files) {
@@ -56,23 +77,5 @@ import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
     // handle error here
     console.log(err)
   })
-
-  /*
-  const country = 'fr'
-  d3.csv('./assets/data/'+country+'.csv', d3.autoType).then(function (data) {
-     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
-     console.log(data_preprocessed_countrytrack)
-     //here we can continue with the data -> viz
- 
-     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
-     console.log(data_preprocessed_countryartist)
-     //here we can continue with the data -> viz
- 
-     const artiste = 'Orelsan'
-     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
-     console.log(data_preprocessed_artist)
-     //here we can continue with the data -> viz
-  })
-  */
   
 })(d3)
