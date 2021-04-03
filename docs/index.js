@@ -5,6 +5,7 @@ import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
 import * as helper from './scripts/helper.js'
 import * as interactivity from './scripts/interactivity.js'
+import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 
 /**
  * @file This file is the entry-point for the the code for Team 3 project for the course INF8808.
@@ -19,8 +20,8 @@ import * as interactivity from './scripts/interactivity.js'
 
 (function (d3) {
 
-  /*var files = [
-    'global',
+  /*let countries = [
+    //'global',
     'ar', 'at', 'au',
     'be', 'bo', 'br',
     'ca', 'ch', 'cl', 'co', 'cr', 'cz',
@@ -40,26 +41,9 @@ import * as interactivity from './scripts/interactivity.js'
     'us', 'uy'
   ]
   */
- 
-//Chargement des fichiers
- const country = 'fr'
-//  d3.csv('./'+country+'.csv', d3.autoType).then(function (data) {
-//     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
-//     console.log(data_preprocessed_countrytrack)
-//     //here we can continue with the data -> viz
 
-//     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
-//     console.log(data_preprocessed_countryartist)
-//     //here we can continue with the data -> viz
-
-//     const artiste = 'Orelsan'
-//     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
-//     console.log(data_preprocessed_artist)
-//     //here we can continue with the data -> viz
-//  })
-
- //Mise en place de l'intéraction
- interactivity.initialize()
+//Mise en place de l'intéraction
+interactivity.initialize()
 
 
 //Mise en place de la viz
@@ -72,5 +56,48 @@ const margin = {
 const g = helper.generateG(margin)
 
 helper.appendTitle(g, "Titre")
-  
+
+  const PATH = './assets/data/' //for Tanguy : './'
+
+  //EXPLORER PAR PAYS
+  const country = 'fr'
+  d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
+     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_countrytrack)
+     //here we can continue with the data -> viz
+ 
+     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
+     console.log(data_preprocessed_countryartist)
+     //here we can continue with the data -> viz
+  })
+
+  //EXPLORER PAR ARTISTE
+  const artiste = 'Orelsan'
+  d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
+    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
+    console.log(data_preprocessed_artist)
+    //here we can continue with the data -> viz
+  })
+
+  //EXPLORER PAR TITRE
+  let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
+  const titre = 'Trop beau'
+  let call_countries = []
+  countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
+    const data_filtered = data.filter(line => line['Track Name'] == titre)
+    //console.log(data_filtered)
+    return data_filtered
+  })))
+
+  Promise.all(call_countries)
+    .then(function(files) {
+    const data_preprocessed_titre = preprocess_ParTitre.ExplorerParTitre(files, countries, new Date('2017-01-01'), new Date('2020-04-20'))
+    console.log(data_preprocessed_titre)
+    //here we can continue with the data -> viz
+  })
+    .catch(function(err) {
+    // handle error here
+    console.log(err)
+  })
+
 })(d3)
