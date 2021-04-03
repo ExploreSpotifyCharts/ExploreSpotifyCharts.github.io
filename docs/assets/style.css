@@ -1,3 +1,4 @@
+/* General styles */
 
 * { 
     margin: 0px;
@@ -35,6 +36,20 @@ header {
     background-color: #000;  
 }
 
+#sidebarTitle {
+    font-size: medium;
+    border-bottom: 2px solid white;
+    margin: 20px auto auto 20px;
+    width: 150px;
+}
+
+#headerTitle {
+    font-size: medium;
+    border-bottom: 2px solid white;
+    margin: 20px auto 5px 60px;
+    width: 300px;
+}
+
 main {
     height: 400px;
     order: 1;
@@ -46,6 +61,8 @@ main {
 	display: flex;
 	flex-flow: row wrap;
 }
+
+/* Menu style */
 
 ul {
     list-style-type: none;
@@ -67,33 +84,45 @@ li.selected {
     font-weight: 550;
 }
 
-#sidebarTitle {
-    font-size: medium;
-    border-bottom: 1px solid white;
-    margin: 20px auto auto 20px;
-    width: 150px;
-}
-
-#headerTitle {
-    font-size: medium;
-    border-bottom: 1px solid white;
-    margin: 20px auto 5px 60px;
-    width: 300px;
-}
+/* Header Styles */
 
 form {
     display: flex;
+    flex-flow: column wrap;
+
+}
+
+.suggestboxes {
+    display: flex;
+    justify-content: space-between;
+    width: 700px;
+}
+
+.suggestboxe {
+    margin: 5px auto 5px 90px;
 }
 
 input {
+    position: relative;
     background-color: #292929;
     border: none;
+    border-bottom: 1px solid white;
     margin: 5px;
 }
+
+input:focus {
+outline: none;  
+}
+
+/* input::-webkit-calendar-picker-indicator {
+    opacity:0;
+} */
 
 option {
     color: black;
 }
+
+/* Visualisation styles */
 
 .titre-viz {
     font-size: 20px;
