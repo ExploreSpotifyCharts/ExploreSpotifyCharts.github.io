@@ -1,7 +1,6 @@
 'use strict'
 
 //import * as d3Chromatic from 'd3-scale-chromatic'
-import * as material from '@material/ripple';
 import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
 import * as helper from './scripts/helper.js'

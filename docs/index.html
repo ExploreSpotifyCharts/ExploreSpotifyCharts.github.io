@@ -10,8 +10,6 @@
 
       <link rel="stylesheet" href="assets/style.css">
       <link rel="stylesheet" href="assets/typography.css">
-      <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     </head>
 
@@ -29,8 +27,23 @@
           <header>
             <h1 id='headerTitle'>Paramètres</h1>
             <form>
-              <div class=suggestboxes></div>
-              <div class=datepickers></div>
+              <div class='suggestboxes'></div>
+              <div class='datepickers'>
+                <div class ='datepicker'>
+                  <label id="day">
+                    <input type="radio" name="optradio" value="day">Jour:
+                    <input type="date" name="day" min="2017-01-01" disabled>
+                  </label>
+                </div>
+                <div class ="datepicker">
+                  <label id="period">
+                    <input type="radio" name="optradio" value="period" checked>Période:
+                    <input type="date" name="day" min="2017-01-01">
+                    <span>au</span>
+                    <input type="date" name="day" min="2017-01-01">
+                  </label>
+                </div>
+              </div>
             </form>
           </header>
           <div class="viz-container">
@@ -40,7 +53,6 @@
           </div>
         </div>
         <script src="https://d3js.org/d3.v5.js"></script>
-        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
         <script type="module" src="index.js"></script>
       </body>
 </html>

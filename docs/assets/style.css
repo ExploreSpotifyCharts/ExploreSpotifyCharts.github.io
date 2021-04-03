@@ -98,25 +98,65 @@ form {
     width: 700px;
 }
 
-.suggestboxe {
+.suggestbox {
     margin: 5px auto 5px 90px;
 }
 
+.datepickers {
+    display: flex;
+    justify-content: space-between;
+    width: 800px;
+}
+
+.datepicker {
+    margin: 0px auto 5px 85px;
+}
+
 input {
-    position: relative;
     background-color: #292929;
     border: none;
     border-bottom: 1px solid white;
     margin: 5px;
 }
 
-input:focus {
-outline: none;  
+/*Trick to overlaps browser radio button, since we can't change the style*/
+input[type='radio']:after {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    top: -2px;
+    left: -1px;
+    position: relative;
+    background-color: 292929;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: none;
 }
 
-/* input::-webkit-calendar-picker-indicator {
-    opacity:0;
-} */
+input[type='radio']:checked:after {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    top: -2px;
+    left: -1px;
+    position: relative;
+    background-color: #1db954;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid white;
+}
+
+/*------------------------------------------------------*/
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+input:focus {
+    outline: none;  
+}
 
 option {
     color: black;

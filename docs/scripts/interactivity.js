@@ -20,38 +20,36 @@ function createForm(tab) {
   //Mock data for the test
     const countries = ['France','USA','Finlande','Test1', 'Test2']
     const artists = ['Ed Sheran','Angèle','Lompale','Roméo Elvis','Therapie TAXI']
-    const titles = []
+    const titles = ['titre1','titre2','titre3']
 
     switch(tab) {
       case "Pays":
       case "Tendances":
-        createSuggestboxe('Pays', countries)
+        createSuggestbox('Pays', countries, 'Monde')
         break
       case "Artiste":
-        createSuggestboxe('Artiste', artists)
-        createSuggestboxe('Pays', countries)
+        createSuggestbox('Artiste', artists, '???')
+        createSuggestbox('Pays', countries, 'Monde')
         break
       case "Titre":
-        createSuggestboxe('Titre', titles)
+        createSuggestbox('Titre', titles, '???')
         break
-    }
-
-    createDatePickers()  
+    } 
 }
 
 /**
  * Empty the form
  */
 function resetForm() {
-  d3.selectAll('.suggestboxe').remove()
+  d3.selectAll('.suggestbox').remove()
 }
 
 /**
  * Create a suggestbox tag with the given label
  * @param {string} label 
  */
-function createSuggestboxe(label,data) {
-  const suggestboxe = d3.select('form .suggestboxes').append('div').attr('class','suggestboxe')
+function createSuggestbox(label,data, defaultValue) {
+  const suggestboxe = d3.select('form .suggestboxes').append('div').attr('class','suggestbox')
 
   suggestboxe
   .append('label')
@@ -63,6 +61,7 @@ function createSuggestboxe(label,data) {
   .attr('list', "list" + label)
   .attr('name', label)
   .attr('id', label)
+  .attr('value', defaultValue)
 
   suggestboxe
   .append('datalist')
@@ -73,14 +72,24 @@ function createSuggestboxe(label,data) {
   .attr('value', d => d)
 }
 
-function createDatePickers(){
-  
+
+function selectField(element){
+  if (element.value == "day") {
+    d3.selectAll("#day input[type='date']").property("disabled",false)
+    d3.selectAll("#period input[type='date']").property("disabled",true)
+  } else {
+    d3.selectAll("#period input[type='date']").property("disabled",false)
+    d3.selectAll("#day input[type='date']").property("disabled",true)
+  }
 }
 
 /*Public function*/
 
 /* Initialize view element */
 export function initialize() {
+  //Add events listerners to reactive elements
   d3.selectAll('li').on("click", function() {navigate(this)})
-  createForm()
+  d3.selectAll('input[type="radio"]').on("click", function() {selectField(this)})
+  
+  createForm('Pays')
 }
