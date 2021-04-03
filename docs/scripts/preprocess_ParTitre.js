@@ -21,7 +21,7 @@ export function ExplorerParTitre(data_countries, country_codes, start, end=null)
       let data_country_preprocessed = data_country
 
       //Filter on date
-      data_country_preprocessed = data_country_preprocessed.filter(line => preprocess_Helpers.isValidDate(new Date(line['date'])) && preprocess_Helpers.isDateToBeConsidered(new Date(line['date']), start, end))
+      data_country_preprocessed = data_country_preprocessed.filter(line => preprocess_Helpers.isValidDate(line['date']) && preprocess_Helpers.isDateToBeConsidered(line['date'], start, end))
       
       //Reduce
       data_country_preprocessed = preprocess_Helpers.reduceDataToOneElement(data_country_preprocessed, country_code)
