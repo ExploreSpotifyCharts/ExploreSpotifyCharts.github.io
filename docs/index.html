@@ -6,15 +6,18 @@
       <meta name="Description" content="Projet INF8808.">
       <title>Projet INF8808</title>
 
+      <script type="text/javascript" src="./scripts/interactivity.js"></script>
+
       <link rel="stylesheet" href="assets/style.css">
-      <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="assets/typography.css">
+
     </head>
 
       <body>
         <div class='sidebar'>
-          <h1>Explorer par...</h1>
-          <ul>
-            <li>Pays</li>
+          <h1 id='sidebarTitle'>Explorer par...</h1>
+          <ul id='menuList'>
+            <li class="selected">Pays</li>
             <li>Artiste</li>
             <li>Titre</li>
             <li>Tendances</li>
@@ -22,44 +25,34 @@
         </div>
         <div class='rightSideWrapper'>
           <header>
-            <h1>Paramètres</h1>
+            <h1 id='headerTitle'>Paramètres</h1>
+            <form>
+              <div class='suggestboxes'></div>
+              <div class='datepickers'>
+                <div class ='datepicker'>
+                  <label id="day">
+                    <input type="radio" name="optradio" value="day">Jour:
+                    <input type="date" name="day" min="2017-01-01" disabled>
+                  </label>
+                </div>
+                <div class ="datepicker">
+                  <label id="period">
+                    <input type="radio" name="optradio" value="period" checked>Période:
+                    <input type="date" name="day" min="2017-01-01">
+                    <span>au</span>
+                    <input type="date" name="day" min="2017-01-01">
+                  </label>
+                </div>
+              </div>
+            </form>
           </header>
           <div class="viz-container">
-            <main>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra suscipit lectus imperdiet consectetur. Nulla varius, mauris at imperdiet mattis, velit odio maximus mauris, eget fringilla mauris ipsum eget sem. Etiam et tincidunt felis. Sed quis lacus a nisl iaculis elementum. Maecenas at est at sem mattis bibendum. Nulla cursus egestas malesuada. Sed consequat lorem ut elit suscipit, ac sollicitudin odio pretium.
-
-                Nulla sit amet pellentesque nibh. Quisque sit amet elit accumsan risus congue venenatis et varius nunc. Donec dui quam, semper nec sagittis non, molestie vitae nisl. Nulla eget mauris accumsan, sagittis est nec, tristique elit. Donec sodales enim venenatis, dapibus lorem in, elementum nisl. Cras vel posuere tortor. In hac habitasse platea dictumst.
-                
-                Nunc vestibulum lobortis quam. Nullam volutpat non augue congue convallis. Suspendisse accumsan urna libero, ut pretium felis malesuada sit amet. In facilisis venenatis ligula ac porta. Donec justo sem, vulputate et enim eu, vestibulum semper ligula. In eu dolor a mauris gravida tristique. Nullam et ante sapien. Vestibulum ut consequat sapien, nec imperdiet nisl. Curabitur mattis diam ut nulla hendrerit vehicula.
-                
-                Maecenas fermentum risus id neque gravida finibus. In ullamcorper nisi quis libero iaculis, vel tempor sapien sodales. Nulla sed mauris leo. Quisque eu vehicula nisl. Mauris hendrerit diam ut pretium accumsan. Sed luctus purus vel arcu tincidunt, eget lacinia mauris tincidunt. Duis vel mi et est pretium fermentum sed mollis felis. Aliquam risus elit, luctus et sodales id, sodales tempus quam. Cras ac lectus eget mauris pulvinar molestie sed at mi. Nullam condimentum hendrerit diam, sed interdum ipsum tristique nec.
-                
-                Praesent fringilla quam at suscipit sollicitudin. Duis id quam nulla. Fusce feugiat purus nisl, sed ultrices enim luctus id. Nunc ut quam fringilla, euismod erat ut, mollis est. Aliquam ut enim tempus, sodales orci tincidunt, egestas sapien. Donec non suscipit mauris, vitae pretium ligula. Maecenas ac pellentesque augue, ac malesuada est. Aliquam sed risus malesuada, pulvinar purus eget, porttitor lectus. Etiam volutpat odio quam, placerat faucibus eros iaculis ac. Nullam eget quam non purus ultrices ultrices. Morbi eu malesuada turpis. Mauris posuere mauris sit amet felis aliquam varius.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra suscipit lectus imperdiet consectetur. Nulla varius, mauris at imperdiet mattis, velit odio maximus mauris, eget fringilla mauris ipsum eget sem. Etiam et tincidunt felis. Sed quis lacus a nisl iaculis elementum. Maecenas at est at sem mattis bibendum. Nulla cursus egestas malesuada. Sed consequat lorem ut elit suscipit, ac sollicitudin odio pretium.
-
-                Nulla sit amet pellentesque nibh. Quisque sit amet elit accumsan risus congue venenatis et varius nunc. Donec dui quam, semper nec sagittis non, molestie vitae nisl. Nulla eget mauris accumsan, sagittis est nec, tristique elit. Donec sodales enim venenatis, dapibus lorem in, elementum nisl. Cras vel posuere tortor. In hac habitasse platea dictumst.
-                
-                Nunc vestibulum lobortis quam. Nullam volutpat non augue congue convallis. Suspendisse accumsan urna libero, ut pretium felis malesuada sit amet. In facilisis venenatis ligula ac porta. Donec justo sem, vulputate et enim eu, vestibulum semper ligula. In eu dolor a mauris gravida tristique. Nullam et ante sapien. Vestibulum ut consequat sapien, nec imperdiet nisl. Curabitur mattis diam ut nulla hendrerit vehicula.
-                
-                Maecenas fermentum risus id neque gravida finibus. In ullamcorper nisi quis libero iaculis, vel tempor sapien sodales. Nulla sed mauris leo. Quisque eu vehicula nisl. Mauris hendrerit diam ut pretium accumsan. Sed luctus purus vel arcu tincidunt, eget lacinia mauris tincidunt. Duis vel mi et est pretium fermentum sed mollis felis. Aliquam risus elit, luctus et sodales id, sodales tempus quam. Cras ac lectus eget mauris pulvinar molestie sed at mi. Nullam condimentum hendrerit diam, sed interdum ipsum tristique nec.
-                
-                Praesent fringilla quam at suscipit sollicitudin. Duis id quam nulla. Fusce feugiat purus nisl, sed ultrices enim luctus id. Nunc ut quam fringilla, euismod erat ut, mollis est. Aliquam ut enim tempus, sodales orci tincidunt, egestas sapien. Donec non suscipit mauris, vitae pretium ligula. Maecenas ac pellentesque augue, ac malesuada est. Aliquam sed risus malesuada, pulvinar purus eget, porttitor lectus. Etiam volutpat odio quam, placerat faucibus eros iaculis ac. Nullam eget quam non purus ultrices ultrices. Morbi eu malesuada turpis. Mauris posuere mauris sit amet felis aliquam varius.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra suscipit lectus imperdiet consectetur. Nulla varius, mauris at imperdiet mattis, velit odio maximus mauris, eget fringilla mauris ipsum eget sem. Etiam et tincidunt felis. Sed quis lacus a nisl iaculis elementum. Maecenas at est at sem mattis bibendum. Nulla cursus egestas malesuada. Sed consequat lorem ut elit suscipit, ac sollicitudin odio pretium.
-
-                Nulla sit amet pellentesque nibh. Quisque sit amet elit accumsan risus congue venenatis et varius nunc. Donec dui quam, semper nec sagittis non, molestie vitae nisl. Nulla eget mauris accumsan, sagittis est nec, tristique elit. Donec sodales enim venenatis, dapibus lorem in, elementum nisl. Cras vel posuere tortor. In hac habitasse platea dictumst.
-                
-                Nunc vestibulum lobortis quam. Nullam volutpat non augue congue convallis. Suspendisse accumsan urna libero, ut pretium felis malesuada sit amet. In facilisis venenatis ligula ac porta. Donec justo sem, vulputate et enim eu, vestibulum semper ligula. In eu dolor a mauris gravida tristique. Nullam et ante sapien. Vestibulum ut consequat sapien, nec imperdiet nisl. Curabitur mattis diam ut nulla hendrerit vehicula.
-                
-                Maecenas fermentum risus id neque gravida finibus. In ullamcorper nisi quis libero iaculis, vel tempor sapien sodales. Nulla sed mauris leo. Quisque eu vehicula nisl. Mauris hendrerit diam ut pretium accumsan. Sed luctus purus vel arcu tincidunt, eget lacinia mauris tincidunt. Duis vel mi et est pretium fermentum sed mollis felis. Aliquam risus elit, luctus et sodales id, sodales tempus quam. Cras ac lectus eget mauris pulvinar molestie sed at mi. Nullam condimentum hendrerit diam, sed interdum ipsum tristique nec.
-                
-                Praesent fringilla quam at suscipit sollicitudin. Duis id quam nulla. Fusce feugiat purus nisl, sed ultrices enim luctus id. Nunc ut quam fringilla, euismod erat ut, mollis est. Aliquam ut enim tempus, sodales orci tincidunt, egestas sapien. Donec non suscipit mauris, vitae pretium ligula. Maecenas ac pellentesque augue, ac malesuada est. Aliquam sed risus malesuada, pulvinar purus eget, porttitor lectus. Etiam volutpat odio quam, placerat faucibus eros iaculis ac. Nullam eget quam non purus ultrices ultrices. Morbi eu malesuada turpis. Mauris posuere mauris sit amet felis aliquam varius.
-              </p>
-            </main>
+            <svg>
+                 
+            </svg>
           </div>
         </div>
         <script src="https://d3js.org/d3.v5.js"></script>
-        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
         <script type="module" src="index.js"></script>
       </body>
 </html>
