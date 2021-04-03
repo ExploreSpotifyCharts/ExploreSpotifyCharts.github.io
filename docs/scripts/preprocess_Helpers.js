@@ -1,4 +1,23 @@
 //HELPERS FUNCTIONS ---------------------------------------------------------------------------------------------
+export function SpotifyDataParser(d)
+{
+ return {
+   Position: +d.Position, //convert to number
+   'Track Name': d['Track Name'],
+   Artist: d.Artist,
+   Streams: +d.Streams, //convert to number
+   date: parseDate(d.date),
+   region: d.region,
+   spotify_id: d.spotify_id
+   }
+}
+ 
+export function parseDate(input) // parse a date in yyyy-mm-dd format
+{
+  let parts = input.split('-')
+  return new Date(parts[0], parts[1]-1, parts[2]) // Month is 0-indexed
+}
+
 export function isValidDate(d) {
   return d instanceof Date && !isNaN(d);
 }
@@ -11,7 +30,7 @@ export function isDateToBeConsidered(d, start, end)
 export function reduceDataPerKey(data, key, keys_to_keep=[])
 {
   let data_processed = data.reduce(function (acc, line) {
-    const date = new Date(line['date'])
+    const date = line['date']
     const dateISO = date.toISOString().split('T')[0]
     if (typeof acc[line[key]] == 'undefined')
     {
@@ -38,7 +57,7 @@ export function reduceDataToOneElement(data, key_to_use)
 
   data.forEach(line =>
     {
-      const date = new Date(line['date'])
+      const date = line['date']
       const dateISO = date.toISOString().split('T')[0]
       output[1]['Streams'][dateISO] = line['Streams']
       output[1]['Count_total_streams'] += line['Streams']
@@ -91,7 +110,7 @@ export function addTotalEntry_computeProportion(data)
 
 export function fillMissingDates(data, start, end)
 {
-  for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const dateISO = d.toISOString().split('T')[0]
     data.forEach(line =>
       {
