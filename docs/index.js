@@ -3,9 +3,9 @@
 //import * as d3Chromatic from 'd3-scale-chromatic'
 import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
+import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 import * as helper from './scripts/helper.js'
 import * as interactivity from './scripts/interactivity.js'
-import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 
 /**
  * @file This file is the entry-point for the the code for Team 3 project for the course INF8808.
