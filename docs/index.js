@@ -44,6 +44,7 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
   let start_date
   let end_date
 
+  /*
   //EXPLORER PAR PAYS
   country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
@@ -102,5 +103,56 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
     console.log(data_preprocessed_tendance)
     //here we can continue with the data -> viz
   })
+  */
+
+
+let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
+let call_countries = []
+countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+      let uniq_artists = [...new Set(data.map(line => line['Artist'].replace('#', '')))].sort()
+      console.log(uniq_artists)
+      return uniq_artists
+    })))
+
+Promise.all(call_countries)
+  .then(function(files) {
+    let artists = []
+    files.forEach(file => {
+      artists = artists.concat(file)
+      artists = [...new Set(artists)].sort()
+    })
+    let index_to_remove = artists.indexOf('')
+    if (index_to_remove > -1) { artists.splice(index_to_remove, 1)}
+    index_to_remove = artists.indexOf('NA')
+    if (index_to_remove > -1) { artists.splice(index_to_remove, 1)}
+    console.log(artists)
+
+    let csvContent = "data:text/csv;charset=utf-8,"
+    + 'Artist' + '\n' + artists.join("\n")
+    console.log(csvContent)
+    var encodedUri = encodeURI(csvContent)
+    window.open(encodedUri)
+  })
+    .catch(function(err) {
+    // handle error here
+    console.log(err)
+  })
+
+
+/*country = 'be'
+d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+  const artists = data.map(line => line['Artist'].replace('#', ''))
+  const uniq_artists = [...new Set(artists)].sort()
+  console.log(uniq_artists)
+
+  let csvContent = "data:text/csv;charset=utf-8,"
+    + uniq_artists.join("\n")
+    console.log(csvContent)
+    var encodedUri = encodeURI(csvContent)
+    window.open(encodedUri)
+})
+*/
+
+
   
 })(d3)
