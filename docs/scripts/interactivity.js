@@ -90,6 +90,6 @@ export function initialize() {
   //Add events listerners to reactive elements
   d3.selectAll('li').on("click", function() {navigate(this)})
   d3.selectAll('input[type="radio"]').on("click", function() {selectField(this)})
-  
+
   createForm('Pays')
 }
