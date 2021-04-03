@@ -147,6 +147,13 @@ export function formatData(data, key_name)
     for (const [ key, value ] of Object.entries(line[1])) {
       entry[key] = value
     }
+
+    let streams_dates = line[1]['Streams']
+    let streams_array = [];
+      for (var date in streams_dates) {
+        streams_array.push({'Date':date, 'Streams':streams_dates[date]})
+      }
+    entry['Streams'] = streams_array
     return entry
   })
   return data_formatted
