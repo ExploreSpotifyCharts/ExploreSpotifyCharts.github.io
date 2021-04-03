@@ -7,6 +7,8 @@ import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
 import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
+import * as helper from './scripts/helper.js'
+import * as interactivity from './scripts/interactivity.js'
 
 /**
  * @file This file is the entry-point for the the code for Team 3 project for the course INF8808.
@@ -14,6 +16,10 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
  * @author Marine Carpe
  * @author Tanguy Gloaguen
  */
+
+ function navigate(event) {
+  console.log(event)
+}
 
 (function (d3) {
 
@@ -38,6 +44,21 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
     'us', 'uy'
   ]
   */
+
+//Mise en place de l'intéraction
+interactivity.initialize()
+
+
+//Mise en place de la viz
+const margin = {
+  top: 40,
+  right: 60,
+  bottom: 100,
+  left: 60
+}
+const g = helper.generateG(margin)
+
+helper.appendTitle(g, "Titre")
 
   const PATH = './assets/data/' //for Tanguy : './'
   let country
@@ -102,5 +123,4 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
     console.log(data_preprocessed_tendance)
     //here we can continue with the data -> viz
   })
-  
 })(d3)
