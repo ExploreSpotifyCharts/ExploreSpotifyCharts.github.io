@@ -26,20 +26,20 @@ import * as interactivity from './scripts/interactivity.js'
 
 (function (d3) {
 
-//Constantes de taille pour le placement des éléments
-const margin = {
-  top: 40,
-  right: 60,
-  bottom: 100,
-  left: 60
-}
-const sidebarWidth = 0.15
-const windowWidth = window.innerWidth
-const svgWidth = (windowWidth*(1-sidebarWidth))-margin.left
+  //Constantes de taille pour le placement des éléments
+  const margin = {
+    top: 40,
+    right: 60,
+    bottom: 100,
+    left: 60
+  }
+  const sidebarWidth = 0.15
+  const windowWidth = window.innerWidth
+  const svgWidth = (windowWidth*(1-sidebarWidth))
 
-//Mise en place de la viz
+  //Mise en place de la viz
 
-const g = helper.generateG(margin)
+  const g = helper.generateG(margin, svgWidth)
 
   /*let countries = [
     //'global',
@@ -63,14 +63,16 @@ const g = helper.generateG(margin)
   ]
   */
 
-//Mise en place de l'intéraction
-interactivity.initialize()
+  //Mise en place de l'intéraction
+  interactivity.initialize()
 
 
   const PATH = './assets/data/' //for Tanguy : './'
   let country
   let start_date
   let end_date
+
+  /*
 
   //EXPLORER PAR PAYS
   country = 'fr'
@@ -85,6 +87,7 @@ interactivity.initialize()
      console.log(data_preprocessed_countryartist)
      //here we can continue with the data -> viz
   })
+  */
 
   //EXPLORER PAR ARTISTE
   const artiste = 'Harry Styles'
@@ -98,6 +101,7 @@ interactivity.initialize()
     viz.appendColorScale(data_preprocessed_artist, svgWidth)
   })
 
+  /*
   //EXPLORER PAR TITRE
   let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
   const titre = 'Trop beau'
@@ -131,4 +135,5 @@ interactivity.initialize()
     console.log(data_preprocessed_tendance)
     //here we can continue with the data -> viz
   })
+  */
 })(d3)

@@ -4,7 +4,10 @@
  * @param {object} margin Les marges autour du svg
  * @returns {*} La sélection contenant le g créé
  */
- export function generateG (margin) {
+ export function generateG (margin, svgWidth) {
+  d3.select('.viz-container')
+  .select('svg').attr('width', svgWidth)
+
     let g = d3.select('.viz-container')
       .select('svg')
       .append('g')
