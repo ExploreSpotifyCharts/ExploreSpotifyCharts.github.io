@@ -15,7 +15,7 @@ export function ExplorerParPays_Track(data, start, end=null)
   let data_processed = data
 
   //Filter on date
-  data_processed = data_processed.filter(line => preprocess_Helpers.isValidDate(new Date(line['date'])) && preprocess_Helpers.isDateToBeConsidered(new Date(line['date']), start, end))
+  data_processed = data_processed.filter(line => preprocess_Helpers.isValidDate(line['date']) && preprocess_Helpers.isDateToBeConsidered(line['date'], start, end))
   
   //Reduce by track name
   data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'Track Name', ['Artist'])

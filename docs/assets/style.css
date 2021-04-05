@@ -1,5 +1,4 @@
-@use "@material/button";
-@include button.core-styles;
+/* General styles */
 
 * { 
     margin: 0px;
@@ -37,6 +36,20 @@ header {
     background-color: #000;  
 }
 
+#sidebarTitle {
+    font-size: medium;
+    border-bottom: 2px solid white;
+    margin: 20px auto auto 20px;
+    width: 150px;
+}
+
+#headerTitle {
+    font-size: medium;
+    border-bottom: 2px solid white;
+    margin: 20px auto 5px 60px;
+    width: 300px;
+}
+
 main {
     height: 400px;
     order: 1;
@@ -49,6 +62,8 @@ main {
 	flex-flow: row wrap;
 }
 
+/* Menu style */
+
 ul {
     list-style-type: none;
     padding: 0;
@@ -60,24 +75,94 @@ li {
     padding-bottom: 5px;
 }
 
-ul > li:first-child { /*For example*/
+li:hover {
+    cursor: pointer;
+}
+
+li.selected { 
     color: #1db954;
     font-weight: 550;
 }
 
-#sidebarTitle {
-    font-size: medium;
-    border-bottom: 1px solid white;
-    margin: 20px auto auto 20px;
-    width: 150px;
+/* Header Styles */
+
+form {
+    display: flex;
+    flex-flow: column wrap;
+
 }
 
-#headerTitle {
-    font-size: medium;
-    border-bottom: 1px solid white;
-    margin: 20px auto 5px 60px;
-    width: 300px;
+.suggestboxes {
+    display: flex;
+    justify-content: space-between;
+    width: 700px;
 }
+
+.suggestbox {
+    margin: 5px auto 5px 90px;
+}
+
+.datepickers {
+    display: flex;
+    justify-content: space-between;
+    width: 800px;
+}
+
+.datepicker {
+    margin: 0px auto 5px 85px;
+}
+
+input {
+    background-color: #292929;
+    border: none;
+    border-bottom: 1px solid white;
+    margin: 5px;
+}
+
+/*Trick to overlaps browser radio button, since we can't change the style*/
+input[type='radio']:after {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    top: -2px;
+    left: -1px;
+    position: relative;
+    background-color: 292929;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: none;
+}
+
+input[type='radio']:checked:after {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    top: -2px;
+    left: -1px;
+    position: relative;
+    background-color: #1db954;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid white;
+}
+
+/*------------------------------------------------------*/
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+input:focus {
+    outline: none;  
+}
+
+option {
+    color: black;
+}
+
+/* Visualisation styles */
 
 .titre-viz {
     font-size: 20px;
