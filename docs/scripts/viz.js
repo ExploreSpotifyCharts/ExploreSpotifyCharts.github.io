@@ -1,5 +1,4 @@
 import * as helper from './helper.js'
-import * as viz_ParArtiste from './viz_ParArtiste.js'
 import * as legend from './legend.js'
 
 const scaleWidth = 600
