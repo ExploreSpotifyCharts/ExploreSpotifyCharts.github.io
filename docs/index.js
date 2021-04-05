@@ -7,7 +7,10 @@ import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
 import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
+
 import * as helper from './scripts/helper.js'
+import * as viz from './scripts/viz.js'
+
 import * as interactivity from './scripts/interactivity.js'
 
 /**
@@ -22,6 +25,21 @@ import * as interactivity from './scripts/interactivity.js'
 }
 
 (function (d3) {
+
+//Constantes de taille pour le placement des éléments
+const margin = {
+  top: 40,
+  right: 60,
+  bottom: 100,
+  left: 60
+}
+const sidebarWidth = 0.15
+const windowWidth = window.innerWidth
+const svgWidth = (windowWidth*(1-sidebarWidth))-margin.left
+
+//Mise en place de la viz
+
+const g = helper.generateG(margin)
 
   /*let countries = [
     //'global',
@@ -49,17 +67,6 @@ import * as interactivity from './scripts/interactivity.js'
 interactivity.initialize()
 
 
-//Mise en place de la viz
-const margin = {
-  top: 40,
-  right: 60,
-  bottom: 100,
-  left: 60
-}
-const g = helper.generateG(margin)
-
-helper.appendTitle(g, "Titre")
-
   const PATH = './assets/data/' //for Tanguy : './'
   let country
   let start_date
@@ -80,14 +87,15 @@ helper.appendTitle(g, "Titre")
   })
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'Orelsan'
+  const artiste = 'Harry Styles'
   country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
   end_date = preprocess_Helpers.parseDate('2020-04-20')
   d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date)
     console.log(data_preprocessed_artist)
-    //here we can continue with the data -> viz
+    helper.appendTitle(artiste)
+    viz.appendColorScale(data_preprocessed_artist, svgWidth)
   })
 
   //EXPLORER PAR TITRE
