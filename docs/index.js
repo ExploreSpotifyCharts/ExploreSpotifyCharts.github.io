@@ -5,10 +5,12 @@
 import * as preprocess_Helpers from './scripts/preprocess_Helpers.js'
 import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
-import * as helper from './scripts/helper.js'
-import * as viz from './scripts/viz.js'
 import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
 import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
+
+import * as helper from './scripts/helper.js'
+import * as viz from './scripts/viz.js'
+
 import * as interactivity from './scripts/interactivity.js'
 
 /**

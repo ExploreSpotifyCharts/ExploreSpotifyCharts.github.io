@@ -14,15 +14,14 @@ const scaleYOffSet = 10
  */
  export function appendColorScale(data, windowWidth) {
 
-    //Minimum de stream sur un jour
+    //Valeurs extrêmes de stream sur un jour
     let min_stream = Number.POSITIVE_INFINITY
-    data.forEach(function(d){
-        const min_current = d3.min(d.Streams, k => k.Streams)
-        min_stream = Math.min(min_stream, min_current)
-    })
-    //Maximum de stream sur un jour
     let max_stream = Number.NEGATIVE_INFINITY
     data.forEach(function(d){
+        //Minimum
+        const min_current = d3.min(d.Streams, k => k.Streams)
+        min_stream = Math.min(min_stream, min_current)
+        //Maximum
         const max_current = d3.max(d.Streams, k => k.Streams)
         max_stream = Math.max(max_stream, max_current)
     })
