@@ -41,8 +41,6 @@ const svgWidth = (windowWidth*(1-sidebarWidth))-margin.left
 
 const g = helper.generateG(margin)
 
-  /*var files = [
-    'global',
   /*let countries = [
     //'global',
     'ar', 'at', 'au',
