@@ -1,8 +1,37 @@
+
+/*Public function*/
+
+/* Initialize view element */
+export function initialize() {
+  //Add events listerners to reactive elements
+  d3.selectAll('li').on("click", function() {navigate(this)})
+  d3.selectAll('input[type="radio"]').on("click", function() {selectField(this)})
+  //Using jQuery because d3 do not support submit event
+  $('#form').on('submit', submit)
+
+  createForm('Pays')
+
+  //Load data
+  const PATH = './' //for Tanguy : './'
+  d3.csv(PATH+'artistes'+'.csv', d3.autoType).then(function (data_artistes) {
+    array_artistes = data_artistes.map(line => String(line['Artist']))
+    d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
+      array_titles = data_titres.map(line => String(line['Track Name']))
+    })  
+  })
+}
+
+/* Global var */
+
+var array_titles = [];
+var array_artistes = [];
+const countries = ['France','USA','Finlande','Test1', 'Test2']
+
 /* Private function*/
 
 /**
  * Navigate to the selected tab
- * @param {*} element 
+ * @param {HTMLElement} element 
  */
 function navigate(element) {
   const tab = element.innerText
@@ -17,22 +46,24 @@ function navigate(element) {
  * @param {String} tab 
  */
 function createForm(tab) {
-  //Mock data for the test
-    const countries = ['France','USA','Finlande','Test1', 'Test2']
-    const artists = ['Ed Sheran','Angèle','Lompale','Roméo Elvis','Therapie TAXI']
-    const titles = ['titre1','titre2','titre3']
 
     switch(tab) {
       case "Pays":
+        //createDatePickers();
+        createSuggestbox('Pays', countries, 'Monde')
+        break
       case "Tendances":
+        createMonthDayPickers();
         createSuggestbox('Pays', countries, 'Monde')
         break
       case "Artiste":
-        createSuggestbox('Artiste', artists, '???')
+        createDatePickers();
+        createSuggestbox('Artiste', array_artistes, '???')
         createSuggestbox('Pays', countries, 'Monde')
         break
       case "Titre":
-        createSuggestbox('Titre', titles, '???')
+        createDatePickers();
+        createSuggestbox('Titre', array_titles, '???')
         break
     } 
 }
@@ -48,7 +79,7 @@ function resetForm() {
  * Create a suggestbox tag with the given label
  * @param {string} label 
  */
-function createSuggestbox(label,data, defaultValue) {
+function createSuggestbox(label, data, defaultValue) {
   const suggestboxe = d3.select('form .suggestboxes').append('div').attr('class','suggestbox')
 
   suggestboxe
@@ -66,30 +97,99 @@ function createSuggestbox(label,data, defaultValue) {
   suggestboxe
   .append('datalist')
   .attr('id', "list" + label)
-  .selectAll('option')
-  .data(data).enter()
-  .append('option')
-  .attr('value', d => d)
+  
+
+  //Faster than D3
+  data.forEach((d) => {
+    const option = "<option value='" + d + "'></option>"
+    $('#list' + label).append(option)
+  });
 }
 
-
+/**
+ * Enable/Disable datepicker according to selection
+ * @param {any} element 
+ */
 function selectField(element){
   if (element.value == "day") {
     d3.selectAll("#day input[type='date']").property("disabled",false)
     d3.selectAll("#period input[type='date']").property("disabled",true)
+    //For tendances
+    d3.selectAll("#day select").property("disabled",false)
+    d3.selectAll("#period select").property("disabled",true)
   } else {
     d3.selectAll("#period input[type='date']").property("disabled",false)
     d3.selectAll("#day input[type='date']").property("disabled",true)
+    //For tendances
+    d3.selectAll("#period select").property("disabled",false)
+    d3.selectAll("#day select").property("disabled",true)
   }
 }
 
-/*Public function*/
+/**
+ * Parse parameters
+ * @param {string} params 
+ * @returns {object[]}
+ */
+function parseParams(params) {
+  let param_array = params.split("&")
+  param_array = param_array.map( param => {
+    const paramKeyValue = param.split("=")
+    let objParam = {}
+    objParam[paramKeyValue[0]] = paramKeyValue[1]
+    return objParam
+  })
+  return param_array
+}
 
-/* Initialize view element */
-export function initialize() {
-  //Add events listerners to reactive elements
-  d3.selectAll('li').on("click", function() {navigate(this)})
-  d3.selectAll('input[type="radio"]').on("click", function() {selectField(this)})
+/**
+ * Get data from the formular
+ * @param {event} e 
+ */
+function submit(e) {
+  //Prevent formt to be submitted
+  e.preventDefault();
+  //Using JQuery to get form data
+  const rawParams = $('#form').serialize();
+  const params = parseParams(rawParams)
+  console.log(params)
+  //Do something with the data
+}
 
-  createForm('Pays')
+function createMonthDayPickers(){
+  //Using JQuery to append element to a specific position
+  const daySelect = "<select name='day' value='01'></select>"
+  const monthSelect = "<select name='month' value='01'></select>"
+
+  $("input[type='date']").after(daySelect)
+  $("select").after(monthSelect)
+
+  const months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+  const days = months.concat(['13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'])
+
+  d3.selectAll("#day select").property("disabled",true)
+  d3.selectAll("select[name='day']").selectAll("option").data(days).enter().append("option")
+    .attr('selected', d => d == '01' ? "selected" : null)
+    .attr('value', d => d)
+    .text(d => d)
+  d3.selectAll("select[name='month']").selectAll("option").data(months).enter().append("option")
+    .attr('selected', d => d == '01' ? "selected" : null)
+    .attr('value', d => d)
+    .text(d => d)
+
+  d3.selectAll("input[type='date']").remove()
+
+  //Set default value to 31/12 for the period end date
+  d3.select("#period select:nth-child(5)").selectAll('option').attr('selected', d => d == '31' ? "selected" : null)
+  d3.select("#period select:nth-child(6)").selectAll('option').attr('selected', d => d == '12' ? "selected" : null)
+}
+
+function createDatePickers() {
+  if (!d3.selectAll('select').empty()) {
+    //Using JQuery to append elements to a specific position
+    const datepicker =  "<input type='date' name='date' value='2017-01-01'  min='2017-01-01' max='2021-01-01'></input>"
+    $("select[name='month']").after(datepicker)
+
+    d3.selectAll("select").remove()
+  }
 }

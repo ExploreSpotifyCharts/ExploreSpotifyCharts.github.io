@@ -105,7 +105,7 @@ form {
 .datepickers {
     display: flex;
     justify-content: space-between;
-    width: 900px;
+    width: 1000px;
 }
 
 .datepicker {
@@ -130,7 +130,10 @@ input[type='submit']:hover {
     cursor: pointer;
 }
 
-
+input[type='submit']:active {
+   color: #1db954;
+   border-color: #1db954;
+}
 
 /*Trick to overlaps browser radio button, since we can't change the style*/
 input[type='radio']:after {
@@ -169,6 +172,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 input:focus {
     outline: none;  
+}
+
+select {
+    color: black;
 }
 
 option {
