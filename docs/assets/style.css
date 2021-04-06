@@ -178,6 +178,10 @@ select {
     color: black;
 }
 
+select:focus {
+    outline: none;
+}
+
 option {
     color: black;
 }

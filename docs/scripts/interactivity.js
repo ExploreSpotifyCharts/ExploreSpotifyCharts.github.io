@@ -5,7 +5,7 @@
 export function initialize() {
   //Add events listerners to reactive elements
   d3.selectAll('li').on("click", function() {navigate(this)})
-  d3.selectAll('input[type="radio"]').on("click", function() {selectField(this)})
+  d3.selectAll('input[type="radio"]').on("click", function() {selectField(this.value)})
   //Using jQuery because d3 do not support submit event
   $('#form').on('submit', submit)
 
@@ -16,7 +16,9 @@ export function initialize() {
   d3.csv(PATH+'artistes'+'.csv', d3.autoType).then(function (data_artistes) {
     array_artistes = data_artistes.map(line => String(line['Artist']))
     d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
-      array_titles = data_titres.map(line => String(line['Track Name']))
+      array_titles = data_titres.map(line => {
+        return {Artist: String(line['Artist']), Track: String(line['Track Name'])}
+      })
     })  
   })
 }
@@ -25,7 +27,7 @@ export function initialize() {
 
 var array_titles = [];
 var array_artistes = [];
-const countries = ['France','USA','Finlande','Test1', 'Test2']
+const countries = ['France','USA','Finlande']
 
 /* Private function*/
 
@@ -49,21 +51,26 @@ function createForm(tab) {
 
     switch(tab) {
       case "Pays":
-        //createDatePickers();
+        createDatePickers()
         createSuggestbox('Pays', countries, 'Monde')
         break
       case "Tendances":
-        createMonthDayPickers();
+        createMonthDayPickers()
         createSuggestbox('Pays', countries, 'Monde')
         break
       case "Artiste":
-        createDatePickers();
-        createSuggestbox('Artiste', array_artistes, '???')
+        createDatePickers()
+        createSuggestbox('Artiste', array_artistes, 'Angèle')
         createSuggestbox('Pays', countries, 'Monde')
         break
       case "Titre":
-        createDatePickers();
-        createSuggestbox('Titre', array_titles, '???')
+        createDatePickers()
+        createSuggestbox('Artiste', array_artistes, 'Angèle')
+
+        $('#Artiste').on('input',updateTrackList)
+        
+        const artistTracks = getArtistTracks('Angèle')
+        createSuggestbox('Titre', artistTracks, artistTracks[0])
         break
     } 
 }
@@ -98,29 +105,28 @@ function createSuggestbox(label, data, defaultValue) {
   .append('datalist')
   .attr('id', "list" + label)
   
-
   //Faster than D3
   data.forEach((d) => {
-    const option = "<option value='" + d + "'></option>"
+    const option = "<option value=\"" + d + "\"></option>"
     $('#list' + label).append(option)
   });
 }
 
 /**
  * Enable/Disable datepicker according to selection
- * @param {any} element 
+ * @param {string} selection 
  */
-function selectField(element){
-  if (element.value == "day") {
+function selectField(selection){
+  if (selection == "day") {
     d3.selectAll("#day input[type='date']").property("disabled",false)
     d3.selectAll("#period input[type='date']").property("disabled",true)
-    //For tendances
+    //For tendances tab
     d3.selectAll("#day select").property("disabled",false)
     d3.selectAll("#period select").property("disabled",true)
   } else {
     d3.selectAll("#period input[type='date']").property("disabled",false)
     d3.selectAll("#day input[type='date']").property("disabled",true)
-    //For tendances
+    //For tendances tab
     d3.selectAll("#period select").property("disabled",false)
     d3.selectAll("#day select").property("disabled",true)
   }
@@ -132,7 +138,7 @@ function selectField(element){
  * @returns {object[]}
  */
 function parseParams(params) {
-  let param_array = params.split("&")
+  let param_array = decodeURIComponent(params).split("&")
   param_array = param_array.map( param => {
     const paramKeyValue = param.split("=")
     let objParam = {}
@@ -177,6 +183,12 @@ function createMonthDayPickers(){
     .attr('value', d => d)
     .text(d => d)
 
+  if($("#day input[type='radio']").is(":checked")) {
+    selectField('day')
+  } else { 
+    selectField('period')
+  }
+
   d3.selectAll("input[type='date']").remove()
 
   //Set default value to 31/12 for the period end date
@@ -185,11 +197,33 @@ function createMonthDayPickers(){
 }
 
 function createDatePickers() {
-  if (!d3.selectAll('select').empty()) {
     //Using JQuery to append elements to a specific position
     const datepicker =  "<input type='date' name='date' value='2017-01-01'  min='2017-01-01' max='2021-01-01'></input>"
     $("select[name='month']").after(datepicker)
 
+    if($("#day input[type='radio']").is(":checked")) {
+      selectField('day')
+    } else { 
+      selectField('period')
+    }
+
     d3.selectAll("select").remove()
+}
+
+function getArtistTracks(artist) {
+  return array_titles
+          .filter( track => track.Artist == artist)
+          .map(track => track.Track)
+}
+
+function updateTrackList() {
+  const currentVal = this.value;
+  if($('#listArtiste option').filter(function () {
+    return this.value.toUpperCase() === currentVal.toUpperCase()
+   }).length) {
+    const artistTracks = getArtistTracks(currentVal)
+    d3.select("#Titre").attr('value',artistTracks[0])
+    d3.selectAll("#listTitre option").remove()
+    d3.select("#listTitre").selectAll("option").data(artistTracks).enter().append('option').attr('value',d => d)
   }
 }
