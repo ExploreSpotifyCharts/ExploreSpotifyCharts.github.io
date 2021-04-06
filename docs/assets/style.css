@@ -172,6 +172,10 @@ option {
     font-size: 12px;
 }
 
+.legend.max, .legend.min {
+    font-size : 12px;
+}
+
 
 
 

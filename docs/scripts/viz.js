@@ -1,9 +1,9 @@
 import * as helper from './helper.js'
 import * as legend from './legend.js'
 
-const scaleWidth = 600
-const scaleHeight = 25
-const scaleTextMargin = 5
+const scaleWidth = 500
+const scaleHeight = 15
+const scaleTextMargin = 6 //La moitié de la taille de police du texte de légende
 const scaleYOffSet = 10
 const heatmapWidth = 700
 
