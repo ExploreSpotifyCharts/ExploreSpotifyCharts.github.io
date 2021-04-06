@@ -9,8 +9,8 @@ const scaleYMarginTop = 10
 
 //Constante pour la heatmap
 const heatmapWidth = 700
-const heat_map_height = 20 //px
-const heat_map_padding = 5 //px
+const heatmapHeight = 20 //px
+const heatmapPadding = 5 //px
 
 /**
  * Génère l'échelle de couleurs
@@ -60,7 +60,7 @@ const heat_map_padding = 5 //px
  export function appendDates(startDate, endDate, vizWidth) {
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
-    let verticalOffset = infoSize.height + titleSize.height + 10
+    let verticalOffset = infoSize.height + titleSize.height + 20
 
     //Définit un groupe qui contiendra les titres avec le bon décalage
     let g = d3.select('.graph-g')
@@ -79,29 +79,67 @@ const heat_map_padding = 5 //px
     let offset = endDateText.node().getComputedTextLength()
     let HorizontalOffsetEnd = (vizWidth - heatmapWidth)/2 + heatmapWidth - offset
     endDateText.attr('transform', 'translate(' + HorizontalOffsetEnd + ', 0)')
+  
+ }
+
+/**
+ * Génère le titre de la chanson pour une ligne
+ *
+ * @param {object} g La sélection dans laquelle on ajoute le titre
+ * @param {string} trackName Titre de la chanson
+ * @param {int} key L'index de la chanson pour la classe personnalisée
+ */
+ export function createTrack (g, trackName, key) {
+    if (trackName.length > 25) { //Si le titre est trop long, on le tronque
+        trackName = trackName.slice(0, 24)
+        trackName = trackName + '...'
+    }
+    g.append('text')
+     .text(trackName)
+     .attr('class', 'trackname-viz track'+String(key))
+     .attr('fill', 'white')
+ }
+
+ /**
+ * Génère les statistiques pour une chanson
+ *
+ * @param {object} g La sélection dans laquelle on ajoute les nombress
+ * @param {int} streams Le nombre de streams sur la période donnée
+ * @param {int} proportion Le pourcentage que représente le nombre de streams sur le nombre de streams total de l'artiste
+ * @param {int} vizWidth La largeur de la viz pour le placement du text
+ */
+  export function createStreamStats (g, streams, proportion, vizWidth) {
+    let statText = String(streams) + '(' + String(Math.round(proportion*100)/100) + '%)'
+    let stat = g.append('text')
+     .text(statText)
+     .attr('class', 'streamsstat-viz')
+     .attr('fill', 'white')
+    
+    let horizontalOffset = vizWidth - stat.node().getComputedTextLength()
+    stat.attr('transform', 'translate('+ horizontalOffset + ',0)')
+    
  }
 
 /**
  * Génère une ligne de heatmap
  *
+ * @param {object} g La sélection dans laquelle on ajoute la heatmap
  * @param {object} data_line L'objet contenant les données pour la ligne
  * @param {int} key L'index pour le marquage de la données
  * @param {object} color L'échelle de couleur utilisée
- * @param {int} svgWidth La largeur de la heatmap au complet
- * @param {int} heat_map_height Hauteur de la heatmap
+ * @param {int} xOffset Le décalaga initial de la heatmap
  * @param {int} y Positionnement de la heatmap en vertical
  */
-export function createHeatMap (data_line, key, color, svgWidth, heat_map_height, y) {
-    const width_size = svgWidth/data_line.length
-    d3.select('.graph-g')
-      .selectAll("rect.marker"+String(key))
+export function createHeatMap (g, data_line, key, color, xOffset, y) {
+    const width_size = heatmapWidth/data_line.length
+      g.selectAll("rect.marker"+String(key))
       .data(data_line)
       .enter()
       .append("rect")
-      .attr("x", (d, i) => String(width_size*i)+"px")
-      .attr("y", y)
-      .attr('height', String(heat_map_height)+"px")
-      .attr('width', width_size)
+      .attr("x", (d, i) => String(xOffset + width_size*i)+"px")
+      .attr("y", -y) //Décalage du au fait que le rect se positionne automatiquement sous le texte dans le g
+      .attr('height', heatmapHeight + "px")
+      .attr('width', width_size + "px")
       .attr('fill',d => color(d.Streams))
   }
 
@@ -109,15 +147,32 @@ export function createHeatMap (data_line, key, color, svgWidth, heat_map_height,
  * Génère les lignes
  *
  * @param {object} data La data à afficher
+ * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
+ * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
  export function appendHeatMaps(data, colorScale, vizWidth) {
+    //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let datesSize = d3.select('.dates-g').node().getBBox()
-    const y_start = infoSize.height + titleSize.height + datesSize.height + 10
+    const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
+    const horizontalOffset = (vizWidth - heatmapWidth)/2
+
+    //Affichage de chaque ligne
     data.forEach(function (track, index)
       {
-        createHeatMap(track.Streams, index, colorScale, vizWidth, heat_map_height, y_start + index*(heat_map_height+heat_map_padding))
+        const verticalOffset = (initialOffset + index*(heatmapHeight+heatmapPadding))
+        let g = d3.select('.graph-g')
+                  .append('g')
+                  .attr('class', "line"+String(index))
+                  .attr('transform', 'translate(0, '+ verticalOffset +')')
+
+        createTrack(g, track.Track_Name, index)
+
+        let trackHeight = d3.select('.track'+String(index)).node().getBBox()
+        createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight.height)
+
+        createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
       }
     )
  }

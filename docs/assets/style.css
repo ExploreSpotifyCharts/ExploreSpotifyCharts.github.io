@@ -176,6 +176,10 @@ option {
     font-size : 12px;
 }
 
+.trackname-viz, .streamsstat-viz {
+    font-size : 13px;
+}
+
 
 
 
