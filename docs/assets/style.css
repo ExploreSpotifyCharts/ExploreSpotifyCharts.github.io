@@ -168,6 +168,14 @@ option {
     font-size: 20px;
 }
 
+.date-viz {
+    font-size: 12px;
+}
+
+.legend.max, .legend.min {
+    font-size : 12px;
+}
+
 
 
 
