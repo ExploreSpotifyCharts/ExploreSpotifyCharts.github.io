@@ -39,5 +39,21 @@ const scaleYOffSet = 10
 
     legend.writeLegendMin(min_stream,(windowWidth - scaleWidth)/2, titleHeight+scaleHeight/2, scaleTextMargin)
     legend.writeLegendMax(max_stream,((windowWidth - scaleWidth)/2)+scaleWidth, titleHeight+scaleHeight/2, scaleTextMargin)
-        
+
+    return color_scale       
 }
+
+export function createHeatMap (data_line, key, color, svgWidth, heat_map_height, y) {
+    const width_size = svgWidth/data_line.length
+    d3.select('.graph-g')
+      .selectAll("rect.marker"+String(key))
+      .data(data_line)
+      .enter()
+      .append("rect")
+      .attr("x", (d, i) => String(width_size*i)+"px")
+      .attr("y", y)
+      .attr('height', String(heat_map_height)+"px")
+      .attr('width', width_size)
+      .attr('fill',d => color(d.Streams))
+  }
+  

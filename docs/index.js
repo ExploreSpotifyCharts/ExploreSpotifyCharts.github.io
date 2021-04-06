@@ -35,11 +35,12 @@ import * as interactivity from './scripts/interactivity.js'
   }
   const sidebarWidth = 0.15
   const windowWidth = window.innerWidth
+  const windowHeight = window.innerHeight
   const svgWidth = (windowWidth*(1-sidebarWidth))
 
   //Mise en place de la viz
 
-  const g = helper.generateG(margin, svgWidth)
+  const g = helper.generateG(margin, svgWidth, windowHeight)
 
   /*let countries = [
     //'global',
@@ -90,15 +91,25 @@ import * as interactivity from './scripts/interactivity.js'
   */
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'Harry Styles'
+  const artiste = 'Imagine Dragons'
   country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
   end_date = preprocess_Helpers.parseDate('2020-04-20')
   d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date)
-    console.log(data_preprocessed_artist)
+    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date).slice(1)
+
+
     helper.appendTitle(artiste)
-    viz.appendColorScale(data_preprocessed_artist, svgWidth)
+    const color_scale = viz.appendColorScale(data_preprocessed_artist, svgWidth)
+
+    const heat_map_height = 20 //px
+    const heat_map_padding = 5 //px
+    const y_start = 100 //px
+    data_preprocessed_artist.forEach(function (track, index)
+      {
+        viz.createHeatMap(track.Streams, index, color_scale, svgWidth-150, heat_map_height, y_start + index*(heat_map_height+heat_map_padding))
+      }
+    )
   })
 
   /*
