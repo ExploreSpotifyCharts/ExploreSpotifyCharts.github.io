@@ -27,20 +27,20 @@ import * as interactivity from './scripts/interactivity.js'
 
 (function (d3) {
 
-//Constantes de taille pour le placement des éléments
-const margin = {
-  top: 40,
-  right: 60,
-  bottom: 100,
-  left: 60
-}
-const sidebarWidth = 0.15
-const windowWidth = window.innerWidth
-const svgWidth = (windowWidth*(1-sidebarWidth))-margin.left-margin.right
+  //Constantes de taille pour le placement des éléments
+  const margin = {
+    top: 40,
+    right: 60,
+    bottom: 100,
+    left: 60
+  }
+  const sidebarWidth = 0.15
+  const windowWidth = window.innerWidth
+  const svgWidth = (windowWidth*(1-sidebarWidth))
 
-//Mise en place de la viz
+  //Mise en place de la viz
 
-const g = helper.generateG(margin)
+  const g = helper.generateG(margin, svgWidth)
 
   /*let countries = [
     //'global',
@@ -64,15 +64,15 @@ const g = helper.generateG(margin)
   ]
   */
 
-//Mise en place de l'intéraction
-interactivity.initialize()
+  //Mise en place de l'intéraction
+  interactivity.initialize()
 
 
   const PATH = './assets/data/' //for Tanguy : './'
   let country
   let start_date
   let end_date
-  /*
+
   //EXPLORER PAR PAYS
   country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
@@ -85,7 +85,6 @@ interactivity.initialize()
      const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, start_date, end_date)
      console.log(data_preprocessed_countryartist)
      //here we can continue with the data -> viz
-  })*/
 
   //EXPLORER PAR ARTISTE
   const artiste = 'Harry Styles'
@@ -99,7 +98,8 @@ interactivity.initialize()
     viz.appendColorScale(data_preprocessed_artist, svgWidth)
     viz_ParArtiste.appendColumnTitles(svgWidth)
   })
-  /*
+
+
   //EXPLORER PAR TITRE
   let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
   const titre = 'Trop beau'
@@ -132,5 +132,6 @@ interactivity.initialize()
     const data_preprocessed_tendance = preprocess_ParTendance.ExplorerParTendance(data, start[0], start[1], end[0], end[1])
     console.log(data_preprocessed_tendance)
     //here we can continue with the data -> viz
-  })*/
+    })
+  })
 })(d3)
