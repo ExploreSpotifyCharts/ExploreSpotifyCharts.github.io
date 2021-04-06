@@ -38,7 +38,7 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
     'us', 'uy'
   ]
 
-  const PATH = './assets/data/' //for Tanguy : './'
+  const PATH = './'
 
 
 // let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
@@ -46,16 +46,18 @@ let call_countries = []
 countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
       let data_preprocessed = [...new Set(data.map(line => 
         {
-          let artist = line['Artist'].replace('#', '')
-          let track = line['Track Name']
-          while (track.includes('#'))
-          {
-            track = track.replace('#', '')
-          }
-          if (artist != '' && artist != 'NA' && track != '' && track != 'NA') {return artist+','+track}
-        }))].sort()
-      console.log(data_preprocessed)
-      return data_preprocessed
+          if(line && line['Artist'] && line['Track Name']){
+            let artist = line['Artist'].replace('#', '')
+            let track = line['Track Name']
+            while (track.includes('#'))
+            {
+              track = track.replace('#', '')
+            }
+            if (artist != '' && artist != 'NA' && track != '' && track != 'NA') {return artist+','+track}
+            }
+          }))].sort()
+        console.log(data_preprocessed)
+        return data_preprocessed
     })))
 
 Promise.all(call_countries)
@@ -72,7 +74,12 @@ Promise.all(call_countries)
     + data_preprocessed.join("\n")
     //console.log(csvContent)
     var encodedUri = encodeURI(csvContent)
-    window.open(encodedUri)
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "my_data.csv");
+    document.body.appendChild(link); // Required for FF
+    link.click(); // This will download the data file named "my_data.csv".
+
   })
     .catch(function(err) {
     // handle error here
