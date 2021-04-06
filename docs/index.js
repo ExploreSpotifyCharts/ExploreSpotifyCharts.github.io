@@ -38,46 +38,39 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
     'us', 'uy'
   ]
 
-
-  const PATH = './' //for Tanguy : './'
-  let country
-  let start_date
-  let end_date
+  const PATH = './assets/data/' //for Tanguy : './'
 
 
 // let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
 let call_countries = []
 countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-      let uniq_artists = [...new Set(data.map(line => {
-        if (line['Track Name'])
+      let data_preprocessed = [...new Set(data.map(line => 
         {
-          var track_name = line['Track Name']
-          while (track_name.includes('#')) {
-            track_name = track_name.replace('#', '')
+          let artist = line['Artist'].replace('#', '')
+          let track = line['Track Name']
+          while (track.includes('#'))
+          {
+            track = track.replace('#', '')
           }
-          return track_name
-        }
-        return ''
-      }))].sort()
-      console.log(uniq_artists)
-      return uniq_artists
+          if (artist != '' && artist != 'NA' && track != '' && track != 'NA') {return artist+','+track}
+        }))].sort()
+      console.log(data_preprocessed)
+      return data_preprocessed
     })))
 
 Promise.all(call_countries)
   .then(function(files) {
-    let artists = []
+    let data_preprocessed = []
     files.forEach(file => {
-      artists = artists.concat(file)
-      artists = [...new Set(artists)].sort()
+      data_preprocessed = data_preprocessed.concat(file)
+      data_preprocessed = [...new Set(data_preprocessed)].sort()
     })
-    let index_to_remove = artists.indexOf('')
-    if (index_to_remove > -1) { artists.splice(index_to_remove, 1)}
-    index_to_remove = artists.indexOf('NA')
-    if (index_to_remove > -1) { artists.splice(index_to_remove, 1)}
-    console.log(artists)
+    console.log(data_preprocessed)
 
-    let csvContent = "data:text/csv;charset=utf-8,"
-    + 'Track Name' + '\n' + artists.join("\n")
+
+    let csvContent = "data:text/csv;charset=utf-8,"+"Artist,Track Name"+"\n"
+    + data_preprocessed.join("\n")
+    //console.log(csvContent)
     var encodedUri = encodeURI(csvContent)
     window.open(encodedUri)
   })
@@ -85,22 +78,5 @@ Promise.all(call_countries)
     // handle error here
     console.log(err)
   })
-
-
-/*country = 'be'
-d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-  const artists = data.map(line => line['Artist'].replace('#', ''))
-  const uniq_artists = [...new Set(artists)].sort()
-  console.log(uniq_artists)
-
-  let csvContent = "data:text/csv;charset=utf-8,"
-    + uniq_artists.join("\n")
-    console.log(csvContent)
-    var encodedUri = encodeURI(csvContent)
-    window.open(encodedUri)
-})
-*/
-
-
   
 })(d3)
