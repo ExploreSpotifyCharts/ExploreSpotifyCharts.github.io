@@ -1,7 +1,7 @@
 /**
  * Affichage des titres des colonnes
  */
- export function appendColumnTitles (width) {
+ export function appendColumnTitles (vizWidth) {
     //Récupère taille du groupe titre/échelle au dessus pour le décalage
     let infoSize = d3.select('.info-g').node().getBBox()
     let verticalOffset = infoSize.height + 20
@@ -17,7 +17,7 @@
 
     //Affichage Nombre de Streams
     let nbStreams = g.append('text').text('Nombre de Streams').attr('fill', 'white')
-    let HorizontalOffset = width - nbStreams.node().getComputedTextLength()
+    let HorizontalOffset = vizWidth - nbStreams.node().getComputedTextLength()
     nbStreams.attr('transform','translate('+ HorizontalOffset + ',0)')
 
 }
