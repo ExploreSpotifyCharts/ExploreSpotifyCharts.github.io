@@ -46,3 +46,13 @@
     .domain([min, max])
     .range(['#000000', '#1db954'])
 }
+
+/**
+ * Met à jour la longeur du svg contenant la vizualisation
+ *
+ */
+ export function updateSvg () {
+    let infoHeight = d3.select('#main-g').node().getBBox().height
+    d3.select('svg').attr('height', infoHeight+50)
+}
+

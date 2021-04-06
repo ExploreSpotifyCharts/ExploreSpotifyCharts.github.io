@@ -90,7 +90,7 @@ import * as interactivity from './scripts/interactivity.js'
   })*/
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'Imagine Dragons'
+  const artiste = 'Drake'
   country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
   end_date = preprocess_Helpers.parseDate('2020-04-20')
@@ -101,6 +101,7 @@ import * as interactivity from './scripts/interactivity.js'
     viz_ParArtiste.appendColumnTitles(vizWidth)
     viz.appendDates('2017-01-01','2020-04-20', vizWidth)
     viz.appendHeatMaps(data_preprocessed_artist, colorScale, vizWidth)
+    helper.updateSvg()
   })
 
   /*
