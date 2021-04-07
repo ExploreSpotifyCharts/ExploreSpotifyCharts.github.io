@@ -2,10 +2,20 @@
 
 //import * as d3Chromatic from 'd3-scale-chromatic'
 import $ from "jquery";
+//import d3Tip from 'd3-tip'
+
+import * as preprocess_Helpers from './scripts/preprocess_Helpers.js'
 import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
 import * as preprocess_ParTitre from './scripts/preprocess_ParTitre.js'
+import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
+
 import * as helper from './scripts/helper.js'
+import * as viz from './scripts/viz.js'
+import * as viz_ParArtiste from './scripts/viz_ParArtiste.js'
+
+import * as tooltip from './scripts/tooltip.js'
+
 import * as interactivity from './scripts/interactivity.js'
 
 /**
@@ -20,6 +30,26 @@ import * as interactivity from './scripts/interactivity.js'
 }
 
 (function (d3) {
+
+  //Constantes de taille pour le placement des éléments
+  const margin = {
+    top: 40,
+    right: 60,
+    bottom: 100,
+    left: 60
+  }
+  const sidebarWidth = 0.15
+  const windowWidth = window.innerWidth
+  const windowHeight = window.innerHeight
+  const svgWidth = (windowWidth*(1-sidebarWidth))
+  const vizWidth = svgWidth - margin.left - margin.right
+
+  //Mise en place de la viz
+
+  const g = helper.generateG(margin, svgWidth, windowHeight)
+
+  const tip = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents(d) })
+  g.call(tip)
 
   /*let countries = [
     //'global',
@@ -43,61 +73,76 @@ import * as interactivity from './scripts/interactivity.js'
   ]
   */
 
+  //Mise en place de l'intéraction
+  interactivity.initialize()
 
-//Mise en place de l'intéraction
-const PATH = './' //for Tanguy : './'
-interactivity.initialize()
 
-//Mise en place de la viz
-const margin = {
-  top: 40,
-  right: 60,
-  bottom: 100,
-  left: 60
-}
-const g = helper.generateG(margin)
-
-helper.appendTitle(g, "Titre")
-
-  // //EXPLORER PAR PAYS
-  // const country = 'fr'
-  // d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
-  //    const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, new Date('2017-01-01'), new Date('2020-04-20'))
-  //    console.log(data_preprocessed_countrytrack)
-  //    //here we can continue with the data -> viz
+  const PATH = './assets/data/' //for Tanguy : './'
+  let country
+  let start_date
+  let end_date
+  /*
+  //EXPLORER PAR PAYS
+  country = 'fr'
+  start_date = preprocess_Helpers.parseDate('2017-01-01')
+  end_date = preprocess_Helpers.parseDate('2020-04-20')
+  d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, start_date, end_date)
+     console.log(data_preprocessed_countrytrack)
+     //here we can continue with the data -> viz
  
-  //    const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, new Date('2017-01-01'), new Date('2020-04-20'))
-  //    console.log(data_preprocessed_countryartist)
-  //    //here we can continue with the data -> viz
-  // })
+     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, start_date, end_date)
+     console.log(data_preprocessed_countryartist)
+     //here we can continue with the data -> viz
+  })*/
 
-  // //EXPLORER PAR ARTISTE
-  // const artiste = 'Orelsan'
-  // d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
-  //   const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, new Date('2017-01-01'), new Date('2020-04-20'))
-  //   console.log(data_preprocessed_artist)
-  //   //here we can continue with the data -> viz
-  // })
+  //EXPLORER PAR ARTISTE
+  const artiste = 'Imagine Dragons'
+  country = 'fr'
+  start_date = preprocess_Helpers.parseDate('2017-01-01')
+  end_date = preprocess_Helpers.parseDate('2020-04-20')
+  d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date).slice(1)
+    helper.appendTitle(artiste)
+    const colorScale = viz.appendColorScale(data_preprocessed_artist, vizWidth)
+    viz_ParArtiste.appendColumnTitles(vizWidth)
+    viz.appendDates('2017-01-01','2020-04-20', vizWidth)
+    viz.appendHeatMaps(data_preprocessed_artist, colorScale, vizWidth, tip)
+    helper.updateSvg()
+  })
 
-  // //EXPLORER PAR TITRE
-  // let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
-  // const titre = 'Trop beau'
-  // let call_countries = []
-  // countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', d3.autoType).then(function (data) {
-  //   const data_filtered = data.filter(line => line['Track Name'] == titre)
-  //   //console.log(data_filtered)
-  //   return data_filtered
-  // })))
+  /*
+  //EXPLORER PAR TITRE
+  let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
+  const titre = 'Trop beau'
+  start_date = preprocess_Helpers.parseDate('2017-01-01')
+  end_date = preprocess_Helpers.parseDate('2020-04-20')
 
-  // Promise.all(call_countries)
-  //   .then(function(files) {
-  //   const data_preprocessed_titre = preprocess_ParTitre.ExplorerParTitre(files, countries, new Date('2017-01-01'), new Date('2020-04-20'))
-  //   console.log(data_preprocessed_titre)
-  //   //here we can continue with the data -> viz
-  // })
-  //   .catch(function(err) {
-  //   // handle error here
-  //   console.log(err)
-  // })
+  let call_countries = []
+  countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+    const data_filtered = data.filter(line => line['Track Name'] == titre)
+    //console.log(data_filtered)
+    return data_filtered
+  })))
 
+  Promise.all(call_countries)
+    .then(function(files) {
+    const data_preprocessed_titre = preprocess_ParTitre.ExplorerParTitre(files, countries, start_date, end_date)
+    console.log(data_preprocessed_titre)
+    //here we can continue with the data -> viz
+  })
+    .catch(function(err) {
+    // handle error here
+    console.log(err)
+  })
+
+  //EXPLORER PAR TENDANCE
+  const start = [1,6]
+  const end = [1,9]
+  country = 'global'
+  d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+    const data_preprocessed_tendance = preprocess_ParTendance.ExplorerParTendance(data, start[0], start[1], end[0], end[1])
+    console.log(data_preprocessed_tendance)
+    //here we can continue with the data -> viz
+    })*/
 })(d3)

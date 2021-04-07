@@ -192,6 +192,31 @@ option {
     font-size: 20px;
 }
 
+.date-viz {
+    font-size: 12px;
+}
+
+.legend.max, .legend.min {
+    font-size : 12px;
+}
+
+.trackname-viz, .streamsstat-viz {
+    font-size : 13px;
+}
+
+.d3-tip {
+    line-height: 1;
+    font-weight: normal;
+    padding: 12px;
+    background: #292929;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+.tooltip-value {
+    font-size: 12px;
+    color: #1db954;
+}
 
 
 
