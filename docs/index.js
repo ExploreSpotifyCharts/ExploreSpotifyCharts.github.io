@@ -77,7 +77,7 @@ import * as interactivity from './scripts/interactivity.js'
   interactivity.initialize()
 
 
-  const PATH = './'
+  const PATH =  './assets/data/'
   let country
   let start_date
   let end_date
