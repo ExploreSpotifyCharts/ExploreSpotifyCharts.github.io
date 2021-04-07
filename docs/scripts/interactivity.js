@@ -13,7 +13,7 @@ export function initialize() {
   createForm('Pays')
 
   //Load data
-  const PATH = './' //for Tanguy : './'
+  const PATH =  './assets/data/' //for Tanguy : './'
   d3.csv(PATH+'artistes'+'.csv', d3.autoType).then(function (data_artistes) {
     array_artistes = data_artistes.map(line => String(line['Artist']))
     d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
@@ -77,7 +77,6 @@ function createForm(tab) {
   }
   //Reset form validation on changes
   d3.selectAll(".suggestboxes input").on("change",function() {
-    console.log("clear")
     this.setCustomValidity("")
   }) 
 }
