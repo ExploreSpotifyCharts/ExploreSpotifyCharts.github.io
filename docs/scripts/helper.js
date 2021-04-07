@@ -4,9 +4,9 @@
  * @param {object} margin Les marges autour du svg
  * @returns {*} La sélection contenant le g créé
  */
- export function generateG (margin, svgWidth) {
+ export function generateG (margin, svgWidth, svgHeight) {
   d3.select('.viz-container')
-  .select('svg').attr('width', svgWidth)
+  .select('svg').attr('width', svgWidth).attr('height', svgHeight)
 
     let g = d3.select('.viz-container')
       .select('svg')
@@ -46,3 +46,13 @@
     .domain([min, max])
     .range(['#000000', '#1db954'])
 }
+
+/**
+ * Met à jour la longeur du svg contenant la vizualisation
+ *
+ */
+ export function updateSvg () {
+    let infoHeight = d3.select('#main-g').node().getBBox().height
+    d3.select('svg').attr('height', infoHeight+50)
+}
+

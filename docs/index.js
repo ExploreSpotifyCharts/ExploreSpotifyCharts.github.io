@@ -36,12 +36,13 @@ import * as interactivity from './scripts/interactivity.js'
   }
   const sidebarWidth = 0.15
   const windowWidth = window.innerWidth
+  const windowHeight = window.innerHeight
   const svgWidth = (windowWidth*(1-sidebarWidth))
   const vizWidth = svgWidth - margin.left - margin.right
 
   //Mise en place de la viz
 
-  const g = helper.generateG(margin, svgWidth)
+  const g = helper.generateG(margin, svgWidth, windowHeight)
 
   /*let countries = [
     //'global',
@@ -73,7 +74,7 @@ import * as interactivity from './scripts/interactivity.js'
   let country
   let start_date
   let end_date
-  
+  /*
   //EXPLORER PAR PAYS
   country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
@@ -86,23 +87,24 @@ import * as interactivity from './scripts/interactivity.js'
      const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, start_date, end_date)
      console.log(data_preprocessed_countryartist)
      //here we can continue with the data -> viz
-  })
+  })*/
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'Harry Styles'
+  const artiste = 'Drake'
   country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
   end_date = preprocess_Helpers.parseDate('2020-04-20')
   d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date)
-    console.log(data_preprocessed_artist)
+    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date).slice(1)
     helper.appendTitle(artiste)
-    viz.appendColorScale(data_preprocessed_artist, vizWidth)
+    const colorScale = viz.appendColorScale(data_preprocessed_artist, vizWidth)
     viz_ParArtiste.appendColumnTitles(vizWidth)
     viz.appendDates('2017-01-01','2020-04-20', vizWidth)
+    viz.appendHeatMaps(data_preprocessed_artist, colorScale, vizWidth)
+    helper.updateSvg()
   })
 
-  
+  /*
   //EXPLORER PAR TITRE
   let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
   const titre = 'Trop beau'
@@ -135,5 +137,5 @@ import * as interactivity from './scripts/interactivity.js'
     const data_preprocessed_tendance = preprocess_ParTendance.ExplorerParTendance(data, start[0], start[1], end[0], end[1])
     console.log(data_preprocessed_tendance)
     //here we can continue with the data -> viz
-    })
+    })*/
 })(d3)
