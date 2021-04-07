@@ -1,7 +1,7 @@
 'use strict'
 
-//import * as d3Chromatic from 'd3-scale-chromatic'
-//import {MDCRipple} from '@material/ripple';
+//import d3Tip from 'd3-tip'
+
 import * as preprocess_Helpers from './scripts/preprocess_Helpers.js'
 import * as preprocess_ParPays from './scripts/preprocess_ParPays.js'
 import * as preprocess_ParArtiste from './scripts/preprocess_ParArtiste.js'
@@ -11,6 +11,8 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
 import * as helper from './scripts/helper.js'
 import * as viz from './scripts/viz.js'
 import * as viz_ParArtiste from './scripts/viz_ParArtiste.js'
+
+import * as tooltip from './scripts/tooltip.js'
 
 import * as interactivity from './scripts/interactivity.js'
 
@@ -43,6 +45,9 @@ import * as interactivity from './scripts/interactivity.js'
   //Mise en place de la viz
 
   const g = helper.generateG(margin, svgWidth, windowHeight)
+
+  const tip = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents(d) })
+  g.call(tip)
 
   /*let countries = [
     //'global',
@@ -90,7 +95,7 @@ import * as interactivity from './scripts/interactivity.js'
   })*/
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'Drake'
+  const artiste = 'Imagine Dragons'
   country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
   end_date = preprocess_Helpers.parseDate('2020-04-20')
@@ -100,7 +105,7 @@ import * as interactivity from './scripts/interactivity.js'
     const colorScale = viz.appendColorScale(data_preprocessed_artist, vizWidth)
     viz_ParArtiste.appendColumnTitles(vizWidth)
     viz.appendDates('2017-01-01','2020-04-20', vizWidth)
-    viz.appendHeatMaps(data_preprocessed_artist, colorScale, vizWidth)
+    viz.appendHeatMaps(data_preprocessed_artist, colorScale, vizWidth, tip)
     helper.updateSvg()
   })
 

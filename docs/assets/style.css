@@ -180,6 +180,20 @@ option {
     font-size : 13px;
 }
 
+.d3-tip {
+    line-height: 1;
+    font-weight: normal;
+    padding: 12px;
+    background: #292929;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+.tooltip-value {
+    font-size: 12px;
+    color: #1db954;
+}
+
 
 
 

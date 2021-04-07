@@ -144,13 +144,30 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
   }
 
 /**
+ * Map du hover (tooltip) pour l'interaction avec les rectangles des heatmaps
+ *
+ * @param {object} g La sélection dans laquelle on récupère les objets à map avec le tooltip
+ * @param {*} tip Le tooltip
+ */
+export function setHoverHandler (g, tip) {
+  g.selectAll("rect")
+    .on('mouseover', function(d) {
+      tip.show(d, this)
+    })
+    .on('mouseout',  function(d) {
+      tip.hide(d, this)
+    })
+  
+}
+
+/**
  * Génère les lignes
  *
  * @param {object} data La data à afficher
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
- export function appendHeatMaps(data, colorScale, vizWidth) {
+ export function appendHeatMaps(data, colorScale, vizWidth, tip) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -171,6 +188,7 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
 
         let trackHeight = d3.select('.track'+String(index)).node().getBBox()
         createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight.height)
+        setHoverHandler(g, tip)
 
         createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
       }
