@@ -1,7 +1,7 @@
 'use strict'
 
 //import * as d3Chromatic from 'd3-scale-chromatic'
-import $ from "jquery";
+//import $ from "jquery";
 //import d3Tip from 'd3-tip'
 
 import * as preprocess_Helpers from './scripts/preprocess_Helpers.js'
@@ -77,7 +77,7 @@ import * as interactivity from './scripts/interactivity.js'
   interactivity.initialize()
 
 
-  const PATH = './assets/data/' //for Tanguy : './'
+  const PATH = './'
   let country
   let start_date
   let end_date

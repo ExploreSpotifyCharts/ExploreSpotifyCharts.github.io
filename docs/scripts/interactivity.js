@@ -77,6 +77,7 @@ function createForm(tab) {
   }
   //Reset form validation on changes
   d3.selectAll(".suggestboxes input").on("change",function() {
+    console.log("clear")
     this.setCustomValidity("")
   }) 
 }
@@ -98,7 +99,7 @@ function createSuggestbox(label, data, defaultValue) {
   suggestboxe
   .append('label')
   .attr('for', label)
-  .text(label + ":")
+  .text(label + " :")
 
   suggestboxe
   .append('input')
@@ -254,7 +255,7 @@ function updateTrackList() {
   if($('#listArtiste option').filter(function () {
     return this.value.toUpperCase() === currentVal.toUpperCase()
    }).length) {
-    const artistTracks = getArtistTracks(currentVal)
+    artistTracks = getArtistTracks(currentVal)
     d3.select("#Titre").attr('value',artistTracks[0])
     d3.selectAll("#listTitre option").remove()
     d3.select("#listTitre").selectAll("option").data(artistTracks).enter().append('option').attr('value',d => d)
