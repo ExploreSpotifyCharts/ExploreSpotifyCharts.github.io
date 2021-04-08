@@ -12,9 +12,11 @@ const scaleDimensions = {
 const legendWidth = 400
 
 //Constante pour la heatmap
-const heatmapWidth = 700
-const heatmapHeight = 20 //px
-const heatmapPadding = 5 //px
+const heatmap = {
+  width: 700,
+  height: 20,
+  padding: 5
+}
 
 /**
  * Affiche les échelles de couleurs
@@ -67,7 +69,7 @@ const heatmapPadding = 5 //px
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let verticalOffset = infoSize.height + titleSize.height + 20
 
-    //Définit un groupe qui contiendra les titres avec le bon décalage
+    //Définit un groupe qui contiendra les dates avec le bon décalage
     let g = d3.select('.graph-g')
       .append('g')
       .attr('class', 'dates-g')
@@ -78,11 +80,11 @@ const heatmapPadding = 5 //px
     let endDateText = g.append('text').text(endDate).attr('fill', 'white').attr('class', 'date-viz')
 
     //Placement des dates
-    let HorizontalOffsetStart = (vizWidth - heatmapWidth)/2
+    let HorizontalOffsetStart = (vizWidth - heatmap.width)/2
     startDateText.attr('transform', 'translate(' + HorizontalOffsetStart + ', 0)')
 
     let offset = endDateText.node().getComputedTextLength()
-    let HorizontalOffsetEnd = (vizWidth - heatmapWidth)/2 + heatmapWidth - offset
+    let HorizontalOffsetEnd = (vizWidth - heatmap.width)/2 + heatmap.width - offset
     endDateText.attr('transform', 'translate(' + HorizontalOffsetEnd + ', 0)')
   
  }
@@ -94,15 +96,19 @@ const heatmapPadding = 5 //px
  * @param {string} trackName Titre de la chanson
  * @param {int} key L'index de la chanson pour la classe personnalisée
  */
- export function createTrack (g, trackName, key) {
+ export function createTrack (g, trackName, key, isTotal) {
     if (trackName.length > 25) { //Si le titre est trop long, on le tronque
         trackName = trackName.slice(0, 24)
         trackName = trackName + '...'
     }
-    g.append('text')
+    let textSvg = g.append('text')
      .text(trackName)
      .attr('class', 'trackname-viz track'+String(key))
      .attr('fill', 'white')
+
+    if(isTotal){
+      textSvg.style('font-weight', 'bold')
+    }
  }
 
  /**
@@ -146,14 +152,14 @@ const heatmapPadding = 5 //px
  * @param {int} y Positionnement de la heatmap en vertical
  */
 export function createHeatMap (g, data_line, key, color, xOffset, y) {
-    const width_size = heatmapWidth/data_line.length
+    const width_size = heatmap.width/data_line.length
       g.selectAll("rect.marker"+String(key))
       .data(data_line)
       .enter()
       .append("rect")
       .attr("x", (d, i) => String(xOffset + width_size*i)+"px")
       .attr("y", -y) //Décalage du au fait que le rect se positionne automatiquement sous le texte dans le g
-      .attr('height', heatmapHeight + "px")
+      .attr('height', heatmap.height + "px")
       .attr('width', width_size + "px")
       .attr('fill',d => color(d.Streams))
   }
@@ -188,34 +194,46 @@ export function setHoverHandler (g, tip) {
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let datesSize = d3.select('.dates-g').node().getBBox()
     const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
-    const horizontalOffset = (vizWidth - heatmapWidth)/2
-    let colorScale = colorScales.total
+    const horizontalOffset = (vizWidth - heatmap.width)/2
+
+    //Affichage de la ligne de total
+    appendLine(initialOffset, horizontalOffset, 0, data.slice(0,1)[0], colorScales.total, tip, vizWidth, true)
 
     //Affichage de chaque ligne
-    data.forEach(function (track, index)
+    data.slice(1).forEach(function (track, index)
       {
-        //Création du groupe contenant les informations de la ligne
-        const verticalOffset = (initialOffset + index*(heatmapHeight+heatmapPadding))
-        let g = d3.select('.graph-g')
-                  .append('g')
-                  .attr('class', "line"+String(index))
-                  .attr('transform', 'translate(0, '+ verticalOffset +')')
-        
-        //Affichage du titre
-        createTrack(g, track.Track_Name, index)
-
-        //Affichage de la heatmap
-        let trackHeight = d3.select('.track'+String(index)).node().getBBox()
-        if(index==1){
-          colorScale = colorScales.streams
-        }
-        createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight.height)
-        setHoverHandler(g, tip)
-
-        //Affichage du nombre de streams et des statistiques
-        createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
+        appendLine(initialOffset+50, horizontalOffset, index, track, colorScales.streams, tip, vizWidth, false)
       }
     )
  }
+
+
+/**
+ * Génère une ligne
+ *
+ * @param {object} data La data à afficher
+ * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
+ * @param {object} vizWidth Largeur de la viz pour le placement des éléments
+ */
+export function appendLine(initialOffset, horizontalOffset, index, track, colorScale, tip, vizWidth, isTotal) {
+  console.log(track)
+  //Création du groupe contenant les informations de la ligne
+  const verticalOffset = (initialOffset + index*(heatmap.height+heatmap.padding))
+  let g = d3.select('.graph-g')
+            .append('g')
+            .attr('class', "line"+String(index))
+            .attr('transform', 'translate(0, '+ verticalOffset +')')
+  
+  //Affichage du titre
+  createTrack(g, track.Track_Name, index, isTotal)
+
+  //Affichage de la heatmap
+  let trackHeight = d3.select('.track'+String(index)).node().getBBox().height
+  createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight)
+  setHoverHandler(g, tip)
+
+  //Affichage du nombre de streams et des statistiques
+  createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
+}
 
 
