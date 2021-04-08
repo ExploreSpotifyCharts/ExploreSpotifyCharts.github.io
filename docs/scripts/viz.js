@@ -2,10 +2,14 @@ import * as helper from './helper.js'
 import * as legend from './legend.js'
 
 //Constantes pour l'échelle
-const scaleWidth = 500
-const scaleHeight = 15
-const scaleTextMargin = 6 //La moitié de la taille de police du texte de légende
-const scaleYMarginTop = 10
+const scaleDimensions = {
+  width: 300,
+  height: 18,
+  textMargin: 3,
+  marginTop: 30,
+}
+
+const legendWidth = 400
 
 //Constante pour la heatmap
 const heatmapWidth = 700
@@ -17,6 +21,7 @@ const heatmapPadding = 5 //px
  *
  * @param {object} data Data pour la construction des échelles
  * @param {int} vizWidth Largeur de la viz pour le placement des éléments
+ * @returns {object} Les colorscale à utiliser pour les heatmap
  */
  export function appendColorScales(data, vizWidth) {
   //Valeurs extrêmes pour les bornes de l'échelle
@@ -24,26 +29,26 @@ const heatmapPadding = 5 //px
   var minMaxTotal = helper.getMinMaxStreams(data.slice(0,1))
 
   //Création des échelles de couleur
-  const colorScaleStreams = helper.createColorScale(minMaxStreams.min, minMaxStreams.max, '#000000', '#1DB954')
-  const colorScaleTotal = helper.createColorScale(minMaxTotal.min, minMaxTotal.max,'#000000', '#FF7C00')
+  const colorScaleStreams = legend.createColorScale(minMaxStreams.min, minMaxStreams.max, '#000000', '#1DB954')
+  const colorScaleTotal = legend.createColorScale(minMaxTotal.min, minMaxTotal.max,'#000000', '#FF7C00')
   var colorScales = {streams: colorScaleStreams, total: colorScaleTotal}
 
-  //Affichage de l'échelle de couleurs pour le total
-  legend.initGradient(colorScaleTotal, 'gradientTotal')
-  legend.initLegendBar('scaleTotal')
-  legend.draw((vizWidth - scaleWidth)/2, scaleYMarginTop, scaleHeight, scaleWidth, 'url(#gradientTotal)', '#scaleTotal')
-  //Affichage des bornes de l'échelle pour le total
-  let titleHeight = d3.select('.titre-viz').node().getBBox().height
-  legend.writeLegendMin(minMaxTotal.min,(vizWidth - scaleWidth)/2, titleHeight+scaleHeight/2, scaleTextMargin)
-  legend.writeLegendMax(minMaxTotal.max,((vizWidth - scaleWidth)/2)+scaleWidth, titleHeight+scaleHeight/2, scaleTextMargin)
+  //Variables pour le placement des éléments
+  const placingVariables = {
+    titleHeight: d3.select('.titre-viz').node().getBBox().height,
+    xLegend: vizWidth - legendWidth, 
+    xScale: vizWidth - scaleDimensions.width,
+  }
+  placingVariables.legendTitleHeight = legend.writeLegendTitle(placingVariables.xLegend, placingVariables.titleHeight, legendWidth), //Affichage du titre
+  placingVariables.yText = placingVariables.titleHeight + placingVariables.legendTitleHeight + scaleDimensions.height/2
 
-  //Affichage de l'échelle de couleurs pour les streams
-  legend.initGradient(colorScaleStreams, 'gradientStreams')
-  legend.initLegendBar('scaleStreams')
-  legend.draw((vizWidth - scaleWidth)/2, scaleYMarginTop+20, scaleHeight, scaleWidth, 'url(#gradientStreams)', '#scaleStreams')
-  //Affichage des bornes de l'échelle pour les streams
-  legend.writeLegendMin(minMaxStreams.min,(vizWidth - scaleWidth)/2, (titleHeight+scaleHeight/2)+20, scaleTextMargin)
-  legend.writeLegendMax(minMaxStreams.max,((vizWidth - scaleWidth)/2)+scaleWidth, (titleHeight+scaleHeight/2)+20, scaleTextMargin)
+  //Id suivant les échelles
+  const idTotal = {gradient: 'gradientTotal', scale: 'scaleTotal'}
+  const idStreams = {gradient: 'gradientStreams', scale: 'scaleStreams'}
+
+  //Affichage des échelles
+  legend.appendScale('Total : ', placingVariables, colorScaleTotal, idTotal, scaleDimensions, minMaxTotal, 0)
+  legend.appendScale('Par Titre: ', placingVariables, colorScaleStreams, idStreams, scaleDimensions, minMaxStreams, scaleDimensions.height+2)
 
   return colorScales
       
