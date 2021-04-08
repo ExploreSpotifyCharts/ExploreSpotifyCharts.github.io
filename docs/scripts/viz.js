@@ -146,6 +146,7 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
       .data(data_line)
       .enter()
       .append("rect")
+      .attr("class", "marker"+String(key))
       .attr("x", (d, i) => String(xOffset + width_size*i)+"px")
       .attr("y", -y) //Décalage du au fait que le rect se positionne automatiquement sous le texte dans le g
       .attr('height', heatmapHeight + "px")
@@ -157,16 +158,25 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
  * Map du hover (tooltip) pour l'interaction avec les rectangles des heatmaps
  *
  * @param {object} g La sélection dans laquelle on récupère les objets à map avec le tooltip
- * @param {*} tip Le tooltip
+ * @param {*} tip_streams Le tooltip pour les streams
+ * @param {*} tip_total Le tooltip pour le total
  */
-export function setHoverHandler (g, tip) {
+export function setHoverHandler (g, tip_streams, tip_total) {
   g.selectAll("rect")
-    .on('mouseover', function(d) {
-      tip.show(d, this)
-    })
-    .on('mouseout',  function(d) {
-      tip.hide(d, this)
-    })
+  .on('mouseover', function(d) {
+    tip_streams.show(d, this)
+  })
+  .on('mouseout',  function(d) {
+    tip_streams.hide(d, this)
+  })
+
+  g.selectAll("rect.marker0")
+  .on('mouseover', function(d) {
+    tip_total.show(d, this)
+  })
+  .on('mouseout',  function(d) {
+    tip_total.hide(d, this)
+  })
   
 }
 
@@ -176,8 +186,10 @@ export function setHoverHandler (g, tip) {
  * @param {object} data La data à afficher
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
+ * @param {object} tip_streams Tooltip à associer aux streams
+ * @param {object} tip_total Tooltip à associer au total
  */
- export function appendHeatMaps(data, colorScales, vizWidth, tip) {
+ export function appendHeatMaps(data, colorScales, vizWidth, tip_streams, tip_total) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -205,7 +217,7 @@ export function setHoverHandler (g, tip) {
           colorScale = colorScales.streams
         }
         createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight.height)
-        setHoverHandler(g, tip)
+        setHoverHandler(g, tip_streams, tip_total)
 
         //Affichage du nombre de streams et des statistiques
         createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
