@@ -1,5 +1,5 @@
 /**
- * Defines the contents of the tooltip. See CSS for tooltip styling.
+ * Defines the contents of the tooltip for streams heat maps. See CSS for tooltip styling.
  *
  * @param {object} d The data associated to the hovered element
  * @returns {string} The tooltip contents
@@ -14,7 +14,7 @@ export function getContents_Streams (d) {
 }
 
 /**
- * Defines the contents of the tooltip. See CSS for tooltip styling.
+ * Defines the contents of the tooltip for total heat map. See CSS for tooltip styling.
  *
  * @param {object} d The data associated to the hovered element
  * @returns {string} The tooltip contents

@@ -158,7 +158,8 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
  * Map du hover (tooltip) pour l'interaction avec les rectangles des heatmaps
  *
  * @param {object} g La sélection dans laquelle on récupère les objets à map avec le tooltip
- * @param {*} tip Le tooltip
+ * @param {*} tip_streams Le tooltip pour les streams
+ * @param {*} tip_total Le tooltip pour le total
  */
 export function setHoverHandler (g, tip_streams, tip_total) {
   g.selectAll("rect")
@@ -185,7 +186,8 @@ export function setHoverHandler (g, tip_streams, tip_total) {
  * @param {object} data La data à afficher
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
- * @param {object} tip Tooltip à associer
+ * @param {object} tip_streams Tooltip à associer aux streams
+ * @param {object} tip_total Tooltip à associer au total
  */
  export function appendHeatMaps(data, colorScales, vizWidth, tip_streams, tip_total) {
     //Calcul du placement par rapport aux éléments précédents
