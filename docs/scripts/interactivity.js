@@ -156,7 +156,7 @@ function parseParams(params) {
   let param_array = decodeURIComponent(params).split("&")
   param_array = param_array.map( param => {
     const paramKeyValue = param.split("=")
-    return [paramKeyValue[0] , paramKeyValue[1]]
+    return [paramKeyValue[0] ,paramKeyValue[1]]
   })
   return param_array
 }
@@ -170,9 +170,9 @@ function submit(e) {
   e.preventDefault();
   //Using JQuery to get form data
   const rawParams = $('#form').serialize();
-  const params = parseParams(rawParams)
-  console.log(params)
+  let params = parseParams(rawParams)
   if (isFormValid(params)) {
+    params = processParams(params)
     console.log(params)
     /* Do something with the parameters */
   } else {
@@ -396,6 +396,27 @@ function isFormValid(params) {
     return array[Math.floor(Math.random() * array.length)]
   }
 
+  /**
+   * Return the track's artist
+   * @param {string} track 
+   * @returns {string}
+   */
   function getArtistByTrack(track) {
     return array_titles.filter( d => d.Track == track)[0].Artist
+  }
+
+  function processParams(params) {
+    let index = params.findIndex( v => v[0] == 'Pays')
+    params[index][1] = getCountryCode( params[index][1])
+    return params
+  }
+
+  /**
+   * Return the code of the country
+   * @param {string} country 
+   * @returns {string}
+   */
+  function getCountryCode(country) {
+    const index = countries.findIndex(v => v.country == country)
+    return countries[index].code
   }
