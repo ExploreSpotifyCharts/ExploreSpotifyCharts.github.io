@@ -10,15 +10,19 @@ export function initialize() {
   //Using jQuery because d3 do not support submit event
   $('#form').on('submit', submit)
 
-  createForm('Pays')
-
   //Load data
-  const PATH =  './assets/data/' //for Tanguy : './'
+  const PATH =  './'  //'./assets/data/' 
   d3.csv(PATH+'artistes'+'.csv', d3.autoType).then(function (data_artistes) {
     array_artistes = data_artistes.map(line => String(line['Artist']))
     d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
       array_titles = data_titres.map(line => {
         return {Artist: String(line['Artist']), Track: String(line['Track Name'])}
+      })
+      d3.csv(PATH+'country'+'.csv', d3.autoType).then(function (data_countries) {
+        countries = data_countries.map(line => {
+          return {code: String(line['country code']), country: String(line['country'])}
+        })
+        createForm('Pays')
       })
     })  
   })
@@ -26,9 +30,9 @@ export function initialize() {
 
 /* Global var */
 
-var array_titles = [];
-var array_artistes = [];
-const countries = ['France','USA','Finlande']
+var array_titles = []
+var array_artistes = []
+var countries = []
 var artistTracks = []
 
 /* Private function*/
@@ -49,30 +53,34 @@ function navigate(element) {
  * Create the header form link to the tab
  * @param {String} tab 
  */
-function createForm(tab) {
-
+function createForm(tab, value) {
+    let artist
     switch(tab) {
       case "Pays":
+        const country = value ? value : 'Mondial'
         createDatePickers()
-        createSuggestbox('Pays', countries, 'Monde')
+        createSuggestbox('Pays', countries.map(d => d.country), country)
         break
       case "Tendances":
         createMonthDayPickers()
-        createSuggestbox('Pays', countries, 'Monde')
+        createSuggestbox('Pays',  countries.map(d => d.country), 'Mondial')
         break
       case "Artiste":
+        artist = value ? value : randomValue(array_artistes)
         createDatePickers()
-        createSuggestbox('Artiste', array_artistes, 'Angèle')
-        createSuggestbox('Pays', countries, 'Monde')
+        createSuggestbox('Artiste', array_artistes, artist)
+        createSuggestbox('Pays', countries.map(d => d.country), 'Mondial')
         break
       case "Titre":
         createDatePickers()
-        createSuggestbox('Artiste', array_artistes, 'Angèle')
-
+        artist = value ? getArtistByTrack(value) : randomValue(array_artistes)
+        artistTracks = getArtistTracks(artist)
+        const track = value ? value : randomValue(artistTracks)
+  
+        createSuggestbox('Artiste', array_artistes, artist)
         $('#Artiste').on('input',updateTrackList)
         
-        artistTracks = getArtistTracks('Angèle')
-        createSuggestbox('Titre', artistTracks, artistTracks[0])
+        createSuggestbox('Titre', artistTracks, track)
         break
   }
   //Reset form validation on changes
@@ -361,7 +369,7 @@ function isFormValid(params) {
     let word = "Le "
     switch(fieldName) {
       case 'Pays':
-        data = countries
+        data =  countries.map(d => d.country)
         break
       case 'Artiste':
         data = array_artistes
@@ -377,4 +385,17 @@ function isFormValid(params) {
     $("#" + fieldName)[0].setCustomValidity(error)
     $("#" + fieldName)[0].reportValidity()
     return false
+  }
+
+  /**
+   * Get a random value from the array
+   * @param {any[]} arry 
+   * @returns {any}
+   */
+  function randomValue(array) {
+    return array[Math.floor(Math.random() * array.length)]
+  }
+
+  function getArtistByTrack(track) {
+    return array_titles.filter( d => d.Track == track)[0].Artist
   }
