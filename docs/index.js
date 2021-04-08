@@ -105,7 +105,7 @@ import * as interactivity from './scripts/interactivity.js'
     const colorScales = viz.appendColorScales(data_preprocessed_artist, vizWidth)
     viz_ParArtiste.appendColumnTitles(vizWidth)
     viz.appendDates('2017-01-01','2020-04-20', vizWidth)
-    viz.appendHeatMaps(data_preprocessed_artist, colorScale, vizWidth, tip)
+    viz.appendHeatMaps(data_preprocessed_artist, colorScales, vizWidth, tip)
     helper.updateSvg()
   })
 

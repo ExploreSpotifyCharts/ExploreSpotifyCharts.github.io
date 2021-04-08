@@ -177,29 +177,37 @@ export function setHoverHandler (g, tip) {
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
- export function appendHeatMaps(data, colorScale, vizWidth, tip) {
+ export function appendHeatMaps(data, colorScales, vizWidth, tip) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let datesSize = d3.select('.dates-g').node().getBBox()
     const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
     const horizontalOffset = (vizWidth - heatmapWidth)/2
+    let colorScale = colorScales.total
 
     //Affichage de chaque ligne
     data.forEach(function (track, index)
       {
+        //Création du groupe contenant les informations de la ligne
         const verticalOffset = (initialOffset + index*(heatmapHeight+heatmapPadding))
         let g = d3.select('.graph-g')
                   .append('g')
                   .attr('class', "line"+String(index))
                   .attr('transform', 'translate(0, '+ verticalOffset +')')
-
+        
+        //Affichage du titre
         createTrack(g, track.Track_Name, index)
 
+        //Affichage de la heatmap
         let trackHeight = d3.select('.track'+String(index)).node().getBBox()
+        if(index==1){
+          colorScale = colorScales.streams
+        }
         createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight.height)
         setHoverHandler(g, tip)
 
+        //Affichage du nombre de streams et des statistiques
         createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
       }
     )
