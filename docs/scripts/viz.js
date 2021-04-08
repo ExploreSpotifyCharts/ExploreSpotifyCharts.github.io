@@ -109,14 +109,24 @@ const heatmapPadding = 5 //px
  * @param {int} vizWidth La largeur de la viz pour le placement du text
  */
   export function createStreamStats (g, streams, proportion, vizWidth) {
-    let statText = String(streams) + '(' + String(Math.round(proportion*100)/100) + '%)'
-    let stat = g.append('text')
+    let statText = '(' + (Math.round(proportion*100)/100).toFixed(2) + '%)'
+    let percentage = g.append('text')
      .text(statText)
-     .attr('class', 'streamsstat-viz')
+     .attr('class', 'percentage-streams')
      .attr('fill', 'white')
+
+    let nbstreams = g.append('text')
+     .text(String(streams))
+     .attr('class', 'nbstreams-values')
+     .attr('fill', 'white')
+
+    let percentageOffset = vizWidth - percentage.node().getComputedTextLength()
+    percentage.attr('transform', 'translate('+ percentageOffset + ',0)')
+
     
-    let horizontalOffset = vizWidth - stat.node().getComputedTextLength()
-    stat.attr('transform', 'translate('+ horizontalOffset + ',0)')
+    let streamOffset = vizWidth -  (d3.select('#nb-streams').node().getComputedTextLength()/2) - nbstreams.node().getComputedTextLength()
+    nbstreams.attr('transform', 'translate('+ streamOffset + ',0)')
+
     
  }
 

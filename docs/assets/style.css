@@ -176,7 +176,7 @@ option {
     font-size : 12px;
 }
 
-.trackname-viz, .streamsstat-viz {
+.trackname-viz, .percentage-streams, .nbstreams-values {
     font-size : 13px;
 }
 

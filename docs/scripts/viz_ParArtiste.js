@@ -16,7 +16,7 @@
     g.append('text').text('Titres').attr('fill', 'white')
 
     //Affichage Nombre de Streams
-    let nbStreams = g.append('text').text('Nombre de Streams').attr('fill', 'white')
+    let nbStreams = g.append('text').text('Nombre de Streams').attr('fill', 'white').attr('id', 'nb-streams')
     let HorizontalOffset = vizWidth - nbStreams.node().getComputedTextLength()
     nbStreams.attr('transform','translate('+ HorizontalOffset + ',0)')
 
