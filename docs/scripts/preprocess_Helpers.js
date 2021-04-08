@@ -71,7 +71,7 @@ export function addTotalEntry_computeProportion(data)
 {
   //Add one entry for total (per day and global)
   let newEntry = []
-  newEntry[0] = 'TOTAL STREAMS COUNT'
+  newEntry[0] = 'Total'
   newEntry[1] = {}
   newEntry[1]['Streams'] = {}
   newEntry[1]['Count_total_streams'] = 0
@@ -97,11 +97,8 @@ export function addTotalEntry_computeProportion(data)
 
   data.forEach(function(line, index)
     {
-      if (index != 0)
-      {
-        const total_entry = line[1]['Count_total_streams']
-        line[1]['Proportion_total_streams'] = total_entry / total
-      }
+      const total_entry = line[1]['Count_total_streams']
+      line[1]['Proportion_total_streams'] = total_entry / total
     }
   )
 
