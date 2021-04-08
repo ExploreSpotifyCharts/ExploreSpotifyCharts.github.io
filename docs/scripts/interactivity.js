@@ -11,7 +11,7 @@ export function initialize() {
   $('#form').on('submit', submit)
 
   //Load data
-  const PATH =  './'  //'./assets/data/' 
+  const PATH =  './assets/data/' 
   d3.csv(PATH+'artistes'+'.csv', d3.autoType).then(function (data_artistes) {
     array_artistes = data_artistes.map(line => String(line['Artist']))
     d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
