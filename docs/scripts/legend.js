@@ -3,13 +3,13 @@
  *
  * @param {*} colorScale L'échelle de couleurs
  */
- export function initGradient (colorScale) {
+ export function initGradient (colorScale, id) {
   
     const defs = d3.select('.info-g').append('defs')
   
     const linearGradient = defs
       .append('linearGradient')
-      .attr('id', 'gradient')
+      .attr('id', id)
       .attr('x1', '0%').attr('y1', '0%').attr('x2', '100%').attr('y2', '0%')
   
     linearGradient.selectAll('stop')
@@ -26,8 +26,8 @@
 /**
  * Initialisation du rectangle contenant le gradient
  */
-export function initLegendBar () {
-d3.select('.info-g').append('rect').attr('class', 'legend bar')
+export function initLegendBar (id) {
+  d3.select('.info-g').append('rect').attr('id', id)
   }
 
 /**
@@ -39,9 +39,8 @@ d3.select('.info-g').append('rect').attr('class', 'legend bar')
  * @param {number} width La largeur de l'échelle
  * @param {string} fill Le remplissage de l'échelle
  */
- export function draw (x, y, height, width, fill) {
-    // DONE: Draw the legend
-    d3.select('svg rect.legend.bar')
+ export function draw (x, y, height, width, fill, id) {
+    d3.select(id)
         .attr('x',x)
         .attr('y',y)
         .attr('height',height)

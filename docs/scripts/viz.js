@@ -13,42 +13,42 @@ const heatmapHeight = 20 //px
 const heatmapPadding = 5 //px
 
 /**
- * Génère l'échelle de couleurs
+ * Affiche les échelles de couleurs
  *
- * @param {object} data Data pour la construction de l'échelle
+ * @param {object} data Data pour la construction des échelles
  * @param {int} vizWidth Largeur de la viz pour le placement des éléments
  */
- export function appendColorScale(data, vizWidth) {
+ export function appendColorScales(data, vizWidth) {
+  //Valeurs extrêmes pour les bornes de l'échelle
+  var minMaxStreams = helper.getMinMaxStreams(data.slice(1))
+  var minMaxTotal = helper.getMinMaxStreams(data.slice(0,1))
 
-    //Valeurs extrêmes de stream sur un jour
-    let min_stream = Number.POSITIVE_INFINITY
-    let max_stream = Number.NEGATIVE_INFINITY
-    data.forEach(function(d){
-        //Minimum
-        const min_current = d3.min(d.Streams, k => k.Streams)
-        min_stream = Math.min(min_stream, min_current)
-        //Maximum
-        const max_current = d3.max(d.Streams, k => k.Streams)
-        max_stream = Math.max(max_stream, max_current)
-    })
+  //Création des échelles de couleur
+  const colorScaleStreams = helper.createColorScale(minMaxStreams.min, minMaxStreams.max, '#000000', '#1DB954')
+  const colorScaleTotal = helper.createColorScale(minMaxTotal.min, minMaxTotal.max,'#000000', '#FF7C00')
+  var colorScales = {streams: colorScaleStreams, total: colorScaleTotal}
 
-    //Création de l'échelle de couleurs
-    const color_scale = helper.createColorScale(min_stream, max_stream)
+  //Affichage de l'échelle de couleurs pour le total
+  legend.initGradient(colorScaleTotal, 'gradientTotal')
+  legend.initLegendBar('scaleTotal')
+  legend.draw((vizWidth - scaleWidth)/2, scaleYMarginTop, scaleHeight, scaleWidth, 'url(#gradientTotal)', '#scaleTotal')
+  //Affichage des bornes de l'échelle pour le total
+  let titleHeight = d3.select('.titre-viz').node().getBBox().height
+  legend.writeLegendMin(minMaxTotal.min,(vizWidth - scaleWidth)/2, titleHeight+scaleHeight/2, scaleTextMargin)
+  legend.writeLegendMax(minMaxTotal.max,((vizWidth - scaleWidth)/2)+scaleWidth, titleHeight+scaleHeight/2, scaleTextMargin)
 
-    //Affichage de l'échelle de couleurs
-    legend.initGradient(color_scale)
-    legend.initLegendBar()
-    legend.draw((vizWidth - scaleWidth)/2, scaleYMarginTop, scaleHeight, scaleWidth, 'url(#gradient)')
+  //Affichage de l'échelle de couleurs pour les streams
+  legend.initGradient(colorScaleStreams, 'gradientStreams')
+  legend.initLegendBar('scaleStreams')
+  legend.draw((vizWidth - scaleWidth)/2, scaleYMarginTop+20, scaleHeight, scaleWidth, 'url(#gradientStreams)', '#scaleStreams')
+  //Affichage des bornes de l'échelle pour les streams
+  legend.writeLegendMin(minMaxStreams.min,(vizWidth - scaleWidth)/2, (titleHeight+scaleHeight/2)+20, scaleTextMargin)
+  legend.writeLegendMax(minMaxStreams.max,((vizWidth - scaleWidth)/2)+scaleWidth, (titleHeight+scaleHeight/2)+20, scaleTextMargin)
 
-    //Affichage des bornes de l'échelle
-    let titleHeight = d3.select('.titre-viz').node().getBBox().height
-
-    legend.writeLegendMin(min_stream,(vizWidth - scaleWidth)/2, titleHeight+scaleHeight/2, scaleTextMargin)
-    legend.writeLegendMax(max_stream,((vizWidth - scaleWidth)/2)+scaleWidth, titleHeight+scaleHeight/2, scaleTextMargin)
-
-    return color_scale
-        
+  return colorScales
+      
 }
+
 
 /**
  * Génère les dates
@@ -177,29 +177,37 @@ export function setHoverHandler (g, tip) {
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
- export function appendHeatMaps(data, colorScale, vizWidth, tip) {
+ export function appendHeatMaps(data, colorScales, vizWidth, tip) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let datesSize = d3.select('.dates-g').node().getBBox()
     const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
     const horizontalOffset = (vizWidth - heatmapWidth)/2
+    let colorScale = colorScales.total
 
     //Affichage de chaque ligne
     data.forEach(function (track, index)
       {
+        //Création du groupe contenant les informations de la ligne
         const verticalOffset = (initialOffset + index*(heatmapHeight+heatmapPadding))
         let g = d3.select('.graph-g')
                   .append('g')
                   .attr('class', "line"+String(index))
                   .attr('transform', 'translate(0, '+ verticalOffset +')')
-
+        
+        //Affichage du titre
         createTrack(g, track.Track_Name, index)
 
+        //Affichage de la heatmap
         let trackHeight = d3.select('.track'+String(index)).node().getBBox()
+        if(index==1){
+          colorScale = colorScales.streams
+        }
         createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight.height)
         setHoverHandler(g, tip)
 
+        //Affichage du nombre de streams et des statistiques
         createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
       }
     )
