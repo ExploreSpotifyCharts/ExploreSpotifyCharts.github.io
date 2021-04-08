@@ -36,16 +36,43 @@
 }
 
 /**
+ * Détermine les valeurs min et max des streams
+ *
+ * @param {object} data la data à étudier
+ * @returns {object} un objet avec le min et le max
+ */
+ export function getMinMaxStreams (data) {
+  //Valeurs extrêmes de stream sur un jour
+  let min_stream = Number.POSITIVE_INFINITY
+  let max_stream = Number.NEGATIVE_INFINITY
+  data.forEach(function(d){
+      //Minimum
+      const min_current = d3.min(d.Streams, k => k.Streams)
+      min_stream = Math.min(min_stream, min_current)
+      //Maximum
+      const max_current = d3.max(d.Streams, k => k.Streams)
+      max_stream = Math.max(max_stream, max_current)
+  })
+  var result = {min: min_stream, max: max_stream}
+  return result
+}
+
+/**
  * Génère l'échelle de couleur
  *
- * @param {object} min la valeur minimum
- * @param {object} max la valeur maximum
+ * @param {int} min la valeur minimum
+ * @param {int} max la valeur maximum
+ * @param {string} startingColor code hexa de la couleur de début de l'échelle
+ * @param {string} endingColor code hexa de la couleur de fin de l'échelle
+ * @returns {object} l'échelle générée
  */
- export function createColorScale (min, max) {
+ export function createColorScale (min, max, startingColor, endingColor) {
     return d3.scaleLinear()
     .domain([min, max])
-    .range(['#000000', '#1db954'])
+    .range([startingColor, endingColor])
 }
+
+
 
 /**
  * Met à jour la longeur du svg contenant la vizualisation

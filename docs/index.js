@@ -95,14 +95,14 @@ import * as interactivity from './scripts/interactivity.js'
   })*/
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'Imagine Dragons'
-  country = 'fr'
+  const artiste = 'BTS'
+  country = 'us'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
   end_date = preprocess_Helpers.parseDate('2020-04-20')
   d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date).slice(1)
+    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date)
     helper.appendTitle(artiste)
-    const colorScale = viz.appendColorScale(data_preprocessed_artist, vizWidth)
+    const colorScales = viz.appendColorScales(data_preprocessed_artist, vizWidth)
     viz_ParArtiste.appendColumnTitles(vizWidth)
     viz.appendDates('2017-01-01','2020-04-20', vizWidth)
     viz.appendHeatMaps(data_preprocessed_artist, colorScale, vizWidth, tip)
