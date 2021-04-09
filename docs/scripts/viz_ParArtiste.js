@@ -31,7 +31,7 @@ import * as index from '../index.js'
 
 export function createArtistVisualisation(artist,country,start_date,end_date) {
   const tip = viz.initializeViz()
-  const PATH = './' //assets/data/'
+  const PATH = './assets/data/'
   artist = artist ? artist : 'BTS'
   country = country ? country : 'us'
   start_date = start_date ? start_date : '2017-01-01'
