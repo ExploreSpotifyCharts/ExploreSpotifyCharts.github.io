@@ -1,3 +1,5 @@
+import * as helper from './helper.js'
+
 /**
  * Defines the contents of the tooltip for streams heat maps. See CSS for tooltip styling.
  *
@@ -7,8 +9,8 @@
 export function getContents_Streams (d) {
   // Generate tooltip contents
   let tooltip_string = '<span class="tooltip-value-streams">'
-  tooltip_string += '<strong> Date : </strong> '+ d["Date"] +'<br>'
-  tooltip_string += '<strong> Streams : </strong> '+d["Streams"]
+  tooltip_string += '<strong> Date : </strong> '+ helper.formatDate(d["Date"]) +'<br>'
+  tooltip_string += '<strong> Streams : </strong> '+ helper.formatNumber(d["Streams"])
   tooltip_string += '</span>'
   return tooltip_string
 }
@@ -22,8 +24,8 @@ export function getContents_Streams (d) {
 export function getContents_Total (d) {
   // Generate tooltip contents
   let tooltip_string = '<span class="tooltip-value-total">'
-  tooltip_string += '<strong> Date : </strong> '+ d["Date"] +'<br>'
-  tooltip_string += '<strong> Streams : </strong> '+d["Streams"]
+  tooltip_string += '<strong> Date : </strong> '+ helper.formatDate(d["Date"]) +'<br>'
+  tooltip_string += '<strong> Streams : </strong> '+ helper.formatNumber(d["Streams"])
   tooltip_string += '</span>'
   return tooltip_string
 }

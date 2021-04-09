@@ -69,8 +69,8 @@ const heatmapPadding = 5 //px
       .attr('transform','translate(0 ,' + verticalOffset + ')')
 
     //Affichage Dates
-    let startDateText = g.append('text').text(startDate).attr('fill', 'white').attr('class', 'date-viz')
-    let endDateText = g.append('text').text(endDate).attr('fill', 'white').attr('class', 'date-viz')
+    let startDateText = g.append('text').text(helper.formatDate(startDate)).attr('fill', 'white').attr('class', 'date-viz')
+    let endDateText = g.append('text').text(helper.formatDate(endDate)).attr('fill', 'white').attr('class', 'date-viz')
 
     //Placement des dates
     let HorizontalOffsetStart = (vizWidth - heatmapWidth)/2
@@ -116,7 +116,7 @@ const heatmapPadding = 5 //px
      .attr('fill', 'white')
 
     let nbstreams = g.append('text')
-     .text(String(streams))
+     .text(helper.formatNumber(streams))
      .attr('class', 'nbstreams-values')
      .attr('fill', 'white')
 
