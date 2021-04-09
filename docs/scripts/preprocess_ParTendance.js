@@ -49,46 +49,142 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
 
   //Reduce per year
   data_processed = data_processed.reduce(function (acc, line) {
-    if (typeof acc[line['Year']] == 'undefined')
+    if (line['Track Name'] != '')
     {
-      acc[line['Year']] = {}
-      acc[line['Year']]['Tracks'] = {}
+      if (typeof acc[line['Year']] == 'undefined')
+      {
+        acc[line['Year']] = {}
+        acc[line['Year']]['Tracks'] = {}
+      }
+  
+      if (typeof acc[line['Year']]['Tracks'][line['Track Name']] == 'undefined')
+      {
+        acc[line['Year']]['Tracks'][line['Track Name']] = {}
+        acc[line['Year']]['Tracks'][line['Track Name']]['Artist'] = line['Artist']
+        acc[line['Year']]['Tracks'][line['Track Name']]['Streams'] = {}
+        acc[line['Year']]['Tracks'][line['Track Name']]['Count_total_streams'] = 0
+      }
+  
+      const date = line['date']
+      const dateISO = date.toISOString().split('T')[0]
+  
+      acc[line['Year']]['Tracks'][line['Track Name']]['Streams'][dateISO] = line['Streams']
+      acc[line['Year']]['Tracks'][line['Track Name']]['Count_total_streams'] += line['Streams']
     }
-    const track_name = line['Track Name']
-    if (typeof acc[line['Year']]['Tracks'][track_name] == 'undefined')
-    {
-      acc[line['Year']]['Tracks'][track_name] = {}
-      acc[line['Year']]['Tracks'][track_name]['Streams'] = 0
-      acc[line['Year']]['Tracks'][track_name]['Artist'] = line['Artist']
-    }
-    acc[line['Year']]['Tracks'][track_name]['Streams'] += line['Streams']
     return acc
   }, {})
   data_processed = Object.entries(data_processed)
 
-  //sort tracks on number of streams and get top 10
+  //sort tracks on number of streams and get top 5
   data_processed.forEach(line =>
     {
       var tracks = line[1]['Tracks']
 
       let sortable = [];
       for (var track in tracks) {
-          sortable.push({'Track Name':track, 'Artist':tracks[track]['Artist'], 'Streams':tracks[track]['Streams']})
+          sortable.push({
+          'Track Name': track,
+          'Artist': tracks[track]['Artist'],
+          'Count_total_streams' :tracks[track]['Count_total_streams'],
+          'Streams': tracks[track]['Streams']
+        })
       }
       sortable.sort(function(a, b) {
-          return b['Streams'] - a['Streams']
+          return b['Count_total_streams'] - a['Count_total_streams']
       })
 
-      line[1]['Tracks'] = sortable.slice(0,10)
+      line[1]['Tracks'] = sortable.slice(0,5)
     })
+
+  //for each year, add a total entry
+  data_processed.forEach(line =>
+  {
+    let newEntry = {}
+    newEntry['Track Name'] = 'Total'
+    newEntry['Count_total_streams'] = 0
+    newEntry['Streams'] = {}
+
+    line[1]['Tracks'].forEach(track =>
+      {
+        for (const [date, count] of Object.entries(track['Streams']))
+          {
+            if (typeof newEntry['Streams'][date] == 'undefined')
+            {
+              newEntry['Streams'][date] = 0
+            }
+            newEntry['Streams'][date] += count
+            newEntry['Count_total_streams'] += count
+          }
+      }
+      )
+      line[1]['Tracks'].unshift(newEntry)
+  })
+
+  //for each year, compute proportion
+  data_processed.forEach(line =>
+  {
+    const total = line[1]['Tracks'][0]['Count_total_streams']
+
+    line[1]['Tracks'].forEach(function(track)
+      {
+        const total_entry = track['Count_total_streams']
+        track['Proportion_total_streams'] = total_entry / total
+      }
+    )
+  })
+
+
+  //fill missing dates
+  data_processed.forEach(line =>
+  {
+    const year = line[0]
+    const start = dates[year]['start']
+    const end = dates[year]['end']
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dateISO = d.toISOString().split('T')[0]
+      line[1]['Tracks'].forEach(track =>
+        {
+          if (typeof track['Streams'][dateISO] == 'undefined')
+          {
+            track['Streams'][dateISO] = 0
+          }
+        }
+      )
+    }
+  })
+
+  //sort streams on date
+  data_processed.forEach(line =>
+  {
+    line[1]['Tracks'].forEach(track =>
+    {
+      let sorted = Object.keys(track['Streams'])
+        .sort()
+        .reduce(function (acc, key) { 
+        acc[key] = track['Streams'][key];
+        return acc;
+        }, {});
+      track['Streams'] = sorted
+    })
+  })
 
   //format
   data_processed = data_processed.map(line => {
     let entry = {}
     entry['Year'] = line[0]
-    for (const [ key, value ] of Object.entries(line[1])) {
-      entry[key] = value
-    }
+    entry['Tracks'] = line[1]['Tracks']
+
+    entry['Tracks'].forEach(track =>
+    {
+      let streams_dates = track['Streams']
+      let streams_array = []
+      for (var date in streams_dates)
+      {
+        streams_array.push({'Date':date, 'Streams':streams_dates[date]})
+      }
+      track['Streams'] = streams_array
+    })
     return entry
   })
 

@@ -1,3 +1,5 @@
+import * as helper from './helper.js'
+
 /**
  * Initialisation du gradient de couleur pour l'échelle
  *
@@ -61,7 +63,7 @@ export function initLegendBar (id) {
       .attr('x', x+margin)
       .attr('y', y-margin)
       .attr('fill', 'white')
-      .text(min)
+      .text(helper.formatNumber(min))
 }
 
 /**
@@ -75,7 +77,7 @@ export function initLegendBar (id) {
     let textSvg = d3.select('.info-g').append('text')
       .attr('class', 'legend max')
       .attr('fill', 'white')
-      .text(max)
+      .text(helper.formatNumber(max))
     
     let offset = textSvg.node().getComputedTextLength()
 

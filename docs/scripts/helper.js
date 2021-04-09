@@ -83,3 +83,23 @@
     d3.select('svg').attr('height', infoHeight+50)
 }
 
+/**
+ * Formatte les nombres longs en introduisant des espaces entre trois digits
+ *
+ */
+export function formatNumber(num) {
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+}
+
+/**
+ * Formatte les dates de YYYY-MM-DD à DD/MM/YYYY
+ *
+ */
+export function formatDate(input) {
+  let datePart = input.split('-')
+  let year = datePart[0]
+  let month = datePart[1]
+  let day = datePart[2]
+
+  return day+'/'+month+'/'+year;
+}
