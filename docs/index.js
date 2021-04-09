@@ -82,7 +82,7 @@ export const vizWidth = svgWidth - margin.left - margin.right;
   })*/
 
   //EXPLORER PAR ARTISTE
-
+  viz_ParArtiste.createArtistVisualisation()
 
   /*
   //EXPLORER PAR TITRE
