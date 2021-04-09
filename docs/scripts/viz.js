@@ -1,5 +1,8 @@
 import * as helper from './helper.js'
 import * as legend from './legend.js'
+import * as index from '../index.js'
+import * as tooltip from './tooltip.js'
+import * as interactivity from './interactivity.js'
 
 //Constantes pour l'échelle
 const scaleWidth = 500
@@ -98,6 +101,10 @@ const heatmapPadding = 5 //px
      .text(trackName)
      .attr('class', 'trackname-viz track'+String(key))
      .attr('fill', 'white')
+     .on('click', function() {
+       const tabElement = d3.select('#menuList li:nth-child(3)').node() 
+       interactivity.navigate(tabElement,this.textContent)
+      })
  }
 
  /**
@@ -223,6 +230,16 @@ export function setHoverHandler (g, tip_streams, tip_total) {
         createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
       }
     )
+ }
+
+ export function initializeViz() {
+  const g = helper.generateG(index.margin, index.svgWidth, index.windowHeight)
+
+  const tip_streams = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Streams(d) })
+  const tip_total = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Total(d) })
+  g.call(tip_streams)
+  g.call(tip_total)
+  return {streams: tip_streams,total: tip_total}
  }
 
 

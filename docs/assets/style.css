@@ -204,6 +204,15 @@ option {
     font-size : 13px;
 }
 
+.trackname-viz {
+    font-size : 13px;
+    cursor: pointer;
+}
+
+.trackname-viz:hover {
+    font-weight: bold;
+}
+
 .d3-tip {
     line-height: 1;
     font-weight: normal;

@@ -25,33 +25,21 @@ import * as interactivity from './scripts/interactivity.js'
  * @author Tanguy Gloaguen
  */
 
- function navigate(event) {
-  console.log(event)
+//Constantes de taille pour le placement des éléments
+export const margin = {
+  top: 40,
+  right: 60,
+  bottom: 100,
+  left: 60
 }
+export const sidebarWidth = 0.15
+export const windowWidth = window.innerWidth
+export const windowHeight = window.innerHeight
+export const svgWidth = (windowWidth*(1-sidebarWidth))
+export const vizWidth = svgWidth - margin.left - margin.right;
+
 
 (function (d3) {
-
-  //Constantes de taille pour le placement des éléments
-  const margin = {
-    top: 40,
-    right: 60,
-    bottom: 100,
-    left: 60
-  }
-  const sidebarWidth = 0.15
-  const windowWidth = window.innerWidth
-  const windowHeight = window.innerHeight
-  const svgWidth = (windowWidth*(1-sidebarWidth))
-  const vizWidth = svgWidth - margin.left - margin.right
-
-  //Mise en place de la viz
-
-  const g = helper.generateG(margin, svgWidth, windowHeight)
-
-  const tip_streams = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Streams(d) })
-  const tip_total = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Total(d) })
-  g.call(tip_streams)
-  g.call(tip_total)
 
   /*let countries = [
     //'global',
@@ -78,11 +66,6 @@ import * as interactivity from './scripts/interactivity.js'
   //Mise en place de l'intéraction
   interactivity.initialize()
 
-
-  const PATH = './assets/data/'
-  let country
-  let start_date
-  let end_date
   /*
   //EXPLORER PAR PAYS
   country = 'fr'
@@ -99,19 +82,7 @@ import * as interactivity from './scripts/interactivity.js'
   })*/
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'BTS'
-  country = 'us'
-  start_date = preprocess_Helpers.parseDate('2017-01-01')
-  end_date = preprocess_Helpers.parseDate('2020-04-20')
-  d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-    const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artiste, start_date, end_date)
-    helper.appendTitle(artiste)
-    const colorScales = viz.appendColorScales(data_preprocessed_artist, vizWidth)
-    viz_ParArtiste.appendColumnTitles(vizWidth)
-    viz.appendDates('2017-01-01','2020-04-20', vizWidth)
-    viz.appendHeatMaps(data_preprocessed_artist, colorScales, vizWidth, tip_streams, tip_total)
-    helper.updateSvg()
-  })
+
 
   /*
   //EXPLORER PAR TITRE
