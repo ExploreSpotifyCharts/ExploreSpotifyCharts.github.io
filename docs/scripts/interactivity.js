@@ -1,7 +1,7 @@
-import { createCountryVisualisation } from "./viz_ParPays"
-import { createArtistVisualisation } from "./viz_ParArtiste"
-import { createTrackVisualisation } from "./viz_ParTitre"
-import { createTrendsVisualisation } from "./viz_ParTendances"
+import { createCountryVisualisation } from "./viz_ParPays.js"
+import { createArtistVisualisation } from "./viz_ParArtiste.js"
+import { createTrackVisualisation } from "./viz_ParTitre.js"
+import { createTrendsVisualisation } from "./viz_ParTendances.js"
 
 /**
  *  Initialize view element

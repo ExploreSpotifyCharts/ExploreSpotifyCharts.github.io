@@ -92,13 +92,13 @@ const heatmapPadding = 5 //px
  * @param {string} trackName Titre de la chanson
  * @param {int} key L'index de la chanson pour la classe personnalisée
  */
- export function createTrack (g, trackName, key) {
-    if (trackName.length > 25) { //Si le titre est trop long, on le tronque
-        trackName = trackName.slice(0, 24)
-        trackName = trackName + '...'
+ export function createLine (g, title, key) {
+    if (title.length > 25) { //Si le titre est trop long, on le tronque
+      title = title.slice(0, 24)
+      title = title + '...'
     }
     g.append('text')
-     .text(trackName)
+     .text(title)
      .attr('class', 'trackname-viz track'+String(key))
      .attr('fill', 'white')
      .on('click', function() {
@@ -196,7 +196,7 @@ export function setHoverHandler (g, tip_streams, tip_total) {
  * @param {object} tip_streams Tooltip à associer aux streams
  * @param {object} tip_total Tooltip à associer au total
  */
- export function appendHeatMaps(data, colorScales, vizWidth, tip_streams, tip_total) {
+ export function appendHeatMaps(data, key, colorScales, vizWidth, tip_streams, tip_total) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -206,7 +206,7 @@ export function setHoverHandler (g, tip_streams, tip_total) {
     let colorScale = colorScales.total
 
     //Affichage de chaque ligne
-    data.forEach(function (track, index)
+    data.forEach(function (line, index)
       {
         //Création du groupe contenant les informations de la ligne
         const verticalOffset = (initialOffset + index*(heatmapHeight+heatmapPadding))
@@ -216,18 +216,18 @@ export function setHoverHandler (g, tip_streams, tip_total) {
                   .attr('transform', 'translate(0, '+ verticalOffset +')')
         
         //Affichage du titre
-        createTrack(g, track.Track_Name, index)
+        createLine(g, line[key], index)
 
         //Affichage de la heatmap
         let trackHeight = d3.select('.track'+String(index)).node().getBBox()
         if(index==1){
           colorScale = colorScales.streams
         }
-        createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight.height)
+        createHeatMap(g, line.Streams, index, colorScale, horizontalOffset, trackHeight.height)
         setHoverHandler(g, tip_streams, tip_total)
 
         //Affichage du nombre de streams et des statistiques
-        createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
+        createStreamStats(g, line.Count_total_streams, line.Proportion_total_streams*100, vizWidth)
       }
     )
  }
@@ -241,5 +241,29 @@ export function setHoverHandler (g, tip_streams, tip_total) {
   g.call(tip_total)
   return {streams: tip_streams,total: tip_total}
  }
+
+ /**
+ * Affichage des titres des colonnes
+ */
+export function appendColumnTitles (vizWidth, leftTitle) {
+  //Récupère taille du groupe titre/échelle au dessus pour le décalage
+  let infoSize = d3.select('.info-g').node().getBBox()
+  let verticalOffset = infoSize.height + 20
+
+  //Définit un groupe qui contiendra les titres avec le bon décalage
+  let g = d3.select('.graph-g')
+    .append('g')
+    .attr('class', 'column-titles-g')
+    .attr('transform','translate(0 ,' + verticalOffset + ')')
+
+  //Affichage Titre de gauche
+  g.append('text').text(leftTitle).attr('fill', 'white')
+
+  //Affichage Nombre de Streams
+  let nbStreams = g.append('text').text('Nombre de Streams').attr('fill', 'white').attr('id', 'nb-streams')
+  let HorizontalOffset = vizWidth - nbStreams.node().getComputedTextLength()
+  nbStreams.attr('transform','translate('+ HorizontalOffset + ',0)')
+
+}
 
 
