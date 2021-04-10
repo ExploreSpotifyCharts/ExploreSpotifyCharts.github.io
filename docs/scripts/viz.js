@@ -5,21 +5,28 @@ import * as tooltip from './tooltip.js'
 import * as interactivity from './interactivity.js'
 
 //Constantes pour l'échelle
-const scaleWidth = 500
-const scaleHeight = 15
-const scaleTextMargin = 6 //La moitié de la taille de police du texte de légende
-const scaleYMarginTop = 10
+const scaleDimensions = {
+  width: 300,
+  height: 18,
+  textMargin: 3,
+  marginTop: 30,
+}
+
+const legendWidth = 400
 
 //Constante pour la heatmap
-const heatmapWidth = 700
-const heatmapHeight = 20 //px
-const heatmapPadding = 5 //px
+const heatmap = {
+  width: 700,
+  height: 20,
+  padding: 5
+}
 
 /**
  * Affiche les échelles de couleurs
  *
  * @param {object} data Data pour la construction des échelles
  * @param {int} vizWidth Largeur de la viz pour le placement des éléments
+ * @returns {object} Les colorscale à utiliser pour les heatmap
  */
  export function appendColorScales(data, vizWidth) {
   //Valeurs extrêmes pour les bornes de l'échelle
@@ -27,26 +34,26 @@ const heatmapPadding = 5 //px
   var minMaxTotal = helper.getMinMaxStreams(data.slice(0,1))
 
   //Création des échelles de couleur
-  const colorScaleStreams = helper.createColorScale(minMaxStreams.min, minMaxStreams.max, '#000000', '#1DB954')
-  const colorScaleTotal = helper.createColorScale(minMaxTotal.min, minMaxTotal.max,'#000000', '#FF7C00')
+  const colorScaleStreams = legend.createColorScale(minMaxStreams.min, minMaxStreams.max, '#000000', '#1DB954')
+  const colorScaleTotal = legend.createColorScale(minMaxTotal.min, minMaxTotal.max,'#000000', '#FF7C00')
   var colorScales = {streams: colorScaleStreams, total: colorScaleTotal}
 
-  //Affichage de l'échelle de couleurs pour le total
-  legend.initGradient(colorScaleTotal, 'gradientTotal')
-  legend.initLegendBar('scaleTotal')
-  legend.draw((vizWidth - scaleWidth)/2, scaleYMarginTop, scaleHeight, scaleWidth, 'url(#gradientTotal)', '#scaleTotal')
-  //Affichage des bornes de l'échelle pour le total
-  let titleHeight = d3.select('.titre-viz').node().getBBox().height
-  legend.writeLegendMin(minMaxTotal.min,(vizWidth - scaleWidth)/2, titleHeight+scaleHeight/2, scaleTextMargin)
-  legend.writeLegendMax(minMaxTotal.max,((vizWidth - scaleWidth)/2)+scaleWidth, titleHeight+scaleHeight/2, scaleTextMargin)
+  //Variables pour le placement des éléments
+  const placingVariables = {
+    titleHeight: d3.select('.titre-viz').node().getBBox().height,
+    xLegend: vizWidth - legendWidth, 
+    xScale: vizWidth - scaleDimensions.width,
+  }
+  placingVariables.legendTitleHeight = legend.writeLegendTitle(placingVariables.xLegend, placingVariables.titleHeight, legendWidth), //Affichage du titre
+  placingVariables.yText = placingVariables.titleHeight + placingVariables.legendTitleHeight + scaleDimensions.height/2
 
-  //Affichage de l'échelle de couleurs pour les streams
-  legend.initGradient(colorScaleStreams, 'gradientStreams')
-  legend.initLegendBar('scaleStreams')
-  legend.draw((vizWidth - scaleWidth)/2, scaleYMarginTop+20, scaleHeight, scaleWidth, 'url(#gradientStreams)', '#scaleStreams')
-  //Affichage des bornes de l'échelle pour les streams
-  legend.writeLegendMin(minMaxStreams.min,(vizWidth - scaleWidth)/2, (titleHeight+scaleHeight/2)+20, scaleTextMargin)
-  legend.writeLegendMax(minMaxStreams.max,((vizWidth - scaleWidth)/2)+scaleWidth, (titleHeight+scaleHeight/2)+20, scaleTextMargin)
+  //Id suivant les échelles
+  const idTotal = {gradient: 'gradientTotal', scale: 'scaleTotal'}
+  const idStreams = {gradient: 'gradientStreams', scale: 'scaleStreams'}
+
+  //Affichage des échelles
+  legend.appendScale('Total : ', placingVariables, colorScaleTotal, idTotal, scaleDimensions, minMaxTotal, 0)
+  legend.appendScale('Par Titre: ', placingVariables, colorScaleStreams, idStreams, scaleDimensions, minMaxStreams, scaleDimensions.height+2)
 
   return colorScales
       
@@ -65,7 +72,7 @@ const heatmapPadding = 5 //px
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let verticalOffset = infoSize.height + titleSize.height + 20
 
-    //Définit un groupe qui contiendra les titres avec le bon décalage
+    //Définit un groupe qui contiendra les dates avec le bon décalage
     let g = d3.select('.graph-g')
       .append('g')
       .attr('class', 'dates-g')
@@ -76,11 +83,11 @@ const heatmapPadding = 5 //px
     let endDateText = g.append('text').text(helper.formatDate(endDate)).attr('fill', 'white').attr('class', 'date-viz')
 
     //Placement des dates
-    let HorizontalOffsetStart = (vizWidth - heatmapWidth)/2
+    let HorizontalOffsetStart = (vizWidth - heatmap.width)/2
     startDateText.attr('transform', 'translate(' + HorizontalOffsetStart + ', 0)')
 
     let offset = endDateText.node().getComputedTextLength()
-    let HorizontalOffsetEnd = (vizWidth - heatmapWidth)/2 + heatmapWidth - offset
+    let HorizontalOffsetEnd = (vizWidth - heatmap.width)/2 + heatmap.width - offset
     endDateText.attr('transform', 'translate(' + HorizontalOffsetEnd + ', 0)')
   
  }
@@ -89,22 +96,23 @@ const heatmapPadding = 5 //px
  * Génère le titre de la chanson pour une ligne
  *
  * @param {object} g La sélection dans laquelle on ajoute le titre
- * @param {string} trackName Titre de la chanson
- * @param {int} key L'index de la chanson pour la classe personnalisée
+ * @param {string} title Titre de la ligne
+ * @param {int} key L'index de la ligne pour la classe personnalisée
+ * @param {boolean} isTotal
  */
- export function createLine (g, title, key) {
+ export function createLine (g, title, key, isTotal) {
     if (title.length > 25) { //Si le titre est trop long, on le tronque
       title = title.slice(0, 24)
       title = title + '...'
     }
-    g.append('text')
+    let textSvg = g.append('text')
      .text(title)
      .attr('class', 'trackname-viz track'+String(key))
      .attr('fill', 'white')
-     .on('click', function() {
-       const tabElement = d3.select('#menuList li:nth-child(3)').node() 
-       interactivity.navigate(tabElement,this.textContent)
-      })
+
+    if(isTotal){
+      textSvg.style('font-weight', 'bold')
+    }
  }
 
  /**
@@ -148,7 +156,7 @@ const heatmapPadding = 5 //px
  * @param {int} y Positionnement de la heatmap en vertical
  */
 export function createHeatMap (g, data_line, key, color, xOffset, y) {
-    const width_size = heatmapWidth/data_line.length
+    const width_size = heatmap.width/data_line.length
       g.selectAll("rect.marker"+String(key))
       .data(data_line)
       .enter()
@@ -156,7 +164,7 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
       .attr("class", "marker"+String(key))
       .attr("x", (d, i) => String(xOffset + width_size*i)+"px")
       .attr("y", -y) //Décalage du au fait que le rect se positionne automatiquement sous le texte dans le g
-      .attr('height', heatmapHeight + "px")
+      .attr('height', heatmap.height + "px")
       .attr('width', width_size + "px")
       .attr('fill',d => color(d.Streams))
   }
@@ -168,21 +176,13 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
  * @param {*} tip_streams Le tooltip pour les streams
  * @param {*} tip_total Le tooltip pour le total
  */
-export function setHoverHandler (g, tip_streams, tip_total) {
+export function setHoverHandler (g, tip) {
   g.selectAll("rect")
   .on('mouseover', function(d) {
-    tip_streams.show(d, this)
+    tip.show(d, this)
   })
   .on('mouseout',  function(d) {
-    tip_streams.hide(d, this)
-  })
-
-  g.selectAll("rect.marker0")
-  .on('mouseover', function(d) {
-    tip_total.show(d, this)
-  })
-  .on('mouseout',  function(d) {
-    tip_total.hide(d, this)
+    tip.hide(d, this)
   })
   
 }
@@ -202,32 +202,15 @@ export function setHoverHandler (g, tip_streams, tip_total) {
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let datesSize = d3.select('.dates-g').node().getBBox()
     const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
-    const horizontalOffset = (vizWidth - heatmapWidth)/2
-    let colorScale = colorScales.total
+    const horizontalOffset = (vizWidth - heatmap.width)/2
+
+    //Affichage de la ligne de total
+    appendLine(initialOffset, horizontalOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true, key)
 
     //Affichage de chaque ligne
-    data.forEach(function (line, index)
+    data.slice(1).forEach(function (track, index)
       {
-        //Création du groupe contenant les informations de la ligne
-        const verticalOffset = (initialOffset + index*(heatmapHeight+heatmapPadding))
-        let g = d3.select('.graph-g')
-                  .append('g')
-                  .attr('class', "line"+String(index))
-                  .attr('transform', 'translate(0, '+ verticalOffset +')')
-        
-        //Affichage du titre
-        createLine(g, line[key], index)
-
-        //Affichage de la heatmap
-        let trackHeight = d3.select('.track'+String(index)).node().getBBox()
-        if(index==1){
-          colorScale = colorScales.streams
-        }
-        createHeatMap(g, line.Streams, index, colorScale, horizontalOffset, trackHeight.height)
-        setHoverHandler(g, tip_streams, tip_total)
-
-        //Affichage du nombre de streams et des statistiques
-        createStreamStats(g, line.Count_total_streams, line.Proportion_total_streams*100, vizWidth)
+        appendLine(initialOffset+50, horizontalOffset, index, track, colorScales.streams, tip_streams, vizWidth, false, key)
       }
     )
  }
@@ -264,6 +247,34 @@ export function appendColumnTitles (vizWidth, leftTitle) {
   let HorizontalOffset = vizWidth - nbStreams.node().getComputedTextLength()
   nbStreams.attr('transform','translate('+ HorizontalOffset + ',0)')
 
+}
+
+
+/**
+ * Génère une ligne
+ *
+ * @param {object} data La data à afficher
+ * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
+ * @param {object} vizWidth Largeur de la viz pour le placement des éléments
+ */
+export function appendLine(initialOffset, horizontalOffset, index, track, colorScale, tip, vizWidth, isTotal, key) {
+  //Création du groupe contenant les informations de la ligne
+  const verticalOffset = (initialOffset + index*(heatmap.height+heatmap.padding))
+  let g = d3.select('.graph-g')
+            .append('g')
+            .attr('class', "line"+String(index))
+            .attr('transform', 'translate(0, '+ verticalOffset +')')
+  
+  //Affichage du titre
+  createLine(g, track[key], index, isTotal)
+
+  //Affichage de la heatmap
+  let trackHeight = d3.select('.track'+String(index)).node().getBBox().height
+  createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight)
+  setHoverHandler(g, tip)
+
+  //Affichage du nombre de streams et des statistiques
+  createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
 }
 
 

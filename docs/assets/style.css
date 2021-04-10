@@ -186,7 +186,21 @@ option {
     color: black;
 }
 
-/* Visualisation styles */
+/* ----------------Legend styles -----------------*/
+
+#legendtitle{
+    font-size:15px;
+}
+
+.legend.max, .legend.min {
+    font-size : 12px;
+}
+
+.legendlabel{
+    font-size : 14px;
+}
+
+/* ---------------- Visualisation styles -----------------*/
 
 .titre-viz {
     font-size: 20px;
@@ -196,11 +210,8 @@ option {
     font-size: 12px;
 }
 
-.legend.max, .legend.min {
-    font-size : 12px;
-}
 
-.trackname-viz, .percentage-streams, .nbstreams-values {
+.percentage-streams, .nbstreams-values {
     font-size : 13px;
 }
 
@@ -212,6 +223,9 @@ option {
 .trackname-viz:hover {
     font-weight: bold;
 }
+
+
+/* ---------------- Tooltip styles -----------------*/
 
 .d3-tip {
     line-height: 1;

@@ -15,7 +15,8 @@
       .attr('transform',
         'translate(' + margin.left + ',' + margin.top + ')')
     
-    g.append('g').attr('class', 'info-g')
+    let info = g.append('g').attr('class', 'info-g')
+    info.append('g').attr('class', 'legend-g')
     g.append('g').attr('class', 'graph-g')
 
     return g
@@ -56,22 +57,6 @@
   var result = {min: min_stream, max: max_stream}
   return result
 }
-
-/**
- * Génère l'échelle de couleur
- *
- * @param {int} min la valeur minimum
- * @param {int} max la valeur maximum
- * @param {string} startingColor code hexa de la couleur de début de l'échelle
- * @param {string} endingColor code hexa de la couleur de fin de l'échelle
- * @returns {object} l'échelle générée
- */
- export function createColorScale (min, max, startingColor, endingColor) {
-    return d3.scaleLinear()
-    .domain([min, max])
-    .range([startingColor, endingColor])
-}
-
 
 
 /**
