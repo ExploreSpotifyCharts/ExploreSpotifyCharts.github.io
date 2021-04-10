@@ -7,8 +7,8 @@ import * as preprocess_Helpers from './preprocess_Helpers.js'
  * @param {object[]} data The data for the country selected (can be 'global')
  * @param {int} start_day The start day to considered data selected
  * @param {int} start_month The start month to considered data selected
- * @param {Date} end_day The end day to considered data selected
- * @param {Date} end_month The end day to considered data selected
+ * @param {int} end_day The end day to considered data selected
+ * @param {int} end_month The end day to considered data selected
  * @returns {object[]} Table of objects containing the data of interest
  */
 export function ExplorerParTendance(data, start_day, start_month, end_day=null, end_month=null) 

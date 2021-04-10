@@ -1,7 +1,12 @@
+import { createCountryVisualisation } from "./viz_ParPays.js"
+import { createArtistVisualisation } from "./viz_ParArtiste.js"
+import { createTrackVisualisation } from "./viz_ParTitre.js"
+import { createTrendsVisualisation } from "./viz_ParTendances.js"
+import { PATH } from "../index.js"
 
-/*Public function*/
-
-/* Initialize view element */
+/**
+ *  Initialize view element
+ */
 export function initialize() {
   //Add events listerners to reactive elements
   d3.selectAll('li').on("click", function() {navigate(this)})
@@ -11,7 +16,6 @@ export function initialize() {
   $('#form').on('submit', submit)
 
   //Load data
-  const PATH =  './assets/data/' 
   d3.csv(PATH+'artistes'+'.csv', d3.autoType).then(function (data_artistes) {
     array_artistes = data_artistes.map(line => String(line['Artist']))
     d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
@@ -22,10 +26,23 @@ export function initialize() {
         countries = data_countries.map(line => {
           return {code: String(line['country code']), country: String(line['country'])}
         })
-        createForm('Pays')
+        createFormAndViz('Pays')
       })
     })  
   })
+}
+
+/**
+ * Navigate to the selected tab
+ * @param {HTMLElement} element 
+ */
+ export function navigate(element,value) {
+  const tab = element.innerText
+  d3.selectAll('li').attr('class', null)
+  d3.select(element).attr('class', 'selected')
+  resetForm()
+  resetDataviz()
+  createFormAndViz(tab,value)
 }
 
 /* Global var */
@@ -38,49 +55,41 @@ var artistTracks = []
 /* Private function*/
 
 /**
- * Navigate to the selected tab
- * @param {HTMLElement} element 
- */
-function navigate(element) {
-  const tab = element.innerText
-  d3.selectAll('li').attr('class', null)
-  d3.select(element).attr('class', 'selected')
-  resetForm()
-  createForm(tab)
-}
-
-/**
  * Create the header form link to the tab
  * @param {String} tab 
  */
-function createForm(tab, value) {
+function createFormAndViz(tab, value) {
     let artist
+    let country
     switch(tab) {
       case "Pays":
-        const country = value ? value : 'Mondial'
+        country = value ? value : 'Mondial'
         createDatePickers()
         createSuggestbox('Pays', countries.map(d => d.country), country)
+        createCountryVisualisation(getCountryCode(country), country)
         break
       case "Tendances":
         createMonthDayPickers()
         createSuggestbox('Pays',  countries.map(d => d.country), 'Mondial')
+        createTrendsVisualisation()
         break
       case "Artiste":
         artist = value ? value : randomValue(array_artistes)
         createDatePickers()
         createSuggestbox('Artiste', array_artistes, artist)
         createSuggestbox('Pays', countries.map(d => d.country), 'Mondial')
+        createArtistVisualisation(artist)
         break
       case "Titre":
         createDatePickers()
         artist = value ? getArtistByTrack(value) : randomValue(array_artistes)
         artistTracks = getArtistTracks(artist)
         const track = value ? value : randomValue(artistTracks)
-  
         createSuggestbox('Artiste', array_artistes, artist)
-        $('#Artiste').on('input',updateTrackList)
+        d3.select('#Artiste').on('input',updateTrackList)
         
         createSuggestbox('Titre', artistTracks, track)
+        createTrackVisualisation(track, countries)
         break
   }
   //Reset form validation on changes
@@ -173,9 +182,19 @@ function submit(e) {
   let params = parseParams(rawParams)
   if (isFormValid(params)) {
     params = processParams(params)
-    console.log(params)
-    /* Do something with the parameters */
-  } else {
+    resetDataviz()
+    if(!d3.select('#menuList li:nth-child(1).selected').empty()){ //Pays
+      createCountryVisualisation(params[0][2],params[0][1],params[2][1],params[3][1])
+    }
+    if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artiste
+      createArtistVisualisation(params[0][1],params[1][2],params[1][1],params[3][1],params[4][1])
+    }
+    if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
+      createTrackVisualisation(params[1][1], countries, params[3][1],params[4][1])
+    }
+    if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
+      createTrendsVisualisation(params[0][2],params[2][1],params[3][1],params[4][1],params[5][1])
+    }
   }
 }
 
@@ -226,7 +245,7 @@ function createMonthDayPickers(){
  */
 function createDatePickers() {
     //Using JQuery to append elements to a specific position
-    const datepicker =  "<input type='date' name='date' value='2017-01-01'  min='2017-01-01' max='2021-01-01'></input>"
+    const datepicker =  "<input type='date' name='date' value='2017-01-01'  min='2017-01-01' max='2020-04-20'></input>"
     $("select[name='month']").after(datepicker)
 
     if($("#day input[type='radio']").is(":checked")) {
@@ -240,7 +259,8 @@ function createDatePickers() {
     this.setCustomValidity("")
   })
 
-    d3.selectAll("select").remove()
+  d3.selectAll("select").remove()
+  d3.select("#period input[type='date']:nth-child(4)").attr('value','2020-04-20')
 }
 
 /**
@@ -263,7 +283,7 @@ function updateTrackList() {
     return this.value.toUpperCase() === currentVal.toUpperCase()
    }).length) {
     artistTracks = getArtistTracks(currentVal)
-    d3.select("#Titre").attr('value',artistTracks[0])
+    d3.select("#Titre").attr('value',randomValue(artistTracks))
     d3.selectAll("#listTitre option").remove()
     d3.select("#listTitre").selectAll("option").data(artistTracks).enter().append('option').attr('value',d => d)
   }
@@ -284,18 +304,18 @@ function isDateInvalid(day,month,duration) {
     case '09':
     case '11':
       if (day=='31') {
-        $("#" + duration + " select")[0].setCustomValidity(error)
-        $("#" + duration + " select")[0].reportValidity()
-        return false
+        d3.select("#" + duration + " select").node().setCustomValidity(error)
+        d3.select("#" + duration + " select").node().reportValidity()
+        return true
       }
     case '02':
       if (parseInt(day)>29) {
-        $("#" + duration + " select")[0].setCustomValidity(error)
-        $("#" + duration + " select")[0].reportValidity()
-        return false
+        d3.select("#" + duration + " select").node().setCustomValidity(error)
+        d3.select("#" + duration + " select").node().reportValidity()
+        return true
       }
     default:
-      return true
+      return false
   }
 }
 
@@ -339,10 +359,10 @@ function isFormValid(params) {
     
       if( startDate > endDate) {
         const error = 'Les dates sont incorrectes : la date de début doit être strictement inférieur à la date de fin !'
-        $("#period input[type='date']")[0]?.setCustomValidity(error)
-        $("#period input[type='date']")[0]?.reportValidity()   
-        $("#period select")[0]?.setCustomValidity(error)
-        $("#period select")[0]?.reportValidity()                
+        d3.select("#period input[type='date']").node()?.setCustomValidity(error)
+        d3.select("#period input[type='date']").node()?.reportValidity()   
+        d3.select("#period select").node()?.setCustomValidity(error)
+        d3.select("#period select").node()?.reportValidity()                
         validationResult = false
       }
     }
@@ -382,8 +402,8 @@ function isFormValid(params) {
     if(data.filter(value => value == fieldValue).length > 0) return true
     //Display error if the field is invalid
     const error = word + fieldName.toLowerCase() + " " + fieldValue +" n'existe pas"
-    $("#" + fieldName)[0].setCustomValidity(error)
-    $("#" + fieldName)[0].reportValidity()
+    d3.select("#" + fieldName).node().setCustomValidity(error)
+    d3.select("#" + fieldName).node().reportValidity()
     return false
   }
 
@@ -407,7 +427,8 @@ function isFormValid(params) {
 
   function processParams(params) {
     let index = params.findIndex( v => v[0] == 'Pays')
-    params[index][1] = getCountryCode( params[index][1])
+    if(index >= 0) params[index].push(getCountryCode(params[index][1]))
+    //TODO: process for tendances date
     return params
   }
 
@@ -419,4 +440,8 @@ function isFormValid(params) {
   function getCountryCode(country) {
     const index = countries.findIndex(v => v.country == country)
     return countries[index].code
+  }
+
+  function resetDataviz() {
+    d3.selectAll('#main-g').remove()
   }
