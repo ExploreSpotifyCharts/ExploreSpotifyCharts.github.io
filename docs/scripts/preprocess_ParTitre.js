@@ -10,22 +10,28 @@ import * as preprocess_Helpers from './preprocess_Helpers.js'
  * @param {Date} end The end date to considered data selected
  * @returns {object[]} Table of objects containing the data of interest
  */
-export function ExplorerParTitre(data_countries, country_codes, start, end=null) 
+export function ExplorerParTitre(data_countries, countries, start, end=null) 
 {
   if (!end) { end = start }
 
   let data_processed = []
   data_countries.forEach((data_country, index) =>
     {
-      const country_code = country_codes[index]
+      const country_name = countries[index]['country']
+
       let data_country_preprocessed = data_country
 
       //Filter on date
       data_country_preprocessed = data_country_preprocessed.filter(line => preprocess_Helpers.isValidDate(line['date']) && preprocess_Helpers.isDateToBeConsidered(line['date'], start, end))
       
       //Reduce
-      data_country_preprocessed = preprocess_Helpers.reduceDataToOneElement(data_country_preprocessed, country_code)
-      data_processed.push(data_country_preprocessed)
+      data_country_preprocessed = preprocess_Helpers.reduceDataToOneElement(data_country_preprocessed, country_name)
+
+      //Check if there is data for that country and push if so
+      if (data_country_preprocessed[1]['Count_total_streams'] != 0)
+      {
+        data_processed.push(data_country_preprocessed)
+      }
     })
 
   //Sort on count_total_streams and get top k

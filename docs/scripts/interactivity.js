@@ -60,12 +60,13 @@ var artistTracks = []
  */
 function createFormAndViz(tab, value) {
     let artist
+    let country
     switch(tab) {
       case "Pays":
-        const country = value ? value : 'France'
+        country = value ? value : 'Mondial'
         createDatePickers()
         createSuggestbox('Pays', countries.map(d => d.country), country)
-        createCountryVisualisation(getCountryCode(country))
+        createCountryVisualisation(getCountryCode(country), country)
         break
       case "Tendances":
         createMonthDayPickers()
@@ -74,10 +75,11 @@ function createFormAndViz(tab, value) {
         break
       case "Artiste":
         artist = value ? value : randomValue(array_artistes)
+        country = value ? value : 'Mondial'
         createDatePickers()
         createSuggestbox('Artiste', array_artistes, artist)
         createSuggestbox('Pays', countries.map(d => d.country), 'Mondial')
-        createArtistVisualisation(artist)
+        createArtistVisualisation(artist, getCountryCode(country), country)
         break
       case "Titre":
         createDatePickers()
@@ -88,7 +90,7 @@ function createFormAndViz(tab, value) {
         d3.select('#Artiste').on('input',updateTrackList)
         
         createSuggestbox('Titre', artistTracks, track)
-        createTrackVisualisation(track)
+        createTrackVisualisation(track, countries)
         break
   }
   //Reset form validation on changes
@@ -180,17 +182,16 @@ function submit(e) {
   const rawParams = $('#form').serialize();
   let params = parseParams(rawParams)
   if (isFormValid(params)) {
-    console.log(params)
     params = processParams(params)
     resetDataviz()
     if(!d3.select('#menuList li:nth-child(1).selected').empty()){ //Pays
-      createCountryVisualisation(params[0][1],params[2][1],params[3][1])
+      createCountryVisualisation(params[0][2],params[0][1],params[2][1],params[3][1])
     }
     if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artiste
-      createArtistVisualisation(params[0][1],params[1][1],params[3][1],params[4][1])
+      createArtistVisualisation(params[0][1],params[1][2],params[1][1],params[3][1],params[4][1])
     }
     if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
-      createTrackVisualisation(params[0][1],params[2][1],params[3][1])
+      createTrackVisualisation(params[1][1], countries, params[3][1],params[4][1])
     }
     if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
       createTrendsVisualisation(params[0][1],params[2][1],params[3][1])
@@ -431,7 +432,7 @@ function isFormValid(params) {
 
   function processParams(params) {
     let index = params.findIndex( v => v[0] == 'Pays')
-    if(index >= 0) params[index][1] = getCountryCode( params[index][1])
+    if(index >= 0) params[index].push(getCountryCode(params[index][1]))
     //TODO: process for tendances date
     return params
   }
