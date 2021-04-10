@@ -62,10 +62,11 @@ function createFormAndViz(tab, value) {
     let artist
     switch(tab) {
       case "Pays":
-        const country = value ? value : 'Mondial'
+        const country = value ? value : 'France'
         createDatePickers()
         createSuggestbox('Pays', countries.map(d => d.country), country)
-        createCountryVisualisation(country)
+        const country_code = countries.filter(line => line['country'] == country)[0]['code']
+        createCountryVisualisation(country_code)
         break
       case "Tendances":
         createMonthDayPickers()
@@ -182,12 +183,19 @@ function submit(e) {
   if (isFormValid(params)) {
     console.log(params)
     params = processParams(params)
-    if(!d3.select('#menuList li:nth-child(2).selected').empty()){ 
+    if (!d3.select('#menuList li:nth-child(1).selected').empty()) //Pays
+    {
+      resetDataviz()
+      createCountryVisualisation(params[0][1],params[2][1],params[3][1])
+    }
+    else if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artist
       resetDataviz()
       createArtistVisualisation(params[0][1],params[1][1],params[3][1],params[4][1])
     }
     /* Do something with the parameters */
-  } else {
+  } else
+  {
+
   }
 }
 
