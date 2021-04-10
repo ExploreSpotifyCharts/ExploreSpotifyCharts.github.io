@@ -99,8 +99,8 @@ import * as interactivity from './scripts/interactivity.js'
   })*/
 
   //EXPLORER PAR ARTISTE
-  const artiste = 'BTS'
-  country = 'us'
+  const artiste = 'Harry Styles'
+  country = 'fr'
   start_date = preprocess_Helpers.parseDate('2017-01-01')
   end_date = preprocess_Helpers.parseDate('2020-04-20')
   d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
