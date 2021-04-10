@@ -29,13 +29,12 @@ export function createTrackVisualisation(track, start_date, end_date) {
     let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
 
     const tip = viz.initializeViz()
-    const PATH = './assets/data/'
     track = track ? track : 'Shape Of You'
     start_date = start_date ? start_date : '2017-01-01'
     end_date = end_date ? end_date : '2020-04-20'
 
     let call_countries = []
-    countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+    countries.forEach(country => call_countries.push(d3.csv(index.PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
         const data_filtered = data.filter(line => line['Track Name'] == track)
         return data_filtered
     })))

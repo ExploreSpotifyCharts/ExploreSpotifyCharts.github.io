@@ -7,12 +7,11 @@ import * as index from '../index.js'
 
 export function createArtistVisualisation(artist, country, start_date, end_date) {
   const tip = viz.initializeViz()
-  const PATH = './assets/data/'
   artist = artist ? artist : 'BTS'
   country = country ? country : 'us'
   start_date = start_date ? start_date : '2017-01-01'
   end_date = end_date ? end_date : '2020-04-20'
-  d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+  d3.csv(index.PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artist, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
     helper.appendTitle(artist)
     const colorScales = viz.appendColorScales(data_preprocessed_artist, index.vizWidth)

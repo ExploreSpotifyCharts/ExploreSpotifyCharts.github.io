@@ -25,6 +25,9 @@ import * as interactivity from './scripts/interactivity.js'
  * @author Tanguy Gloaguen
  */
 
+//Chemin pour accèder aux données
+export const PATH = './assets/data/'
+
 //Constantes de taille pour le placement des éléments
 export const margin = {
   top: 40,
@@ -37,6 +40,7 @@ export const windowWidth = window.innerWidth
 export const windowHeight = window.innerHeight
 export const svgWidth = (windowWidth*(1-sidebarWidth))
 export const vizWidth = svgWidth - margin.left - margin.right;
+
 
 
 (function (d3) {
@@ -82,7 +86,6 @@ export const vizWidth = svgWidth - margin.left - margin.right;
   })*/
 
   //EXPLORER PAR ARTISTE
-  viz_ParArtiste.createArtistVisualisation()
 
   /*
   //EXPLORER PAR TITRE

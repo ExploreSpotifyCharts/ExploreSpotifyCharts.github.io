@@ -2,6 +2,7 @@ import { createCountryVisualisation } from "./viz_ParPays.js"
 import { createArtistVisualisation } from "./viz_ParArtiste.js"
 import { createTrackVisualisation } from "./viz_ParTitre.js"
 import { createTrendsVisualisation } from "./viz_ParTendances.js"
+import { PATH } from "../index.js"
 
 /**
  *  Initialize view element
@@ -15,7 +16,6 @@ export function initialize() {
   $('#form').on('submit', submit)
 
   //Load data
-  const PATH =  './assets/data/' 
   d3.csv(PATH+'artistes'+'.csv', d3.autoType).then(function (data_artistes) {
     array_artistes = data_artistes.map(line => String(line['Artist']))
     d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
@@ -65,7 +65,7 @@ function createFormAndViz(tab, value) {
         const country = value ? value : 'Mondial'
         createDatePickers()
         createSuggestbox('Pays', countries.map(d => d.country), country)
-        createCountryVisualisation(country)
+        createCountryVisualisation(getCountryCode(country))
         break
       case "Tendances":
         createMonthDayPickers()
@@ -182,9 +182,18 @@ function submit(e) {
   if (isFormValid(params)) {
     console.log(params)
     params = processParams(params)
+    resetDataviz()
+    if(!d3.select('#menuList li:nth-child(1).selected').empty()){ 
+      createCountryVisualisation(params[0][1],params[2][1],params[3][1])
+    }
     if(!d3.select('#menuList li:nth-child(2).selected').empty()){ 
-      resetDataviz()
       createArtistVisualisation(params[0][1],params[1][1],params[3][1],params[4][1])
+    }
+    if(!d3.select('#menuList li:nth-child(3).selected').empty()){ 
+      createTrackVisualisation(params[0][1],params[2][1],params[3][1])
+    }
+    if(!d3.select('#menuList li:nth-child(4).selected').empty()){ 
+      createTrendsVisualisation(params[0][1],params[2][1],params[3][1])
     }
     /* Do something with the parameters */
   } else {
