@@ -48,8 +48,10 @@ import * as interactivity from './scripts/interactivity.js'
 
   const g = helper.generateG(margin, svgWidth, windowHeight)
 
-  const tip = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents(d) })
-  g.call(tip)
+  const tip_streams = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Streams(d) })
+  const tip_total = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Total(d) })
+  g.call(tip_streams)
+  g.call(tip_total)
 
   /*let countries = [
     //'global',
@@ -77,7 +79,7 @@ import * as interactivity from './scripts/interactivity.js'
   interactivity.initialize()
 
 
-  const PATH =  './assets/data/'
+  const PATH = './assets/data/'
   let country
   let start_date
   let end_date
@@ -107,7 +109,7 @@ import * as interactivity from './scripts/interactivity.js'
     const colorScales = viz.appendColorScales(data_preprocessed_artist, vizWidth)
     viz_ParArtiste.appendColumnTitles(vizWidth)
     viz.appendDates('2017-01-01','2020-04-20', vizWidth)
-    viz.appendHeatMaps(data_preprocessed_artist, colorScales, vizWidth, tip)
+    viz.appendHeatMaps(data_preprocessed_artist, colorScales, vizWidth, tip_streams, tip_total)
     helper.updateSvg()
   })
 

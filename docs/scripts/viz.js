@@ -76,8 +76,8 @@ const heatmap = {
       .attr('transform','translate(0 ,' + verticalOffset + ')')
 
     //Affichage Dates
-    let startDateText = g.append('text').text(startDate).attr('fill', 'white').attr('class', 'date-viz')
-    let endDateText = g.append('text').text(endDate).attr('fill', 'white').attr('class', 'date-viz')
+    let startDateText = g.append('text').text(helper.formatDate(startDate)).attr('fill', 'white').attr('class', 'date-viz')
+    let endDateText = g.append('text').text(helper.formatDate(endDate)).attr('fill', 'white').attr('class', 'date-viz')
 
     //Placement des dates
     let HorizontalOffsetStart = (vizWidth - heatmap.width)/2
@@ -127,7 +127,7 @@ const heatmap = {
      .attr('fill', 'white')
 
     let nbstreams = g.append('text')
-     .text(String(streams))
+     .text(helper.formatNumber(streams))
      .attr('class', 'nbstreams-values')
      .attr('fill', 'white')
 
@@ -157,6 +157,7 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
       .data(data_line)
       .enter()
       .append("rect")
+      .attr("class", "marker"+String(key))
       .attr("x", (d, i) => String(xOffset + width_size*i)+"px")
       .attr("y", -y) //Décalage du au fait que le rect se positionne automatiquement sous le texte dans le g
       .attr('height', heatmap.height + "px")
@@ -168,16 +169,17 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
  * Map du hover (tooltip) pour l'interaction avec les rectangles des heatmaps
  *
  * @param {object} g La sélection dans laquelle on récupère les objets à map avec le tooltip
- * @param {*} tip Le tooltip
+ * @param {*} tip_streams Le tooltip pour les streams
+ * @param {*} tip_total Le tooltip pour le total
  */
 export function setHoverHandler (g, tip) {
   g.selectAll("rect")
-    .on('mouseover', function(d) {
-      tip.show(d, this)
-    })
-    .on('mouseout',  function(d) {
-      tip.hide(d, this)
-    })
+  .on('mouseover', function(d) {
+    tip.show(d, this)
+  })
+  .on('mouseout',  function(d) {
+    tip.hide(d, this)
+  })
   
 }
 
@@ -187,8 +189,10 @@ export function setHoverHandler (g, tip) {
  * @param {object} data La data à afficher
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
+ * @param {object} tip_streams Tooltip à associer aux streams
+ * @param {object} tip_total Tooltip à associer au total
  */
- export function appendHeatMaps(data, colorScales, vizWidth, tip) {
+ export function appendHeatMaps(data, colorScales, vizWidth, tip_streams, tip_total) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -197,12 +201,12 @@ export function setHoverHandler (g, tip) {
     const horizontalOffset = (vizWidth - heatmap.width)/2
 
     //Affichage de la ligne de total
-    appendLine(initialOffset, horizontalOffset, 0, data.slice(0,1)[0], colorScales.total, tip, vizWidth, true)
+    appendLine(initialOffset, horizontalOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true)
 
     //Affichage de chaque ligne
     data.slice(1).forEach(function (track, index)
       {
-        appendLine(initialOffset+50, horizontalOffset, index, track, colorScales.streams, tip, vizWidth, false)
+        appendLine(initialOffset+50, horizontalOffset, index, track, colorScales.streams, tip_streams, vizWidth, false)
       }
     )
  }
@@ -216,7 +220,6 @@ export function setHoverHandler (g, tip) {
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
 export function appendLine(initialOffset, horizontalOffset, index, track, colorScale, tip, vizWidth, isTotal) {
-  console.log(track)
   //Création du groupe contenant les informations de la ligne
   const verticalOffset = (initialOffset + index*(heatmap.height+heatmap.padding))
   let g = d3.select('.graph-g')
