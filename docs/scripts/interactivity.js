@@ -95,11 +95,13 @@ function createFormAndViz(tab, value) {
         d3.select('#Artiste').on('input',updateTrackList)
         
         createSuggestbox('Titre', artistTracks, track)
-        console.log(artist)
         let countries_to_keep = artists_countries.filter(element => element.artist == artist)[0].countries
-        console.log(countries_to_keep)
+        const index = countries_to_keep.indexOf('global')
+        if (index != -1)
+        {
+          countries_to_keep.splice(index, 1)
+        }
         countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-        console.log(countries_to_keep)
         createTrackVisualisation(track, countries_to_keep)
         break
   }
