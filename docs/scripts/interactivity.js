@@ -26,7 +26,12 @@ export function initialize() {
         countries = data_countries.map(line => {
           return {code: String(line['country code']), country: String(line['country'])}
         })
-        createFormAndViz('Pays')
+        d3.csv(PATH+'artist_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
+          artists_countries = data_artists_countries.map(line => {
+            return {artist: String(line['Artist']), countries: String(line['Countries']).split('|')}
+          })
+          createFormAndViz('Pays')
+        })
       })
     })  
   })
@@ -50,6 +55,7 @@ export function initialize() {
 var array_titles = []
 var array_artistes = []
 var countries = []
+var artists_countries = []
 var artistTracks = []
 
 /* Private function*/
@@ -89,7 +95,14 @@ function createFormAndViz(tab, value) {
         d3.select('#Artiste').on('input',updateTrackList)
         
         createSuggestbox('Titre', artistTracks, track)
-        createTrackVisualisation(track, countries)
+        let countries_to_keep = artists_countries.filter(element => element.artist == artist)[0].countries
+        const index = countries_to_keep.indexOf('global')
+        if (index != -1)
+        {
+          countries_to_keep.splice(index, 1)
+        }
+        countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
+        createTrackVisualisation(track, countries_to_keep)
         break
   }
   //Reset form validation on changes
@@ -184,13 +197,36 @@ function submit(e) {
     params = processParams(params)
     resetDataviz()
     if(!d3.select('#menuList li:nth-child(1).selected').empty()){ //Pays
-      createCountryVisualisation(params[0][2],params[0][1],params[2][1],params[3][1])
+      const country = params[0][2]
+      const country_name = params[0][1]
+      const period_start = params[2][1]
+      const period_end = params[3][1]
+      createCountryVisualisation(country, country_name, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artiste
-      createArtistVisualisation(params[0][1],params[1][2],params[1][1],params[3][1],params[4][1])
+      const artist = params[0][1]
+      const country = params[1][2]
+      const country_name = params[1][1]
+      const period_start = params[3][1]
+      const period_end = params[4][1]
+
+      createArtistVisualisation(artist, country, country_name, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
-      createTrackVisualisation(params[1][1], countries, params[3][1],params[4][1])
+      const track = params[1][1]
+      const artist = params[0][1]
+      const period_start = params[3][1]
+      const period_end = params[4][1]
+
+      let countries_to_keep = artists_countries.filter(element => element.artist == artist)[0].countries
+      const index = countries_to_keep.indexOf('global')
+      if (index != -1)
+      {
+        countries_to_keep.splice(index, 1)
+      }
+      countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
+      
+      createTrackVisualisation(track, countries_to_keep, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
       createTrendsVisualisation(params[0][2],params[2][1],params[3][1],params[4][1],params[5][1])
