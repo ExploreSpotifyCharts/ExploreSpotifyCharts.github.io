@@ -1,3 +1,3 @@
-export function createTrendsVisualisation(country,start_date,end_date) {
+export function createTrendsVisualisation(country,start_day,start_month,end_day,end_month) {
     //TODO: Create the viz
 }
