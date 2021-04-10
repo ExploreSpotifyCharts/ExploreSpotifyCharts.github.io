@@ -195,10 +195,20 @@ function submit(e) {
     params = processParams(params)
     resetDataviz()
     if(!d3.select('#menuList li:nth-child(1).selected').empty()){ //Pays
-      createCountryVisualisation(params[0][2],params[0][1],params[2][1],params[3][1])
+      const country = params[0][2]
+      const country_name = params[0][1]
+      const period_start = params[2][1]
+      const period_end = params[3][1]
+      createCountryVisualisation(country, country_name, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artiste
-      createArtistVisualisation(params[0][1],params[1][2],params[1][1],params[3][1],params[4][1])
+      const artist = params[0][1]
+      const country = params[1][2]
+      const country_name = params[1][1]
+      const period_start = params[3][1]
+      const period_end = params[4][1]
+
+      createArtistVisualisation(artist, country, country_name, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
       const track = params[1][1]
@@ -206,11 +216,14 @@ function submit(e) {
       const period_start = params[3][1]
       const period_end = params[4][1]
 
-      console.log(artist)
       let countries_to_keep = artists_countries.filter(element => element.artist == artist)[0].countries
-      console.log(countries_to_keep)
+      const index = countries_to_keep.indexOf('global')
+      if (index != -1)
+      {
+        countries_to_keep.splice(index, 1)
+      }
       countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-      console.log(countries_to_keep)
+      
       createTrackVisualisation(track, countries_to_keep, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
