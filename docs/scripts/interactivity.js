@@ -75,11 +75,10 @@ function createFormAndViz(tab, value) {
         break
       case "Artiste":
         artist = value ? value : randomValue(array_artistes)
-        country = value ? value : 'Mondial'
         createDatePickers()
         createSuggestbox('Artiste', array_artistes, artist)
         createSuggestbox('Pays', countries.map(d => d.country), 'Mondial')
-        createArtistVisualisation(artist, getCountryCode(country), country)
+        createArtistVisualisation(artist)
         break
       case "Titre":
         createDatePickers()
@@ -196,10 +195,6 @@ function submit(e) {
     if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
       createTrendsVisualisation(params[0][1],params[2][1],params[3][1])
     }
-    /* Do something with the parameters */
-  } else
-  {
-
   }
 }
 

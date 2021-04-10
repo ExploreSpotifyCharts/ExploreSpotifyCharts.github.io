@@ -8,6 +8,8 @@ import * as index from '../index.js'
 export function createArtistVisualisation(artist, country, country_name, start_date, end_date) {
   const tip = viz.initializeViz()
 
+  country = country ? country : 'global'
+  country_name = country_name ? country_name : 'Mondial'
   start_date = start_date ? start_date : '2017-01-01'
   end_date = end_date ? end_date : '2020-04-20'
   

@@ -8,13 +8,13 @@ import * as index from '../index.js'
 export function createTrackVisualisation(track, countries, start_date, end_date) {
 
     //à supprimer à terme
-    countries = []
-    countries.push({'code':'be', 'country':'Belgique'})
-    countries.push({'code':'ca', 'country':'Canada'})
-    countries.push({'code':'es', 'country':'Espagne'})
-    countries.push({'code':'fr', 'country':'France'})
-    countries.push({'code':'global', 'country':'Mondial'})
-    countries.push({'code':'jp', 'country':'Japon'})
+    // countries = []
+    // countries.push({'code':'be', 'country':'Belgique'})
+    // countries.push({'code':'ca', 'country':'Canada'})
+    // countries.push({'code':'es', 'country':'Espagne'})
+    // countries.push({'code':'fr', 'country':'France'})
+    // countries.push({'code':'global', 'country':'Mondial'})
+    // countries.push({'code':'jp', 'country':'Japon'})
     //fin suppression à terme
 
     const tip = viz.initializeViz()

@@ -221,7 +221,7 @@ option {
 }
 
 .trackname-viz:hover {
-    font-weight: bold;
+    fill: #1db954;
 }
 
 

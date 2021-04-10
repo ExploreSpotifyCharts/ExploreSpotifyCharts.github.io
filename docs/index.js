@@ -26,7 +26,7 @@ import * as interactivity from './scripts/interactivity.js'
  */
 
 //Chemin pour accèder aux données
-export const PATH = './assets/data/'
+export const PATH = './' //assets/data/'
 
 //Constantes de taille pour le placement des éléments
 export const margin = {

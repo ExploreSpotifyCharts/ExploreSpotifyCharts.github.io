@@ -100,7 +100,7 @@ const heatmap = {
  * @param {int} key L'index de la ligne pour la classe personnalisée
  * @param {boolean} isTotal
  */
- export function createLine (g, title, key, isTotal) {
+ export function createLine (g, title, key, isTotal,titleType) {
     if (title.length > 25) { //Si le titre est trop long, on le tronque
       title = title.slice(0, 24)
       title = title + '...'
@@ -111,7 +111,12 @@ const heatmap = {
      .attr('fill', 'white')
 
     if(isTotal){
-      textSvg.style('font-weight', 'bold')
+      textSvg
+      .style('font-weight', 'bold')
+      .style('cursor','auto')
+      .style('fill','white')
+    } else {
+        setClickHandler(titleType,textSvg)
     }
  }
 
@@ -264,9 +269,9 @@ export function appendLine(initialOffset, horizontalOffset, index, track, colorS
             .append('g')
             .attr('class', "line"+String(index))
             .attr('transform', 'translate(0, '+ verticalOffset +')')
-  
+
   //Affichage du titre
-  createLine(g, track[key], index, isTotal)
+  createLine(g, track[key], index, isTotal, key)
 
   //Affichage de la heatmap
   let trackHeight = d3.select('.track'+String(index)).node().getBBox().height
@@ -275,6 +280,29 @@ export function appendLine(initialOffset, horizontalOffset, index, track, colorS
 
   //Affichage du nombre de streams et des statistiques
   createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
+}
+
+/**
+ * Set click handler for interactivity
+ * @param {string} key 
+ */
+function setClickHandler(key,g) {
+  switch(key) {
+    case 'Track_Name':
+      g.on('click', function() {
+        const tabElement = d3.select('#menuList li:nth-child(3)').node()
+        interactivity.navigate(tabElement, this.textContent)
+      })
+      break
+    case 'Region':
+      g.on('click', function() {
+        const tabElement = d3.select('#menuList li:nth-child(1)').node()
+        interactivity.navigate(tabElement, this.textContent)
+      })
+      break
+    default:
+      break
+  }
 }
 
 
