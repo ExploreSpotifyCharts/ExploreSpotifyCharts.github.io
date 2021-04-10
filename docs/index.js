@@ -17,6 +17,7 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
 
 (function (d3) {
 
+  /*
   let countries = [
     'global',
     'ar', 'at', 'au',
@@ -37,41 +38,46 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
     'tr', 'tw',
     'us', 'uy'
   ]
+  */
 
-  const PATH = './'
+  const PATH = './assets/data/'
 
 
-// let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
+let countries = ['global', 'be', 'ca', 'fr'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
 let call_countries = []
+
 countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-      let data_preprocessed = [...new Set(data.map(line => 
-        {
-          if(line && line['Artist'] && line['Track Name']){
-            let artist = line['Artist'].replace('#', '')
-            let track = line['Track Name']
-            while (track.includes('#'))
-            {
-              track = track.replace('#', '')
-            }
-            if (artist != '' && artist != 'NA' && track != '' && track != 'NA') {return artist+','+track}
-            }
-          }))].sort()
-        console.log(data_preprocessed)
-        return data_preprocessed
-    })))
+  let artists = [...new Set(data.map(line => line['Artist'].replace('#', '')))].sort()
+  
+  let index_to_remove = artists.indexOf('')
+  if (index_to_remove > -1) { artists.splice(index_to_remove, 1)}
+  index_to_remove = artists.indexOf('NA')
+  if (index_to_remove > -1) { artists.splice(index_to_remove, 1)}
+
+  console.log(artists)
+  return artists
+})))
 
 Promise.all(call_countries)
   .then(function(files) {
-    let data_preprocessed = []
-    files.forEach(file => {
-      data_preprocessed = data_preprocessed.concat(file)
-      data_preprocessed = [...new Set(data_preprocessed)].sort()
+    let data_preprocessed = {}
+    files.forEach((file, index) => {
+      file.forEach(artist =>
+        {
+          const country_code = countries[index]
+          if (typeof data_preprocessed[artist] == 'undefined')
+          {
+            data_preprocessed[artist] = []
+          }
+          data_preprocessed[artist].push(country_code)
+        })
     })
+    data_preprocessed = Object.entries(data_preprocessed)
     console.log(data_preprocessed)
 
 
-    let csvContent = "data:text/csv;charset=utf-8,"+"Artist,Track Name"+"\n"
-    + data_preprocessed.join("\n")
+    let csvContent = "data:text/csv;charset=utf-8,"+"Artist,Countries"+"\n"
+      + data_preprocessed.map(e => e[0]+','+e[1].join("|")).join("\n");
     //console.log(csvContent)
     var encodedUri = encodeURI(csvContent)
     var link = document.createElement("a");
