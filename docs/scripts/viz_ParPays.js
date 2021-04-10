@@ -5,7 +5,7 @@ import * as viz from './viz.js'
 import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
-export function createCountryVisualisation(country, start_date, end_date) {
+export function createCountryVisualisation(country_code, start_date, end_date) {
     const tip = viz.initializeViz()
     country = country ? country : 'global'
     start_date = start_date ? start_date : '2017-01-01'

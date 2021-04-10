@@ -62,7 +62,7 @@ function createFormAndViz(tab, value) {
     let artist
     switch(tab) {
       case "Pays":
-        const country = value ? value : 'Mondial'
+        const country = value ? value : 'France'
         createDatePickers()
         createSuggestbox('Pays', countries.map(d => d.country), country)
         createCountryVisualisation(getCountryCode(country))
@@ -183,20 +183,22 @@ function submit(e) {
     console.log(params)
     params = processParams(params)
     resetDataviz()
-    if(!d3.select('#menuList li:nth-child(1).selected').empty()){ 
+    if(!d3.select('#menuList li:nth-child(1).selected').empty()){ //Pays
       createCountryVisualisation(params[0][1],params[2][1],params[3][1])
     }
-    if(!d3.select('#menuList li:nth-child(2).selected').empty()){ 
+    if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artiste
       createArtistVisualisation(params[0][1],params[1][1],params[3][1],params[4][1])
     }
-    if(!d3.select('#menuList li:nth-child(3).selected').empty()){ 
+    if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
       createTrackVisualisation(params[0][1],params[2][1],params[3][1])
     }
-    if(!d3.select('#menuList li:nth-child(4).selected').empty()){ 
+    if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
       createTrendsVisualisation(params[0][1],params[2][1],params[3][1])
     }
     /* Do something with the parameters */
-  } else {
+  } else
+  {
+
   }
 }
 
