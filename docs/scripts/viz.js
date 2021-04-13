@@ -30,10 +30,10 @@ export let heatmap = {
  * @param {int} vizWidth Largeur de la viz pour le placement des éléments
  * @returns {object} Les colorscale à utiliser pour les heatmap
  */
- export function appendColorScales(data, vizWidth) {
+ export function appendColorScales(dataTotal, dataStreams, vizWidth) {
   //Valeurs extrêmes pour les bornes de l'échelle
-  var minMaxStreams = helper.getMinMaxStreams(data.slice(1))
-  var minMaxTotal = helper.getMinMaxStreams(data.slice(0,1))
+  var minMaxStreams = helper.getMinMaxStreams(dataStreams)
+  var minMaxTotal = helper.getMinMaxStreams(dataTotal)
 
   //Création des échelles de couleur
   const colorScaleStreams = legend.createColorScale(minMaxStreams.min, minMaxStreams.max, '#000000', '#1DB954')
@@ -69,32 +69,32 @@ export let heatmap = {
  * @param {string} endDate Date de fin de l'affichage des données
  * @param {int} vizWidth Largeur de la viz pour le placement
  */
- export function appendDates(startDate, endDate, vizWidth) {
+ export function appendDates(graphg, startDate, endDate, id) {
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let verticalOffset = infoSize.height + titleSize.height + 20
 
     //Définit un groupe qui contiendra les dates avec le bon décalage
-    let g = d3.select('.graph-g')
+    let g = graphg
       .append('g')
       .attr('class', 'dates-g')
       .attr('transform','translate(0 ,' + verticalOffset + ')')
 
     //Affichage Dates
-    g.append('text').text(helper.formatDate(startDate)).attr('fill', 'white').attr('class', 'date-viz').attr('id','startDate')
-    g.append('text').text(helper.formatDate(endDate)).attr('fill', 'white').attr('class', 'date-viz').attr('id','endDate') 
+    g.append('text').text(startDate).attr('fill', 'white').attr('class', 'date-viz').attr('id','startDate'+id)
+    g.append('text').text(endDate).attr('fill', 'white').attr('class', 'date-viz').attr('id','endDate'+id) 
  }
 
  /**
  * Place les dates en fonction de la largeur de la heatmap
  */
-export function placeDates() {
+export function placeDates(id) {
 
-  let startDateText = d3.select('#startDate')
+  let startDateText = d3.select('#startDate'+id)
   let HorizontalOffsetStart = heatmap.text
   startDateText.attr('transform', 'translate(' + HorizontalOffsetStart + ', 0)')
 
-  let endDateText = d3.select('#endDate')
+  let endDateText = d3.select('#endDate'+id)
   let offset = endDateText.node().getComputedTextLength()
   let HorizontalOffsetEnd = heatmap.text + heatmap.width - offset
   endDateText.attr('transform', 'translate(' + HorizontalOffsetEnd + ', 0)')
@@ -139,7 +139,7 @@ export function placeDates() {
  * @param {int} proportion Le pourcentage que représente le nombre de streams sur le nombre de streams total de l'artiste
  * @param {int} vizWidth La largeur de la viz pour le placement du text
  */
-  export function createStreamStats (g, streams, proportion, vizWidth) {
+  export function createStreamStats (g, index, streams, proportion, vizWidth) {
     let statText = '(' + (Math.round(proportion*100)/100).toFixed(2) + '%)'
     let percentage = g.append('text')
      .text(statText)
@@ -160,10 +160,10 @@ export function placeDates() {
 
     //Mise à jour de la longueur du texte de statistique. Ne s'applique qu'à la première ligne
     let textWidth = d3.select('#nb-streams').node().getComputedTextLength()/2 + nbstreams.node().getComputedTextLength()
-    if(heatmap.stat < textWidth){
+    if(proportion == 100){
       heatmap.stat = textWidth
       heatmap.text = textWidth
-      heatmap.width = index.vizWidth - 2*textWidth - 20
+      heatmap.width = vizWidth - 2*textWidth - 20
     }
  }
 
@@ -218,7 +218,7 @@ export function setHoverHandler (g, tip) {
  * @param {object} tip_streams Tooltip à associer aux streams
  * @param {object} tip_total Tooltip à associer au total
  */
- export function appendHeatMaps(data, key, colorScales, vizWidth, tip_streams, tip_total) {
+ export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -226,15 +226,14 @@ export function setHoverHandler (g, tip) {
     const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
 
     //Affichage de la ligne de total
-    appendLine(initialOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true, key)
+    appendLine(graphg, initialOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true, key)
 
     //Affichage de chaque ligne
     data.slice(1).forEach(function (track, index)
       {
-        appendLine(initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key)
+        appendLine(graphg, initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key)
       }
     )
-    placeDates() //Placement des date dépendant de la largeur de la heatmap
  }
 
  export function initializeViz() {
@@ -252,13 +251,13 @@ export function setHoverHandler (g, tip) {
  /**
  * Affichage des titres des colonnes
  */
-export function appendColumnTitles (vizWidth, leftTitle) {
+export function appendColumnTitles (graphg, vizWidth, leftTitle) {
   //Récupère taille du groupe titre/échelle au dessus pour le décalage
   let infoSize = d3.select('.info-g').node().getBBox()
   let verticalOffset = infoSize.height + 20
 
   //Définit un groupe qui contiendra les titres avec le bon décalage
-  let g = d3.select('.graph-g')
+  let g = graphg
     .append('g')
     .attr('class', 'column-titles-g')
     .attr('transform','translate(0 ,' + verticalOffset + ')')
@@ -281,10 +280,10 @@ export function appendColumnTitles (vizWidth, leftTitle) {
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
-export function appendLine(initialOffset, index, track, colorScale, tip, vizWidth, isTotal, key) {
+export function appendLine(graphg, initialOffset, index, track, colorScale, tip, vizWidth, isTotal, key) {
   //Création du groupe contenant les informations de la ligne
   const verticalOffset = (initialOffset + index*(heatmap.height+heatmap.padding))
-  let g = d3.select('.graph-g')
+  let g = graphg
             .append('g')
             .attr('class', "line"+String(index))
             .attr('transform', 'translate(0, '+ verticalOffset +')')
@@ -293,7 +292,7 @@ export function appendLine(initialOffset, index, track, colorScale, tip, vizWidt
   createLine(g, track[key], index, isTotal, key)
 
   //Affichage du nombre de streams et des statistiques
-  createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
+  createStreamStats(g, index, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
 
   //Affichage de la heatmap
   let trackHeight = d3.select('.track'+String(index)).node().getBBox().height

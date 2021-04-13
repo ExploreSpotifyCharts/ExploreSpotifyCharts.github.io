@@ -20,11 +20,15 @@ export function createCountryVisualisation(country, country_name, start_date, en
         
         spinner.stop()
         
-        helper.appendTitle(country_name)
-        const colorScales = viz.appendColorScales(data_preprocessed_countrytrack, index.vizWidth)
-        viz.appendColumnTitles(index.vizWidth, 'Titres')
-        viz.appendDates(start_date, end_date, index.vizWidth)
-        viz.appendHeatMaps(data_preprocessed_countrytrack, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+        let infog = d3.select('.info-g')
+        helper.appendTitle(infog, country_name)
+        const colorScales = viz.appendColorScales(data_preprocessed_countrytrack.slice(0,1), data_preprocessed_countrytrack.slice(1), index.vizWidth)
+
+        let graphg = d3.select('.graph-g')
+        viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
+        viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Pays')
+        viz.appendHeatMaps(graphg, data_preprocessed_countrytrack, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+        viz.placeDates('Pays')
         helper.updateSvg()
     }, function(error)
     {
