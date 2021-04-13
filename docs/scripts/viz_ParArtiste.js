@@ -7,8 +7,8 @@ import * as index from '../index.js'
 
 export function createArtistVisualisation(artist, country, country_name, start_date, end_date) {
 
-  let target = document.getElementsByClassName('viz-container')[0]
-  var spinner = new Spinner(index.spinnerOpts).spin(target)
+  const target = document.getElementsByClassName('viz-container')[0]
+  const spinner = new Spinner(index.spinnerOpts).spin(target)
 
   const tip = viz.initializeViz()
 

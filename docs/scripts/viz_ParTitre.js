@@ -17,8 +17,8 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
     // countries.push({'code':'jp', 'country':'Japon'})
     //fin suppression à terme
 
-    let target = document.getElementsByClassName('viz-container')[0]
-    var spinner = new Spinner(index.spinnerOpts).spin(target)
+    const target = document.getElementsByClassName('viz-container')[0]
+    const spinner = new Spinner(index.spinnerOpts).spin(target)
 
     const tip = viz.initializeViz()
 
