@@ -41,6 +41,18 @@ export const windowHeight = window.innerHeight
 export const svgWidth = (windowWidth*(1-sidebarWidth))
 export const vizWidth = svgWidth - margin.left - margin.right;
 
+/* Loader settings */
+export var spinnerOpts = {
+  lines: 9, // The number of lines to draw
+  length: 9, // The length of each line
+  width: 10, // The line thickness
+  radius: 28, // The radius of the inner circle
+  color: '#1db954', // #rgb or #rrggbb or array of colors
+  speed: 1.9, // Rounds per second
+  trail: 50, // Afterglow percentage
+  className: 'spinner', // The CSS class to assign to the spinner
+};
+
 
 
 (function (d3) {
