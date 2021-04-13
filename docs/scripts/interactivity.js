@@ -34,7 +34,11 @@ export function initialize() {
           tracks_countries = data_tracks_countries.map(line => {
             return {track: String(line['Track Name']), countries: String(line['Countries']).split('|')}
           })
-          createFormAndViz('Pays')
+          d3.csv(PATH+'extra/artists_global'+'.csv', d3.autoType).then(function (data_artists_global) {
+            artists_global = data_artists_global.map(line => String(line['Artist']))
+
+            createFormAndViz('Pays')
+          })
         })
       })
     })
@@ -56,9 +60,10 @@ export function initialize() {
 
 /* Global var */
 
+var countries = []
 var artists_tracks = []
 var artists = []
-var countries = []
+var artists_global = []
 var artists_countries = []
 var tracks_countries = []
 var artist_Selected_Tracks = []
@@ -85,7 +90,7 @@ function createFormAndViz(tab, value) {
         createTrendsVisualisation()
         break
       case "Artiste":
-        artist = value ? value : randomValue(artists)
+        artist = value ? value : randomValue(artists_global)
         createDatePickers()
         createSuggestbox('Artiste', artists, artist)
         createSuggestbox('Pays', countries.map(d => d.country), 'Mondial')
