@@ -16,30 +16,29 @@ export function initialize() {
   $('#form').on('submit', submit)
 
   //Load data
-  d3.csv(PATH+'artistes'+'.csv', d3.autoType).then(function (data_artistes) {
-    array_artistes = data_artistes.map(line => String(line['Artist']))
+  d3.csv(PATH+'country'+'.csv', d3.autoType).then(function (data_countries) {
+    countries = data_countries.map(line => {
+      return {code: String(line['country code']), country: String(line['country'])}
+    })
     d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
       array_titles = data_titres.map(line => {
         return {Artist: String(line['Artist']), Track: String(line['Track Name'])}
       })
-      d3.csv(PATH+'country'+'.csv', d3.autoType).then(function (data_countries) {
-        countries = data_countries.map(line => {
-          return {code: String(line['country code']), country: String(line['country'])}
+      d3.csv(PATH+'artist_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
+        array_artistes = data_artists_countries.map(line => String(line['Artist']))
+
+        artists_countries = data_artists_countries.map(line => {
+          return {artist: String(line['Artist']), countries: String(line['Countries']).split('|')}
         })
-        d3.csv(PATH+'artist_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
-          artists_countries = data_artists_countries.map(line => {
-            return {artist: String(line['Artist']), countries: String(line['Countries']).split('|')}
+        d3.csv(PATH+'track_countries'+'.csv', d3.autoType).then(function (data_tracks_countries) {
+          tracks_countries = data_tracks_countries.map(line => {
+            return {track: String(line['Track Name']), countries: String(line['Countries']).split('|')}
           })
-          d3.csv(PATH+'track_countries'+'.csv', d3.autoType).then(function (data_tracks_countries) {
-            tracks_countries = data_tracks_countries.map(line => {
-              return {track: String(line['Track Name']), countries: String(line['Countries']).split('|')}
-            })
-            createFormAndViz('Pays')
-          })
+          createFormAndViz('Pays')
         })
       })
-    })  
-  })
+    })
+  })  
 }
 
 /**
