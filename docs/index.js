@@ -45,73 +45,10 @@ export const vizWidth = svgWidth - margin.left - margin.right;
 
 (function (d3) {
 
-  /*let countries = [
-    //'global',
-    'ar', 'at', 'au',
-    'be', 'bo', 'br',
-    'ca', 'ch', 'cl', 'co', 'cr', 'cz',
-    'de', 'dk', 'do',
-    'ec', 'es',
-    'fi', 'fr',
-    'gb', 'gr', 'gt',
-    'hk', 'hn', 'hu',
-    'id', 'ie', 'is', 'it',
-    'jp',
-    'lt', 'lv',
-    'mx', 'my',
-    'nl', 'no', 'nz',
-    'pa', 'ph', 'pl', 'pt', 'py',
-    'se', 'sg', 'sk', 'sv',
-    'tr', 'tw',
-    'us', 'uy'
-  ]
-  */
-
   //Mise en place de l'intéraction
   interactivity.initialize()
 
   /*
-  //EXPLORER PAR PAYS
-  country = 'fr'
-  start_date = preprocess_Helpers.parseDate('2017-01-01')
-  end_date = preprocess_Helpers.parseDate('2020-04-20')
-  d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-     const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, start_date, end_date)
-     console.log(data_preprocessed_countrytrack)
-     //here we can continue with the data -> viz
- 
-     const data_preprocessed_countryartist = preprocess_ParPays.ExplorerParPays_Artist(data, start_date, end_date)
-     console.log(data_preprocessed_countryartist)
-     //here we can continue with the data -> viz
-  })*/
-
-  //EXPLORER PAR ARTISTE
-
-  /*
-  //EXPLORER PAR TITRE
-  let countries = ['be', 'ca', 'es', 'fr', 'gb', 'it', 'jp', 'us'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
-  const titre = 'Trop beau'
-  start_date = preprocess_Helpers.parseDate('2017-01-01')
-  end_date = preprocess_Helpers.parseDate('2020-04-20')
-
-  let call_countries = []
-  countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-    const data_filtered = data.filter(line => line['Track Name'] == titre)
-    //console.log(data_filtered)
-    return data_filtered
-  })))
-
-  Promise.all(call_countries)
-    .then(function(files) {
-    const data_preprocessed_titre = preprocess_ParTitre.ExplorerParTitre(files, countries, start_date, end_date)
-    console.log(data_preprocessed_titre)
-    //here we can continue with the data -> viz
-  })
-    .catch(function(err) {
-    // handle error here
-    console.log(err)
-  })
-
   //EXPLORER PAR TENDANCE
   const start = [1,6]
   const end = [1,9]
