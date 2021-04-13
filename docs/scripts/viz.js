@@ -14,11 +14,13 @@ const scaleDimensions = {
 
 const legendWidth = 400
 
-//Constante pour la heatmap
-const heatmap = {
+//Constantes pour la heatmap
+export let heatmap = {
   width: 700,
   height: 20,
-  padding: 5
+  padding: 5,
+  text: 150,
+  stat: 150
 }
 
 /**
@@ -79,18 +81,24 @@ const heatmap = {
       .attr('transform','translate(0 ,' + verticalOffset + ')')
 
     //Affichage Dates
-    let startDateText = g.append('text').text(helper.formatDate(startDate)).attr('fill', 'white').attr('class', 'date-viz')
-    let endDateText = g.append('text').text(helper.formatDate(endDate)).attr('fill', 'white').attr('class', 'date-viz')
-
-    //Placement des dates
-    let HorizontalOffsetStart = (vizWidth - heatmap.width)/2
-    startDateText.attr('transform', 'translate(' + HorizontalOffsetStart + ', 0)')
-
-    let offset = endDateText.node().getComputedTextLength()
-    let HorizontalOffsetEnd = (vizWidth - heatmap.width)/2 + heatmap.width - offset
-    endDateText.attr('transform', 'translate(' + HorizontalOffsetEnd + ', 0)')
-  
+    g.append('text').text(helper.formatDate(startDate)).attr('fill', 'white').attr('class', 'date-viz').attr('id','startDate')
+    g.append('text').text(helper.formatDate(endDate)).attr('fill', 'white').attr('class', 'date-viz').attr('id','endDate') 
  }
+
+ /**
+ * Place les dates en fonction de la largeur de la heatmap
+ */
+export function placeDates() {
+
+  let startDateText = d3.select('#startDate')
+  let HorizontalOffsetStart = heatmap.text
+  startDateText.attr('transform', 'translate(' + HorizontalOffsetStart + ', 0)')
+
+  let endDateText = d3.select('#endDate')
+  let offset = endDateText.node().getComputedTextLength()
+  let HorizontalOffsetEnd = heatmap.text + heatmap.width - offset
+  endDateText.attr('transform', 'translate(' + HorizontalOffsetEnd + ', 0)')
+}
 
 /**
  * Génère le titre de la chanson pour une ligne
@@ -101,10 +109,6 @@ const heatmap = {
  * @param {boolean} isTotal
  */
  export function createLine (g, title, key, isTotal,titleType) {
-    if (title.length > 25) { //Si le titre est trop long, on le tronque
-      title = title.slice(0, 24)
-      title = title + '...'
-    }
     let textSvg = g.append('text')
      .text(title)
      .attr('class', 'trackname-viz track'+String(key))
@@ -118,6 +122,13 @@ const heatmap = {
     } else {
         setClickHandler(titleType,textSvg)
     }
+
+    while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
+      title = title.slice(0, -10)
+      title = title + '...'
+      textSvg.text(title)
+    }
+    
  }
 
  /**
@@ -147,7 +158,13 @@ const heatmap = {
     let streamOffset = vizWidth -  (d3.select('#nb-streams').node().getComputedTextLength()/2) - nbstreams.node().getComputedTextLength()
     nbstreams.attr('transform', 'translate('+ streamOffset + ',0)')
 
-    
+    //Mise à jour de la longueur du texte de statistique. Ne s'applique qu'à la première ligne
+    let textWidth = d3.select('#nb-streams').node().getComputedTextLength()/2 + nbstreams.node().getComputedTextLength()
+    if(heatmap.stat < textWidth){
+      heatmap.stat = textWidth
+      heatmap.text = textWidth
+      heatmap.width = index.vizWidth - 2*textWidth - 20
+    }
  }
 
 /**
@@ -207,22 +224,24 @@ export function setHoverHandler (g, tip) {
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let datesSize = d3.select('.dates-g').node().getBBox()
     const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
-    const horizontalOffset = (vizWidth - heatmap.width)/2
 
     //Affichage de la ligne de total
-    appendLine(initialOffset, horizontalOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true, key)
+    appendLine(initialOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true, key)
 
     //Affichage de chaque ligne
     data.slice(1).forEach(function (track, index)
       {
-        appendLine(initialOffset+50, horizontalOffset, index, track, colorScales.streams, tip_streams, vizWidth, false, key)
+        appendLine(initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key)
       }
     )
+    placeDates() //Placement des date dépendant de la largeur de la heatmap
  }
 
  export function initializeViz() {
+  //Création des groupes principaux
   const g = helper.generateG(index.margin, index.svgWidth, index.windowHeight)
 
+  //Création du tootlip
   const tip_streams = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Streams(d) })
   const tip_total = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Total(d) })
   g.call(tip_streams)
@@ -262,7 +281,7 @@ export function appendColumnTitles (vizWidth, leftTitle) {
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
-export function appendLine(initialOffset, horizontalOffset, index, track, colorScale, tip, vizWidth, isTotal, key) {
+export function appendLine(initialOffset, index, track, colorScale, tip, vizWidth, isTotal, key) {
   //Création du groupe contenant les informations de la ligne
   const verticalOffset = (initialOffset + index*(heatmap.height+heatmap.padding))
   let g = d3.select('.graph-g')
@@ -273,13 +292,15 @@ export function appendLine(initialOffset, horizontalOffset, index, track, colorS
   //Affichage du titre
   createLine(g, track[key], index, isTotal, key)
 
-  //Affichage de la heatmap
-  let trackHeight = d3.select('.track'+String(index)).node().getBBox().height
-  createHeatMap(g, track.Streams, index, colorScale, horizontalOffset, trackHeight)
-  setHoverHandler(g, tip)
-
   //Affichage du nombre de streams et des statistiques
   createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
+
+  //Affichage de la heatmap
+  let trackHeight = d3.select('.track'+String(index)).node().getBBox().height
+  createHeatMap(g, track.Streams, index, colorScale, heatmap.text, trackHeight)
+  setHoverHandler(g, tip)
+
+  
 }
 
 /**
