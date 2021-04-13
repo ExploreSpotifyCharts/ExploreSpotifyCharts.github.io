@@ -30,7 +30,12 @@ export function initialize() {
           artists_countries = data_artists_countries.map(line => {
             return {artist: String(line['Artist']), countries: String(line['Countries']).split('|')}
           })
-          createFormAndViz('Pays')
+          d3.csv(PATH+'track_countries'+'.csv', d3.autoType).then(function (data_tracks_countries) {
+            tracks_countries = data_tracks_countries.map(line => {
+              return {track: String(line['Track Name']), countries: String(line['Countries']).split('|')}
+            })
+            createFormAndViz('Pays')
+          })
         })
       })
     })  
@@ -56,6 +61,7 @@ var array_titles = []
 var array_artistes = []
 var countries = []
 var artists_countries = []
+var tracks_countries = []
 var artistTracks = []
 
 /* Private function*/
@@ -95,7 +101,7 @@ function createFormAndViz(tab, value) {
         d3.select('#Artiste').on('input',updateTrackList)
         
         createSuggestbox('Titre', artistTracks, track)
-        let countries_to_keep = artists_countries.filter(element => element.artist == artist)[0].countries
+        let countries_to_keep = tracks_countries.filter(element => element.track == track)[0].countries
         const index = countries_to_keep.indexOf('global')
         if (index != -1)
         {
@@ -218,7 +224,7 @@ function submit(e) {
       const period_start = params[3][1]
       const period_end = params[4][1]
 
-      let countries_to_keep = artists_countries.filter(element => element.artist == artist)[0].countries
+      let countries_to_keep = tracks_countries.filter(element => element.track == track)[0].countries
       const index = countries_to_keep.indexOf('global')
       if (index != -1)
       {
