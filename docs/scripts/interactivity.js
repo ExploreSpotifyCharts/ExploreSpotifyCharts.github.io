@@ -21,11 +21,11 @@ export function initialize() {
       return {code: String(line['country code']), country: String(line['country'])}
     })
     d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
-      array_titles = data_titres.map(line => {
+      artists_tracks = data_titres.map(line => {
         return {Artist: String(line['Artist']), Track: String(line['Track Name'])}
       })
       d3.csv(PATH+'artist_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
-        array_artistes = data_artists_countries.map(line => String(line['Artist']))
+        artists = data_artists_countries.map(line => String(line['Artist']))
 
         artists_countries = data_artists_countries.map(line => {
           return {artist: String(line['Artist']), countries: String(line['Countries']).split('|')}
@@ -56,12 +56,12 @@ export function initialize() {
 
 /* Global var */
 
-var array_titles = []
-var array_artistes = []
+var artists_tracks = []
+var artists = []
 var countries = []
 var artists_countries = []
 var tracks_countries = []
-var artistTracks = []
+var artist_Selected_Tracks = []
 
 /* Private function*/
 
@@ -85,21 +85,21 @@ function createFormAndViz(tab, value) {
         createTrendsVisualisation()
         break
       case "Artiste":
-        artist = value ? value : randomValue(array_artistes)
+        artist = value ? value : randomValue(artists)
         createDatePickers()
-        createSuggestbox('Artiste', array_artistes, artist)
+        createSuggestbox('Artiste', artists, artist)
         createSuggestbox('Pays', countries.map(d => d.country), 'Mondial')
         createArtistVisualisation(artist)
         break
       case "Titre":
         createDatePickers()
-        artist = value ? getArtistByTrack(value) : randomValue(array_artistes)
-        artistTracks = getArtistTracks(artist)
-        const track = value ? value : randomValue(artistTracks)
-        createSuggestbox('Artiste', array_artistes, artist)
+        artist = value ? getArtistByTrack(value) : randomValue(artists)
+        artist_Selected_Tracks = getArtistTracks(artist)
+        const track = value ? value : randomValue(artist_Selected_Tracks)
+        createSuggestbox('Artiste', artists, artist)
         d3.select('#Artiste').on('input',updateTrackList)
         
-        createSuggestbox('Titre', artistTracks, track)
+        createSuggestbox('Titre', artist_Selected_Tracks, track)
         let countries_to_keep = tracks_countries.filter(element => element.track == track)[0].countries
         const index = countries_to_keep.indexOf('global')
         if (index != -1)
@@ -310,7 +310,7 @@ function createDatePickers() {
  * @returns {string[]}
  */
 function getArtistTracks(artist) {
-  return array_titles
+  return artists_tracks
           .filter( track => track.Artist == artist)
           .map(track => track.Track)
 }
@@ -323,10 +323,10 @@ function updateTrackList() {
   if($('#listArtiste option').filter(function () {
     return this.value.toUpperCase() === currentVal.toUpperCase()
    }).length) {
-    artistTracks = getArtistTracks(currentVal)
-    d3.select("#Titre").attr('value',randomValue(artistTracks))
+    artist_Selected_Tracks = getArtistTracks(currentVal)
+    d3.select("#Titre").attr('value',randomValue(artist_Selected_Tracks))
     d3.selectAll("#listTitre option").remove()
-    d3.select("#listTitre").selectAll("option").data(artistTracks).enter().append('option').attr('value',d => d)
+    d3.select("#listTitre").selectAll("option").data(artist_Selected_Tracks).enter().append('option').attr('value',d => d)
   }
 }
 
@@ -433,11 +433,11 @@ function isFormValid(params) {
         data =  countries.map(d => d.country)
         break
       case 'Artiste':
-        data = array_artistes
+        data = artists
         word = "L' "
         break
       case 'Titre':
-        data = artistTracks
+        data = artist_Selected_Tracks
         break
     }
     if(data.filter(value => value == fieldValue).length > 0) return true
@@ -463,7 +463,7 @@ function isFormValid(params) {
    * @returns {string}
    */
   function getArtistByTrack(track) {
-    return array_titles.filter( d => d.Track == track)[0].Artist
+    return artists_tracks.filter( d => d.Track == track)[0].Artist
   }
 
   function processParams(params) {
