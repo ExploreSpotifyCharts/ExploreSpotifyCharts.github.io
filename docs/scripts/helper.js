@@ -92,8 +92,7 @@ export function formatDate(input) {
 /**
  * Génère un texte affichant une erreur
  *
- * @param {object} g Le svg dans lequel on ajoute le titre
- * @param {object} error Le titre à afficher
+ * @param {object} error L'erreur à afficher
  */
 export function appendError (error) {
   d3.select('.info-g')
