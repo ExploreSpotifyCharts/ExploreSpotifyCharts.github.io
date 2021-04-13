@@ -17,6 +17,9 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
     // countries.push({'code':'jp', 'country':'Japon'})
     //fin suppression à terme
 
+    const target = document.getElementsByClassName('viz-container')[0]
+    const spinner = new Spinner(index.spinnerOpts).spin(target)
+
     const tip = viz.initializeViz()
 
     start_date = start_date ? start_date : '2017-01-01'
@@ -31,6 +34,9 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
     Promise.all(call_countries)
         .then(function(files) {
         const data_preprocessed_titre = preprocess_ParTitre.ExplorerParTitre(files, countries, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
+        
+        spinner.stop()
+
         helper.appendTitle(track)
         const colorScales = viz.appendColorScales(data_preprocessed_titre, index.vizWidth)
         viz.appendColumnTitles(index.vizWidth, 'Pays')
@@ -40,7 +46,7 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
         //here we can continue with the data -> viz
     })
         .catch(function(err) {
-        // handle error here
+        spinner.stop()
         console.log(err)
     })
     
