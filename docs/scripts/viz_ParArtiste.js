@@ -6,6 +6,10 @@ import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
 export function createArtistVisualisation(artist, country, country_name, start_date, end_date) {
+
+  const target = document.getElementsByClassName('viz-container')[0]
+  const spinner = new Spinner(index.spinnerOpts).spin(target)
+
   const tip = viz.initializeViz()
 
   country = country ? country : 'global'
@@ -15,11 +19,18 @@ export function createArtistVisualisation(artist, country, country_name, start_d
   
   d3.csv(index.PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artist, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
+    
+    spinner.stop()
+
     helper.appendTitle(artist+' ('+country_name+')')
     const colorScales = viz.appendColorScales(data_preprocessed_artist, index.vizWidth)
     viz.appendColumnTitles(index.vizWidth, 'Titres')
     viz.appendDates(start_date, end_date, index.vizWidth)
     viz.appendHeatMaps(data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
     helper.updateSvg()
+  }, function(error)
+  {
+      spinner.stop()
+      console.log(error)
   })
 }
