@@ -17,7 +17,6 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
 
 (function (d3) {
 
-  /*
   let countries = [
     'global',
     'ar', 'at', 'au',
@@ -38,11 +37,10 @@ import * as preprocess_ParTendance from './scripts/preprocess_ParTendance.js'
     'tr', 'tw',
     'us', 'uy'
   ]
-  */
 
 
 const PATH = './assets/data/'
-let countries = ['global', 'be', 'ca', 'fr'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
+//let countries = ['global', 'be', 'ca', 'fr'] //à remplacer à terme par la liste complètes des country code (cf plus haut)
 let call_countries = []
 
 //DOWNLOAD track_countries.csv
@@ -111,6 +109,7 @@ Promise.all(call_countries)
 //DOWNLOAD artist_countries.csv
 /*
 countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+  console.log(country)
   let artists = [...new Set(data.map(line => {
     if (line && line['Artist'])
     {
@@ -140,7 +139,7 @@ Promise.all(call_countries)
   .then(function(files) {
     let data_preprocessed = {}
     files.forEach((file, index) => {
-      file.forEach(track =>
+      file.forEach(artist =>
         {
           const country_code = countries[index]
           if (typeof data_preprocessed[artist] == 'undefined')
