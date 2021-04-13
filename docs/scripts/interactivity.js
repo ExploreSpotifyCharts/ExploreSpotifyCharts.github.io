@@ -16,21 +16,21 @@ export function initialize() {
   $('#form').on('submit', submit)
 
   //Load data
-  d3.csv(PATH+'country'+'.csv', d3.autoType).then(function (data_countries) {
+  d3.csv(PATH+'extra/countries'+'.csv', d3.autoType).then(function (data_countries) {
     countries = data_countries.map(line => {
       return {code: String(line['country code']), country: String(line['country'])}
     })
-    d3.csv(PATH+'titres'+'.csv', d3.autoType).then(function (data_titres) {
+    d3.csv(PATH+'extra/artist_track'+'.csv', d3.autoType).then(function (data_titres) {
       artists_tracks = data_titres.map(line => {
         return {Artist: String(line['Artist']), Track: String(line['Track Name'])}
       })
-      d3.csv(PATH+'artist_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
+      d3.csv(PATH+'extra/artist_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
         artists = data_artists_countries.map(line => String(line['Artist']))
 
         artists_countries = data_artists_countries.map(line => {
           return {artist: String(line['Artist']), countries: String(line['Countries']).split('|')}
         })
-        d3.csv(PATH+'track_countries'+'.csv', d3.autoType).then(function (data_tracks_countries) {
+        d3.csv(PATH+'extra/track_countries'+'.csv', d3.autoType).then(function (data_tracks_countries) {
           tracks_countries = data_tracks_countries.map(line => {
             return {track: String(line['Track Name']), countries: String(line['Countries']).split('|')}
           })
