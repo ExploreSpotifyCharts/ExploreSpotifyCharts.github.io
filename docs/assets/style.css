@@ -120,19 +120,14 @@ input {
 }
 
 input[type='submit'] {
-    border: 1px solid white;
+    border: 1px solid #1db954;
     margin: 0px auto 5px 20px;
     height: 30px;
-
+    background-color: #1db954;
 }
 
 input[type='submit']:hover {
     cursor: pointer;
-}
-
-input[type='submit']:active {
-   color: #1db954;
-   border-color: #1db954;
 }
 
 /*Trick to overlaps browser radio button, since we can't change the style*/
