@@ -227,5 +227,20 @@ Promise.all(call_countries)
     console.log(err)
   })
   */
+
+  d3.csv(PATH+'global'+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+    let data_preprocessed = [...new Set(data.map(line => {if (line && line['Artist']) return line['Artist']}))].sort()
+    console.log(data_preprocessed)
+
+    let csvContent = "data:text/csv;charset=utf-8,"+"Artist"+"\n"
+    + data_preprocessed.join("\n")
+    //console.log(csvContent)
+    var encodedUri = encodeURI(csvContent)
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "artists_global.csv");
+    document.body.appendChild(link); // Required for FF
+    link.click(); // This will download the data file named "my_data.csv".
+  })
   
 })(d3)
