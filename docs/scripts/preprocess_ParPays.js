@@ -21,7 +21,7 @@ export function ExplorerParPays_Track(data, start, end=null)
   data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'Track Name', ['Artist'])
 
   //Sort on count_total_streams and get top k
-  const k = 200
+  const k = 50
   data_processed = data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams']).slice(0,k)
 
   //Add one entry for total (per day and global) and Compute % for each track

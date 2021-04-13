@@ -211,9 +211,19 @@ option {
 }
 
 
-.trackname-viz, .percentage-streams, .nbstreams-values {
+.percentage-streams, .nbstreams-values {
     font-size : 13px;
 }
+
+.trackname-viz {
+    font-size : 13px;
+    cursor: pointer;
+}
+
+.trackname-viz:hover {
+    fill: #1db954;
+}
+
 
 /* ---------------- Tooltip styles -----------------*/
 

@@ -1,5 +1,8 @@
 import * as helper from './helper.js'
 import * as legend from './legend.js'
+import * as index from '../index.js'
+import * as tooltip from './tooltip.js'
+import * as interactivity from './interactivity.js'
 
 //Constantes pour l'échelle
 const scaleDimensions = {
@@ -93,21 +96,27 @@ const heatmap = {
  * Génère le titre de la chanson pour une ligne
  *
  * @param {object} g La sélection dans laquelle on ajoute le titre
- * @param {string} trackName Titre de la chanson
- * @param {int} key L'index de la chanson pour la classe personnalisée
+ * @param {string} title Titre de la ligne
+ * @param {int} key L'index de la ligne pour la classe personnalisée
+ * @param {boolean} isTotal
  */
- export function createTrack (g, trackName, key, isTotal) {
-    if (trackName.length > 25) { //Si le titre est trop long, on le tronque
-        trackName = trackName.slice(0, 24)
-        trackName = trackName + '...'
+ export function createLine (g, title, key, isTotal,titleType) {
+    if (title.length > 25) { //Si le titre est trop long, on le tronque
+      title = title.slice(0, 24)
+      title = title + '...'
     }
     let textSvg = g.append('text')
-     .text(trackName)
+     .text(title)
      .attr('class', 'trackname-viz track'+String(key))
      .attr('fill', 'white')
 
     if(isTotal){
-      textSvg.style('font-weight', 'bold')
+      textSvg
+      .style('font-weight', 'bold')
+      .style('cursor','auto')
+      .style('fill','white')
+    } else {
+        setClickHandler(titleType,textSvg)
     }
  }
 
@@ -192,7 +201,7 @@ export function setHoverHandler (g, tip) {
  * @param {object} tip_streams Tooltip à associer aux streams
  * @param {object} tip_total Tooltip à associer au total
  */
- export function appendHeatMaps(data, colorScales, vizWidth, tip_streams, tip_total) {
+ export function appendHeatMaps(data, key, colorScales, vizWidth, tip_streams, tip_total) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -201,15 +210,49 @@ export function setHoverHandler (g, tip) {
     const horizontalOffset = (vizWidth - heatmap.width)/2
 
     //Affichage de la ligne de total
-    appendLine(initialOffset, horizontalOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true)
+    appendLine(initialOffset, horizontalOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true, key)
 
     //Affichage de chaque ligne
     data.slice(1).forEach(function (track, index)
       {
-        appendLine(initialOffset+50, horizontalOffset, index, track, colorScales.streams, tip_streams, vizWidth, false)
+        appendLine(initialOffset+50, horizontalOffset, index, track, colorScales.streams, tip_streams, vizWidth, false, key)
       }
     )
  }
+
+ export function initializeViz() {
+  const g = helper.generateG(index.margin, index.svgWidth, index.windowHeight)
+
+  const tip_streams = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Streams(d) })
+  const tip_total = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Total(d) })
+  g.call(tip_streams)
+  g.call(tip_total)
+  return {streams: tip_streams,total: tip_total}
+ }
+
+ /**
+ * Affichage des titres des colonnes
+ */
+export function appendColumnTitles (vizWidth, leftTitle) {
+  //Récupère taille du groupe titre/échelle au dessus pour le décalage
+  let infoSize = d3.select('.info-g').node().getBBox()
+  let verticalOffset = infoSize.height + 20
+
+  //Définit un groupe qui contiendra les titres avec le bon décalage
+  let g = d3.select('.graph-g')
+    .append('g')
+    .attr('class', 'column-titles-g')
+    .attr('transform','translate(0 ,' + verticalOffset + ')')
+
+  //Affichage Titre de gauche
+  g.append('text').text(leftTitle).attr('fill', 'white')
+
+  //Affichage Nombre de Streams
+  let nbStreams = g.append('text').text('Nombre de Streams').attr('fill', 'white').attr('id', 'nb-streams')
+  let HorizontalOffset = vizWidth - nbStreams.node().getComputedTextLength()
+  nbStreams.attr('transform','translate('+ HorizontalOffset + ',0)')
+
+}
 
 
 /**
@@ -219,16 +262,16 @@ export function setHoverHandler (g, tip) {
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
-export function appendLine(initialOffset, horizontalOffset, index, track, colorScale, tip, vizWidth, isTotal) {
+export function appendLine(initialOffset, horizontalOffset, index, track, colorScale, tip, vizWidth, isTotal, key) {
   //Création du groupe contenant les informations de la ligne
   const verticalOffset = (initialOffset + index*(heatmap.height+heatmap.padding))
   let g = d3.select('.graph-g')
             .append('g')
             .attr('class', "line"+String(index))
             .attr('transform', 'translate(0, '+ verticalOffset +')')
-  
+
   //Affichage du titre
-  createTrack(g, track.Track_Name, index, isTotal)
+  createLine(g, track[key], index, isTotal, key)
 
   //Affichage de la heatmap
   let trackHeight = d3.select('.track'+String(index)).node().getBBox().height
@@ -237,6 +280,29 @@ export function appendLine(initialOffset, horizontalOffset, index, track, colorS
 
   //Affichage du nombre de streams et des statistiques
   createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
+}
+
+/**
+ * Set click handler for interactivity
+ * @param {string} key 
+ */
+function setClickHandler(key,g) {
+  switch(key) {
+    case 'Track_Name':
+      g.on('click', function() {
+        const tabElement = d3.select('#menuList li:nth-child(3)').node()
+        interactivity.navigate(tabElement, this.textContent)
+      })
+      break
+    case 'Region':
+      g.on('click', function() {
+        const tabElement = d3.select('#menuList li:nth-child(1)').node()
+        interactivity.navigate(tabElement, this.textContent)
+      })
+      break
+    default:
+      break
+  }
 }
 
 
