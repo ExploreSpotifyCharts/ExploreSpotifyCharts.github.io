@@ -47,36 +47,50 @@ let countries = ['global', 'be', 'ca', 'fr'] //à remplacer à terme par la list
 let call_countries = []
 
 countries.forEach(country => call_countries.push(d3.csv(PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-  let artists = [...new Set(data.map(line => line['Artist'].replace('#', '')))].sort()
+  let tracks = [...new Set(data.map(line => {
+    if (line && line['Track Name'])
+    {
+      let track = line['Track Name']
+      while(track.includes('#'))
+      {
+        track = track.replace('#','')
+      }
+      while(track.includes(','))
+      {
+        track = track.replace(',','')
+      }
+      return track
+    }
+  }))].sort()
   
-  let index_to_remove = artists.indexOf('')
-  if (index_to_remove > -1) { artists.splice(index_to_remove, 1)}
-  index_to_remove = artists.indexOf('NA')
-  if (index_to_remove > -1) { artists.splice(index_to_remove, 1)}
+  let index_to_remove = tracks.indexOf('')
+  if (index_to_remove > -1) { tracks.splice(index_to_remove, 1)}
+  index_to_remove = tracks.indexOf('NA')
+  if (index_to_remove > -1) { tracks.splice(index_to_remove, 1)}
 
-  console.log(artists)
-  return artists
+  console.log(tracks)
+  return tracks
 })))
 
 Promise.all(call_countries)
   .then(function(files) {
     let data_preprocessed = {}
     files.forEach((file, index) => {
-      file.forEach(artist =>
+      file.forEach(track =>
         {
           const country_code = countries[index]
-          if (typeof data_preprocessed[artist] == 'undefined')
+          if (typeof data_preprocessed[track] == 'undefined')
           {
-            data_preprocessed[artist] = []
+            data_preprocessed[track] = []
           }
-          data_preprocessed[artist].push(country_code)
+          data_preprocessed[track].push(country_code)
         })
     })
     data_preprocessed = Object.entries(data_preprocessed)
     console.log(data_preprocessed)
 
 
-    let csvContent = "data:text/csv;charset=utf-8,"+"Artist,Countries"+"\n"
+    let csvContent = "data:text/csv;charset=utf-8,"+"Track Name,Countries"+"\n"
       + data_preprocessed.map(e => e[0]+','+e[1].join("|")).join("\n");
     //console.log(csvContent)
     var encodedUri = encodeURI(csvContent)
