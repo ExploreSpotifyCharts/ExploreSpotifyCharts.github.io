@@ -37,16 +37,23 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
         
         spinner.stop()
 
-        helper.appendTitle(track)
-        const colorScales = viz.appendColorScales(data_preprocessed_titre, index.vizWidth)
-        viz.appendColumnTitles(index.vizWidth, 'Pays')
-        viz.appendDates(start_date, end_date, index.vizWidth)
-        viz.appendHeatMaps(data_preprocessed_titre, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
-        helper.updateSvg()
-        //here we can continue with the data -> viz
+        if (data_preprocessed_titre.length <= 1)
+        {
+          helper.appendError(index.no_data_error)
+        }
+        else
+        {
+            helper.appendTitle(track)
+            const colorScales = viz.appendColorScales(data_preprocessed_titre, index.vizWidth)
+            viz.appendColumnTitles(index.vizWidth, 'Pays')
+            viz.appendDates(start_date, end_date, index.vizWidth)
+            viz.appendHeatMaps(data_preprocessed_titre, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
+            helper.updateSvg()
+        }
     })
         .catch(function(err) {
         spinner.stop()
+        helper.appendError(index.other_error)
         console.log(err)
     })
     

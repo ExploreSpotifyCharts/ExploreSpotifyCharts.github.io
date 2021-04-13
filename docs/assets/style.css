@@ -224,6 +224,10 @@ option {
     fill: #1db954;
 }
 
+.error-viz {
+    font-size: 14px;
+}
+
 
 /* ---------------- Tooltip styles -----------------*/
 

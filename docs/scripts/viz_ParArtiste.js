@@ -22,15 +22,23 @@ export function createArtistVisualisation(artist, country, country_name, start_d
     
     spinner.stop()
 
+    if (data_preprocessed_artist.length <= 1)
+    {
+      helper.appendError(index.no_data_error)
+    }
+    else
+    {
     helper.appendTitle(artist+' ('+country_name+')')
     const colorScales = viz.appendColorScales(data_preprocessed_artist, index.vizWidth)
     viz.appendColumnTitles(index.vizWidth, 'Titres')
     viz.appendDates(start_date, end_date, index.vizWidth)
     viz.appendHeatMaps(data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
     helper.updateSvg()
+    }
   }, function(error)
   {
       spinner.stop()
+      helper.appendError(index.other_error)
       console.log(error)
   })
 }

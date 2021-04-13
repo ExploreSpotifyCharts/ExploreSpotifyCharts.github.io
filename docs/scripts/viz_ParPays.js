@@ -19,16 +19,23 @@ export function createCountryVisualisation(country, country_name, start_date, en
         const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
         
         spinner.stop()
-        
-        helper.appendTitle(country_name)
-        const colorScales = viz.appendColorScales(data_preprocessed_countrytrack, index.vizWidth)
-        viz.appendColumnTitles(index.vizWidth, 'Titres')
-        viz.appendDates(start_date, end_date, index.vizWidth)
-        viz.appendHeatMaps(data_preprocessed_countrytrack, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
-        helper.updateSvg()
+        if (data_preprocessed_countrytrack.length <= 1)
+        {
+          helper.appendError(index.no_data_error)
+        }
+        else
+        {
+            helper.appendTitle(country_name)
+            const colorScales = viz.appendColorScales(data_preprocessed_countrytrack, index.vizWidth)
+            viz.appendColumnTitles(index.vizWidth, 'Titres')
+            viz.appendDates(start_date, end_date, index.vizWidth)
+            viz.appendHeatMaps(data_preprocessed_countrytrack, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+            helper.updateSvg()
+        }
     }, function(error)
     {
         spinner.stop()
+        helper.appendError(index.other_error)
         console.log(error)
     })
 }
