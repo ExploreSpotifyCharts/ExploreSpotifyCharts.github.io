@@ -3,8 +3,8 @@ export function SpotifyDataParser(d)
 {
  return {
    Position: +d.Position, //convert to number
-   'Track Name': d['Track Name'],
-   Artist: d.Artist,
+   'Track Name': parseTrackName_Artist(d['Track Name']),
+   Artist: parseTrackName_Artist(d.Artist),
    Streams: +d.Streams, //convert to number
    date: parseDate(d.date),
    region: d.region,
@@ -16,6 +16,19 @@ export function parseDate(input) // parse a date in yyyy-mm-dd format
 {
   let parts = input.split('-')
   return new Date(parts[0], parts[1]-1, parts[2]) // Month is 0-indexed
+}
+
+export function parseTrackName_Artist(input)
+{
+  while (input.includes('#'))
+  {
+    input = input.replace('#', '')
+  }
+  while (input.includes(','))
+  {
+    input = input.replace(',', '')
+  }
+  return input
 }
 
 export function isValidDate(d) {
