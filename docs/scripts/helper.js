@@ -28,9 +28,8 @@
  * @param {object} g Le svg dans lequel on ajoute le titre
  * @param {object} title Le titre à afficher
  */
- export function appendTitle (title) {
-    d3.select('.info-g')
-     .append('text')
+ export function appendTitle (g, title) {
+     return g.append('text')
      .attr('class', 'titre-viz')
      .attr('fill', 'white')
      .text(title)
@@ -87,4 +86,16 @@ export function formatDate(input) {
   let day = datePart[2]
 
   return day+'/'+month+'/'+year;
+}
+
+/**
+ * Génère un texte affichant une erreur
+ *
+ * @param {object} error L'erreur à afficher
+ */
+export function appendError (g, error) {
+  return g.append('text')
+   .attr('class', 'error-viz')
+   .attr('fill', 'white')
+   .text(error)
 }

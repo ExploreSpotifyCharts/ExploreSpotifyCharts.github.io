@@ -188,5 +188,21 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
     return entry
   })
 
+  //Add missing year entries and sort
+  const years_in_data = data_processed.map(entry => entry['Year'])
+  for (const year in dates)
+  {
+    if (!(years_in_data.includes(year)))
+    {
+      let new_entry = {}
+      new_entry['Year'] = year
+      new_entry['Tracks'] = []
+      data_processed.push(new_entry)
+    }
+  }
+  data_processed.sort(function(a, b) {
+    return a['Year'] - b['Year']
+  })
+
   return data_processed
 }

@@ -17,6 +17,9 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
     // countries.push({'code':'jp', 'country':'Japon'})
     //fin suppression à terme
 
+    const target = document.getElementsByClassName('viz-container')[0]
+    const spinner = new Spinner(index.spinnerOpts).spin(target)
+
     const tip = viz.initializeViz()
 
     start_date = start_date ? start_date : '2017-01-01'
@@ -31,16 +34,30 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
     Promise.all(call_countries)
         .then(function(files) {
         const data_preprocessed_titre = preprocess_ParTitre.ExplorerParTitre(files, countries, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
-        helper.appendTitle(track)
-        const colorScales = viz.appendColorScales(data_preprocessed_titre, index.vizWidth)
-        viz.appendColumnTitles(index.vizWidth, 'Pays')
-        viz.appendDates(start_date, end_date, index.vizWidth)
-        viz.appendHeatMaps(data_preprocessed_titre, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
-        helper.updateSvg()
-        //here we can continue with the data -> viz
+        
+        spinner.stop()
+        let infog = d3.select('.info-g')
+
+        if (data_preprocessed_titre.length <= 1)
+        {
+          helper.appendError(infog, index.no_data_error)
+        }
+        else
+        {
+            helper.appendTitle(infog, track)
+            const colorScales = viz.appendColorScales(data_preprocessed_titre.slice(0,1), data_preprocessed_titre.slice(1), index.vizWidth)
+    
+            let graphg = d3.select('.graph-g')
+            viz.appendColumnTitles(graphg, index.vizWidth, 'Pays')
+            viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Titre')
+            viz.appendHeatMaps(graphg, data_preprocessed_titre, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
+            viz.placeDates('Titre')
+            helper.updateSvg()
+        }
     })
         .catch(function(err) {
-        // handle error here
+        spinner.stop()
+        helper.appendError(index.other_error)
         console.log(err)
     })
     
