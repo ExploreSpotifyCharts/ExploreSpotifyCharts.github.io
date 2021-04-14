@@ -204,7 +204,5 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
     return a['Year'] - b['Year']
   })
 
-  console.log(data_processed)
-
   return data_processed
 }
