@@ -110,10 +110,6 @@ export function placeDates(id) {
  */
  export function createLine (g, title, key, isTotal,titleType) {
     const complete_title = title
-    if (title.length > 25) { //Si le titre est trop long, on le tronque
-      title = title.slice(0, 24)
-      title = title + '...'
-    }
     let textSvg = g.append('text')
      .text(title)
      .attr('class', 'trackname-viz track'+String(key))
