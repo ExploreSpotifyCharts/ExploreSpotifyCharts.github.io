@@ -22,17 +22,21 @@ export function createArtistVisualisation(artist, country, country_name, start_d
     
     spinner.stop()
 
+    let infog = d3.select('.info-g')
     if (data_preprocessed_artist.length <= 1)
     {
-      helper.appendError(index.no_data_error)
+      helper.appendError(infog, index.no_data_error)
     }
     else
     {
-    helper.appendTitle(artist+' ('+country_name+')')
-    const colorScales = viz.appendColorScales(data_preprocessed_artist, index.vizWidth)
-    viz.appendColumnTitles(index.vizWidth, 'Titres')
-    viz.appendDates(start_date, end_date, index.vizWidth)
-    viz.appendHeatMaps(data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+      
+      helper.appendTitle(infog, artist+' ('+country_name+')')
+      const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth)
+      let graphg = d3.select('.graph-g')
+      viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
+      viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
+      viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+      viz.placeDates('Artiste')
     helper.updateSvg()
     }
   }, function(error)

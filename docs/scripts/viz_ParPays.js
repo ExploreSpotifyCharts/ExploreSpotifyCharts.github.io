@@ -19,17 +19,22 @@ export function createCountryVisualisation(country, country_name, start_date, en
         const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
         
         spinner.stop()
+
+        let infog = d3.select('.info-g')
         if (data_preprocessed_countrytrack.length <= 1)
         {
-          helper.appendError(index.no_data_error)
+          helper.appendError(infog, index.no_data_error)
         }
         else
         {
-            helper.appendTitle(country_name)
-            const colorScales = viz.appendColorScales(data_preprocessed_countrytrack, index.vizWidth)
-            viz.appendColumnTitles(index.vizWidth, 'Titres')
-            viz.appendDates(start_date, end_date, index.vizWidth)
-            viz.appendHeatMaps(data_preprocessed_countrytrack, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+            helper.appendTitle(infog, country_name)
+            const colorScales = viz.appendColorScales(data_preprocessed_countrytrack.slice(0,1), data_preprocessed_countrytrack.slice(1), index.vizWidth)
+
+            let graphg = d3.select('.graph-g')
+            viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
+            viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Pays')
+            viz.appendHeatMaps(graphg, data_preprocessed_countrytrack, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+            viz.placeDates('Pays')
             helper.updateSvg()
         }
     }, function(error)
