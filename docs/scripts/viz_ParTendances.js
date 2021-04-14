@@ -20,7 +20,6 @@ export function createTrendsVisualisation(country, country_name, start_day,start
 
     let start_date = start_day +'/'+ start_month
     let end_date = end_day +'/'+ end_month
-
     d3.csv(index.PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
         const data_preprocessed_tendance = preprocess_ParTendance.ExplorerParTendance(data, start_day, start_month, end_day, end_month)
         spinner.stop()
@@ -29,43 +28,56 @@ export function createTrendsVisualisation(country, country_name, start_day,start
         let concatDataTotal = []
         let concatDataStreams = []
         data_preprocessed_tendance.forEach(function(year){
-            concatDataTotal.push(year.Tracks[0])
-            concatDataStreams.push(...year.Tracks.slice(1))
+            if(year.Tracks.length > 0) {
+                concatDataTotal.push(year.Tracks[0])
+                concatDataStreams.push(...year.Tracks.slice(1))
+            }
         })
 
         //En-tête de la visualisation
         let infog = d3.select('.info-g')
         helper.appendTitle(infog, 'Tendances ('+country_name+')')
         const colorScales = viz.appendColorScales(concatDataTotal, concatDataStreams, index.vizWidth)
-
         //Paramètres de placement des vizu
         let betweenPaddingHorizontal = 20
         let trendVizWidth = index.vizWidth/2 - betweenPaddingHorizontal/2
         let trendVizHeight = 0 //Sera mis à jour
         let betweenPaddingVertical = 40
         let infogHeight = d3.select('.info-g').node().getBBox().height
+        let yearTitleHeight = 0 //Sera mis à jour
 
         //Affichage des visualisations
         data_preprocessed_tendance.forEach(function(year, index){
-            let column = (index%2)==1 ? 1 : 0
-            let row = index>1 ? 1 : 0
-            //Groupe contenant une sous-vizu
-            let g = d3.select('.graph-g').append('g').attr('id', year.Year)
-            //Titre d'année et placement
-            let yearTitle = helper.appendTitle(g, year.Year).attr('class', 'yearTitle')
-            yearTitle.style('font-size', '20px').attr('transform', 'translate(0, '+ infogHeight +')')
-            //Elements généraux de la sous-vizu
-            viz.appendColumnTitles(g, trendVizWidth, 'Titres')
-            viz.appendDates(g, start_date, end_date, year.Year) 
-            viz.appendHeatMaps(g, year.Tracks, 'Track Name', colorScales, trendVizWidth, tip.streams, tip.total)
-            viz.placeDates(year.Year)  
-            //Placement de la sous-vizu
-            trendVizHeight = g.node().getBBox().height
-            g.attr('transform', 'translate('+ column*(trendVizWidth + betweenPaddingHorizontal) +','+ row*(trendVizHeight + betweenPaddingVertical) + ')')
+            
+                let column = (index%2)==1 ? 1 : 0
+                let row = index>1 ? 1 : 0
+                //Groupe contenant une sous-vizu
+                let g = d3.select('.graph-g').append('g').attr('id', year.Year)
+                //Titre d'année et placement
+                let yearTitle = helper.appendTitle(g, year.Year).attr('class', 'yearTitle')
+                yearTitle.style('font-size', '20px').attr('transform', 'translate(0, '+ infogHeight +')')
+                yearTitleHeight = d3.select('.yearTitle').node().getBBox().height
+            if(year.Tracks.length > 0) {
+                //Elements généraux de la sous-vizu
+                viz.appendColumnTitles(g, trendVizWidth, 'Titres')
+                viz.appendDates(g, start_date, end_date, year.Year) 
+                viz.appendHeatMaps(g, year.Tracks, 'Track Name', colorScales, trendVizWidth, tip.streams, tip.total)
+                viz.placeDates(year.Year) 
+                trendVizHeight = g.node().getBBox().height
+            } else {
+                let errorOffset = infogHeight+yearTitleHeight
+                g.append('text')
+                 .text('Pas de données pour cette année')
+                 .attr('class', 'error-viz')
+                 .attr('fill', 'white')
+                 .attr('transform', 'translate(0, '+ errorOffset +')')
+            }
+                //Placement de la sous-vizu  
+                g.attr('transform', 'translate('+ column*(trendVizWidth + betweenPaddingHorizontal) +','+ row*(trendVizHeight + betweenPaddingVertical) + ')')
         })
 
         //Ajout des lignes pour la séparation visuelle des différentes années
-        let yVertical = infogHeight - d3.select('.yearTitle').node().getBBox().height
+        let yVertical = infogHeight - yearTitleHeight
         d3.select('.graph-g').append('line')
                     .attr('x1', trendVizWidth + betweenPaddingHorizontal/2)
                     .attr('x2', trendVizWidth + betweenPaddingHorizontal/2)

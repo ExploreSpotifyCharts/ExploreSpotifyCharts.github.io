@@ -240,7 +240,6 @@ function submit(e) {
       createTrackVisualisation(track, countries_to_keep, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
-      console.log(params)
       createTrendsVisualisation(params[0][2],params[0][1],params[2][1],params[3][1],params[4][1],params[5][1])
     }
   }
