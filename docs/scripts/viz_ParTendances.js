@@ -10,6 +10,7 @@ export function createTrendsVisualisation(country, country_name, start_day,start
 
     const tip = viz.initializeViz()
 
+    //paramètres par défaut
     country = country ? country : 'global'
     country_name = country_name ? country_name : 'Mondial'
     start_day = start_day ? start_day : '01'
@@ -25,7 +26,6 @@ export function createTrendsVisualisation(country, country_name, start_day,start
         spinner.stop()
 
         //Formatage de la data pour la construction des échelles de couleurs
-        console.log(data_preprocessed_tendance)
         let concatDataTotal = []
         let concatDataStreams = []
         data_preprocessed_tendance.forEach(function(year){
@@ -38,30 +38,51 @@ export function createTrendsVisualisation(country, country_name, start_day,start
         helper.appendTitle(infog, 'Tendances ('+country_name+')')
         const colorScales = viz.appendColorScales(concatDataTotal, concatDataStreams, index.vizWidth)
 
+        //Paramètres de placement des vizu
+        let betweenPaddingHorizontal = 20
+        let trendVizWidth = index.vizWidth/2 - betweenPaddingHorizontal/2
+        let trendVizHeight = 0 //Sera mis à jour
+        let betweenPaddingVertical = 40
+        let infogHeight = d3.select('.info-g').node().getBBox().height
+
         //Affichage des visualisations
-        let trendVizWidth = index.vizWidth/2 - 10
         data_preprocessed_tendance.forEach(function(year, index){
             let column = (index%2)==1 ? 1 : 0
             let row = index>1 ? 1 : 0
-
+            //Groupe contenant une sous-vizu
             let g = d3.select('.graph-g').append('g').attr('id', year.Year)
-
-            if (row == 0) viz.appendColumnTitles(g, trendVizWidth, 'Titres')
-
-            let yearTitle = helper.appendTitle(g, year.Year)
-            let offset = d3.select('.info-g').node().getBBox().height + d3.select('.column-titles-g').node().getBBox().height + 20
-            yearTitle.style('font-size', '20px').attr('transform', 'translate(0, '+ offset +')')
-
-            if (row == 0) viz.appendDates(g, start_date, end_date, year.Year) 
-
-            viz.appendHeatMaps(g, year.Tracks, 'Track Name', colorScales, trendVizWidth, tip.streams, tip.total, year.Year)
-
-            if (row == 0) viz.placeDates(year.Year)  
-
-            let vizHeight = g.node().getBBox().height
-            g.attr('transform', 'translate('+ column*(trendVizWidth + 20) +','+ row*(vizHeight + 20) + ')')
+            //Titre d'année et placement
+            let yearTitle = helper.appendTitle(g, year.Year).attr('class', 'yearTitle')
+            yearTitle.style('font-size', '20px').attr('transform', 'translate(0, '+ infogHeight +')')
+            //Elements généraux de la sous-vizu
+            viz.appendColumnTitles(g, trendVizWidth, 'Titres')
+            viz.appendDates(g, start_date, end_date, year.Year) 
+            viz.appendHeatMaps(g, year.Tracks, 'Track Name', colorScales, trendVizWidth, tip.streams, tip.total)
+            viz.placeDates(year.Year)  
+            //Placement de la sous-vizu
+            trendVizHeight = g.node().getBBox().height
+            g.attr('transform', 'translate('+ column*(trendVizWidth + betweenPaddingHorizontal) +','+ row*(trendVizHeight + betweenPaddingVertical) + ')')
         })
+
+        //Ajout des lignes pour la séparation visuelle des différentes années
+        let yVertical = infogHeight - d3.select('.yearTitle').node().getBBox().height
+        d3.select('.graph-g').append('line')
+                    .attr('x1', trendVizWidth + betweenPaddingHorizontal/2)
+                    .attr('x2', trendVizWidth + betweenPaddingHorizontal/2)
+                    .attr('y1', yVertical)
+                    .attr('y2', yVertical + 2*trendVizHeight + betweenPaddingVertical)
+                    .style('stroke-width', 2)
+                    .style('stroke', 'white')
+        d3.select('.graph-g').append('line')
+                    .attr('x1', 0)
+                    .attr('x2', index.vizWidth)
+                    .attr('y1', yVertical + trendVizHeight + betweenPaddingVertical)
+                    .attr('y2', yVertical + trendVizHeight + betweenPaddingVertical)
+                    .style('stroke-width', 2)
+                    .style('stroke', 'white')
         
+        helper.updateSvg()
+                    
     }, function(error)
     {
         spinner.stop()
