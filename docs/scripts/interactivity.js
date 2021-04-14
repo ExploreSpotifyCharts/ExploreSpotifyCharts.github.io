@@ -3,6 +3,7 @@ import { createArtistVisualisation } from "./viz_ParArtiste.js"
 import { createTrackVisualisation } from "./viz_ParTitre.js"
 import { createTrendsVisualisation } from "./viz_ParTendances.js"
 import { PATH } from "../index.js"
+import { parseTrackName_Artist } from "./preprocess_Helpers.js"
 
 /**
  *  Initialize view element
@@ -22,20 +23,20 @@ export function initialize() {
     })
     d3.csv(PATH+'extra/artist_track'+'.csv', d3.autoType).then(function (data_titres) {
       artists_tracks = data_titres.map(line => {
-        return {Artist: String(line['Artist']), Track: String(line['Track Name'])}
+        return {Artist: parseTrackName_Artist(String(line['Artist'])), Track: parseTrackName_Artist(String(line['Track Name']))}
       })
       d3.csv(PATH+'extra/artist_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
-        artists = data_artists_countries.map(line => String(line['Artist']))
+        artists = data_artists_countries.map(line => parseTrackName_Artist(String(line['Artist'])))
 
         artists_countries = data_artists_countries.map(line => {
-          return {artist: String(line['Artist']), countries: String(line['Countries']).split('|')}
+          return {artist: parseTrackName_Artist(String(line['Artist'])), countries: String(line['Countries']).split('|')}
         })
         d3.csv(PATH+'extra/track_countries'+'.csv', d3.autoType).then(function (data_tracks_countries) {
           tracks_countries = data_tracks_countries.map(line => {
-            return {track: String(line['Track Name']), countries: String(line['Countries']).split('|')}
+            return {track: parseTrackName_Artist(String(line['Track Name'])), countries: String(line['Countries']).split('|')}
           })
           d3.csv(PATH+'extra/artists_global'+'.csv', d3.autoType).then(function (data_artists_global) {
-            artists_global = data_artists_global.map(line => String(line['Artist']))
+            artists_global = data_artists_global.map(line => parseTrackName_Artist(String(line['Artist'])))
 
             createFormAndViz('Pays')
           })
@@ -447,6 +448,7 @@ function isFormValid(params) {
     }
     if(data.filter(value => value == fieldValue).length > 0) return true
     //Display error if the field is invalid
+    console.log(fieldValue)
     const error = word + fieldName.toLowerCase() + " " + fieldValue +" n'existe pas"
     d3.select("#" + fieldName).node().setCustomValidity(error)
     d3.select("#" + fieldName).node().reportValidity()
