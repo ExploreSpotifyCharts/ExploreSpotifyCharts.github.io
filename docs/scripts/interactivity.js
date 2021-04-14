@@ -448,7 +448,6 @@ function isFormValid(params) {
     }
     if(data.filter(value => value == fieldValue).length > 0) return true
     //Display error if the field is invalid
-    console.log(fieldValue)
     const error = word + fieldName.toLowerCase() + " " + fieldValue +" n'existe pas"
     d3.select("#" + fieldName).node().setCustomValidity(error)
     d3.select("#" + fieldName).node().reportValidity()
