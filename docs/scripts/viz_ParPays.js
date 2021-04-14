@@ -19,13 +19,14 @@ export function createCountryVisualisation(country, country_name, start_date, en
         const data_preprocessed_countrytrack = preprocess_ParPays.ExplorerParPays_Track(data, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
         
         spinner.stop()
+
+        let infog = d3.select('.info-g')
         if (data_preprocessed_countrytrack.length <= 1)
         {
-          helper.appendError(index.no_data_error)
+          helper.appendError(infog, index.no_data_error)
         }
         else
         {
-            let infog = d3.select('.info-g')
             helper.appendTitle(infog, country_name)
             const colorScales = viz.appendColorScales(data_preprocessed_countrytrack.slice(0,1), data_preprocessed_countrytrack.slice(1), index.vizWidth)
 

@@ -44,6 +44,7 @@ export const vizWidth = svgWidth - margin.left - margin.right;
 //Error messages
 export const no_data_error = "Oops aucune donnée n'est disponible, essayez avec d'autres paramètres."
 export const other_error = "Oops quelque chose s'est mal passé, veuillez réessayer."
+export const no_data_2020_error = "Oops pas de donnée disponible pour cette période sur l'année 2020"
 
 /* Loader settings */
 export var spinnerOpts = {

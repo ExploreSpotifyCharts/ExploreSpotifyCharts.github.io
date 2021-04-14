@@ -47,10 +47,10 @@ export function createTrendsVisualisation(country, country_name, start_day,start
         let yearTitleHeight = 0 //Sera mis à jour
 
         //Affichage des visualisations
-        data_preprocessed_tendance.forEach(function(year, index){
+        data_preprocessed_tendance.forEach(function(year, i){
             
-                let column = (index%2)==1 ? 1 : 0
-                let row = index>1 ? 1 : 0
+                let column = (i%2)==1 ? 1 : 0
+                let row = i>1 ? 1 : 0
                 //Groupe contenant une sous-vizu
                 let g = d3.select('.graph-g').append('g').attr('id', year.Year)
                 //Titre d'année et placement
@@ -66,11 +66,8 @@ export function createTrendsVisualisation(country, country_name, start_day,start
                 trendVizHeight = g.node().getBBox().height
             } else {
                 let errorOffset = infogHeight+yearTitleHeight
-                g.append('text')
-                 .text('Pas de données pour cette année')
-                 .attr('class', 'error-viz')
-                 .attr('fill', 'white')
-                 .attr('transform', 'translate(0, '+ errorOffset +')')
+                let errortext = helper.appendError(g,index.no_data_2020_error)
+                errortext.attr('transform', 'translate(0, '+ errorOffset +')')
             }
                 //Placement de la sous-vizu  
                 g.attr('transform', 'translate('+ column*(trendVizWidth + betweenPaddingHorizontal) +','+ row*(trendVizHeight + betweenPaddingVertical) + ')')

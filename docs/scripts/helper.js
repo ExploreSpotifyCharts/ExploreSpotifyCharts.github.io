@@ -93,9 +93,8 @@ export function formatDate(input) {
  *
  * @param {object} error L'erreur à afficher
  */
-export function appendError (error) {
-  d3.select('.info-g')
-   .append('text')
+export function appendError (g, error) {
+  return g.append('text')
    .attr('class', 'error-viz')
    .attr('fill', 'white')
    .text(error)
