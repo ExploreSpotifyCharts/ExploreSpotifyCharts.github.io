@@ -101,6 +101,7 @@ const heatmap = {
  * @param {boolean} isTotal
  */
  export function createLine (g, title, key, isTotal,titleType) {
+    const complete_title = title
     if (title.length > 25) { //Si le titre est trop long, on le tronque
       title = title.slice(0, 24)
       title = title + '...'
@@ -116,7 +117,7 @@ const heatmap = {
       .style('cursor','auto')
       .style('fill','white')
     } else {
-        setClickHandler(titleType,textSvg)
+        setClickHandler(titleType,textSvg,complete_title)
     }
  }
 
@@ -286,18 +287,18 @@ export function appendLine(initialOffset, horizontalOffset, index, track, colorS
  * Set click handler for interactivity
  * @param {string} key 
  */
-function setClickHandler(key,g) {
+function setClickHandler(key,g,title) {
   switch(key) {
     case 'Track_Name':
       g.on('click', function() {
         const tabElement = d3.select('#menuList li:nth-child(3)').node()
-        interactivity.navigate(tabElement, this.textContent)
+        interactivity.navigate(tabElement, title)
       })
       break
     case 'Region':
       g.on('click', function() {
         const tabElement = d3.select('#menuList li:nth-child(1)').node()
-        interactivity.navigate(tabElement, this.textContent)
+        interactivity.navigate(tabElement, title)
       })
       break
     default:
