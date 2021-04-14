@@ -28,6 +28,10 @@ export function parseTrackName_Artist(input)
   {
     input = input.replace(',', '')
   }
+  while (input.includes('&'))
+  {
+    input = input.replace('&', 'and')
+  }
   return input
 }
 

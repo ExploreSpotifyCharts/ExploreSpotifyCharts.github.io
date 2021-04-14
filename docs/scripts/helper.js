@@ -87,3 +87,16 @@ export function formatDate(input) {
 
   return day+'/'+month+'/'+year;
 }
+
+/**
+ * Génère un texte affichant une erreur
+ *
+ * @param {object} error L'erreur à afficher
+ */
+export function appendError (error) {
+  d3.select('.info-g')
+   .append('text')
+   .attr('class', 'error-viz')
+   .attr('fill', 'white')
+   .text(error)
+}

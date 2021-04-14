@@ -21,19 +21,27 @@ export function createArtistVisualisation(artist, country, country_name, start_d
     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artist, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
     
     spinner.stop()
-    let infog = d3.select('.info-g')
-    helper.appendTitle(infog, artist+' ('+country_name+')')
-    const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth)
-
-    let graphg = d3.select('.graph-g')
-    viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
-    viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
-    viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
-    viz.placeDates('Artiste')
+    
+    if (data_preprocessed_artist.length <= 1)
+    {
+      helper.appendError(index.no_data_error)
+    }
+    else
+    {
+      let infog = d3.select('.info-g')
+      helper.appendTitle(infog, artist+' ('+country_name+')')
+      const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth)
+      let graphg = d3.select('.graph-g')
+      viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
+      viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
+      viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+      viz.placeDates('Artiste')
     helper.updateSvg()
+    }
   }, function(error)
   {
       spinner.stop()
+      helper.appendError(index.other_error)
       console.log(error)
   })
 }
