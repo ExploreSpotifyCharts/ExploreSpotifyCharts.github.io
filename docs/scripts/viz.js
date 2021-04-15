@@ -108,7 +108,7 @@ export function placeDates(id) {
  * @param {int} key L'index de la ligne pour la classe personnalisée
  * @param {boolean} isTotal
  */
- export function createLine (g, title, key, isTotal,titleType) {
+ export function createLine (g, title, key, isTotal, titleType, artiste, tip_artiste,) {
     const complete_title = title
     let textSvg = g.append('text')
      .text(title)
@@ -122,6 +122,7 @@ export function placeDates(id) {
       .style('fill','white')
     } else {
         setClickHandler(titleType,textSvg,complete_title)
+        setHoverHandlerTrack(tip_artiste, textSvg, artiste)
     }
 
     while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
@@ -199,13 +200,29 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
  * @param {*} tip_streams Le tooltip pour les streams
  * @param {*} tip_total Le tooltip pour le total
  */
-export function setHoverHandler (g, tip) {
+export function setHoverHandlerHeatmap (g, tip) {
   g.selectAll("rect")
   .on('mouseover', function(d) {
     tip.show(d, this)
   })
   .on('mouseout',  function(d) {
     tip.hide(d, this)
+  })
+  
+}
+
+/**
+ * Map du hover (tooltip) pour l'interaction avec les rectangles des heatmaps
+ *
+ * @param {object} g La sélection dans laquelle on récupère les objets à map avec le tooltip
+ * @param {*} tip 
+ */
+ export function setHoverHandlerTrack (tip, g, artiste) {
+  g.on('mouseover', function(d) {
+    tip.show(artiste, this)
+  })
+  .on('mouseout',  function(d) {
+    tip.hide(artiste, this)
   })
   
 }
@@ -219,7 +236,7 @@ export function setHoverHandler (g, tip) {
  * @param {object} tip_streams Tooltip à associer aux streams
  * @param {object} tip_total Tooltip à associer au total
  */
- export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total) {
+ export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total, tip_artiste) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -232,7 +249,7 @@ export function setHoverHandler (g, tip) {
     //Affichage de chaque ligne
     data.slice(1).forEach(function (track, index)
       {
-        appendLine(graphg, initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key)
+        appendLine(graphg, initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key, tip_artiste)
       }
     )
  }
@@ -244,9 +261,11 @@ export function setHoverHandler (g, tip) {
   //Création du tootlip
   const tip_streams = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Streams(d) })
   const tip_total = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Total(d) })
+  const tip_artiste = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Artiste(d) })
   g.call(tip_streams)
   g.call(tip_total)
-  return {streams: tip_streams,total: tip_total}
+  g.call(tip_artiste)
+  return {streams: tip_streams,total: tip_total, artiste: tip_artiste}
  }
 
  /**
@@ -281,7 +300,7 @@ export function appendColumnTitles (graphg, vizWidth, leftTitle) {
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
-export function appendLine(graphg, initialOffset, index, track, colorScale, tip, vizWidth, isTotal, key) {
+export function appendLine(graphg, initialOffset, index, track, colorScale, tip_heatmap, vizWidth, isTotal, key, tip_artiste) {
   //Création du groupe contenant les informations de la ligne
   const verticalOffset = (initialOffset + index*(heatmap.height+heatmap.padding))
   let g = graphg
@@ -290,7 +309,7 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
             .attr('transform', 'translate(0, '+ verticalOffset +')')
 
   //Affichage du titre
-  createLine(g, track[key], index, isTotal, key)
+  createLine(g, track[key], index, isTotal, key, track['Artist'], tip_artiste)
 
   //Affichage du nombre de streams et des statistiques
   createStreamStats(g, index, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
@@ -298,8 +317,7 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
   //Affichage de la heatmap
   let trackHeight = d3.select('.track'+String(index)).node().getBBox().height
   createHeatMap(g, track.Streams, index, colorScale, heatmap.text, trackHeight)
-  setHoverHandler(g, tip)
-
+  setHoverHandlerHeatmap(g, tip_heatmap)
   
 }
 

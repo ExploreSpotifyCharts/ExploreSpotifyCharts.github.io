@@ -44,7 +44,7 @@ export function createCountryVisualisation(country, country_name, start_date, en
             let graphg = d3.select('.graph-g')
             viz.appendColumnTitles(graphg, index.vizWidth, columnTitle)
             viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Pays')
-            viz.appendHeatMaps(graphg, data_preprocessed, lineTitle, colorScales, index.vizWidth, tip.streams, tip.total)
+            viz.appendHeatMaps(graphg, data_preprocessed, lineTitle, colorScales, index.vizWidth, tip.streams, tip.total, tip.artiste)
             viz.placeDates('Pays')
             helper.updateSvg()
         }

@@ -29,3 +29,18 @@ export function getContents_Total (d) {
   tooltip_string += '</span>'
   return tooltip_string
 }
+
+/**
+ * Defines the contents of the tooltip for title item. See CSS for tooltip styling.
+ *
+ * @param {object} d The data associated to the hovered element
+ * @returns {string} The tooltip contents
+ */
+ export function getContents_Artiste (artiste) {
+  // Generate tooltip contents
+  let tooltip_string = '<span class="tooltip-value-streams">'
+  tooltip_string += '<strong> Artiste : </strong> '+ artiste +'<br>'
+  tooltip_string += '</span>'
+  return tooltip_string
+}
+
