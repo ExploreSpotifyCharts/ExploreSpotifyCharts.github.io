@@ -4,7 +4,10 @@ import * as preprocess_Helpers from './preprocess_Helpers.js'
 import * as preprocess_ParTendance from './preprocess_ParTendance.js'
 import * as helper from './helper.js'
 
-export function createTrendsVisualisation(country, country_name, start_day,start_month,end_day,end_month) {
+export function createTrendsVisualisation(start_day,start_month,end_day,end_month,country,country_name) {
+    if(end_day == null) end_day = start_day
+    if(end_month == null) end_month = start_month
+
     const target = document.getElementsByClassName('viz-container')[0]
     const spinner = new Spinner(index.spinnerOpts).spin(target)
 
@@ -13,10 +16,6 @@ export function createTrendsVisualisation(country, country_name, start_day,start
     //paramètres par défaut
     country = country ? country : 'global'
     country_name = country_name ? country_name : 'Mondial'
-    start_day = start_day ? start_day : '01'
-    start_month = start_month ? start_month : '01'
-    end_day = end_day ? end_day : '31'
-    end_month = end_month ? end_month : '12'
 
     let start_date = start_day +'/'+ start_month
     let end_date = end_day +'/'+ end_month

@@ -80,6 +80,7 @@ export function formatNumber(num) {
  *
  */
 export function formatDate(input) {
+  if(input == null) return null
   let datePart = input.split('-')
   let year = datePart[0]
   let month = datePart[1]
