@@ -223,7 +223,7 @@ function submit(e) {
       const period_start = params[3][1]
       const period_end = params[4][1]
 
-      let countries_to_keep = tracks_countries.filter(element => element.track == track)[0].countries
+      let countries_to_keep = getCountriesForTrackArtist(track, artist)
       const index = countries_to_keep.indexOf('global')
       if (index != -1)
       {
