@@ -90,6 +90,7 @@ export function addTotalEntry_computeProportion(data)
   let newEntry = []
   newEntry[0] = 'Total'
   newEntry[1] = {}
+  newEntry[1]['Track_Name'] = 'Total'
   newEntry[1]['Streams'] = {}
   newEntry[1]['Count_total_streams'] = 0
 
@@ -160,6 +161,11 @@ export function formatData(data, key_name)
     entry[key_name] = line[0]
     for (const [ key, value ] of Object.entries(line[1])) {
       entry[key] = value
+    }
+    if (entry['Track Name'])
+    {
+      entry['Track_Name'] = entry['Track Name']
+      delete entry['Track Name']
     }
 
     let streams_dates = line[1]['Streams']

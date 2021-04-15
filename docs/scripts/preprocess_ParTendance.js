@@ -49,28 +49,27 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
 
   //Reduce per year
   data_processed = data_processed.reduce(function (acc, line) {
-    if (line['Track Name'] != '')
+    if (typeof acc[line['Year']] == 'undefined')
     {
-      if (typeof acc[line['Year']] == 'undefined')
-      {
-        acc[line['Year']] = {}
-        acc[line['Year']]['Tracks'] = {}
-      }
-  
-      if (typeof acc[line['Year']]['Tracks'][line['Track Name']] == 'undefined')
-      {
-        acc[line['Year']]['Tracks'][line['Track Name']] = {}
-        acc[line['Year']]['Tracks'][line['Track Name']]['Artist'] = line['Artist']
-        acc[line['Year']]['Tracks'][line['Track Name']]['Streams'] = {}
-        acc[line['Year']]['Tracks'][line['Track Name']]['Count_total_streams'] = 0
-      }
-  
-      const date = line['date']
-      const dateISO = date.toISOString().split('T')[0]
-  
-      acc[line['Year']]['Tracks'][line['Track Name']]['Streams'][dateISO] = line['Streams']
-      acc[line['Year']]['Tracks'][line['Track Name']]['Count_total_streams'] += line['Streams']
+      acc[line['Year']] = {}
+      acc[line['Year']]['Tracks'] = {}
     }
+  
+    const key = line['Track Name']+','+line['Artist']
+    if (typeof acc[line['Year']]['Tracks'][key] == 'undefined')
+    {
+      acc[line['Year']]['Tracks'][key] = {}
+      acc[line['Year']]['Tracks'][key]['Track Name'] = line['Track Name']
+      acc[line['Year']]['Tracks'][key]['Artist'] = line['Artist']
+      acc[line['Year']]['Tracks'][key]['Streams'] = {}
+      acc[line['Year']]['Tracks'][key]['Count_total_streams'] = 0
+    }
+  
+    const date = line['date']
+    const dateISO = date.toISOString().split('T')[0]
+
+    acc[line['Year']]['Tracks'][key]['Streams'][dateISO] = line['Streams']
+    acc[line['Year']]['Tracks'][key]['Count_total_streams'] += line['Streams']
     return acc
   }, {})
   data_processed = Object.entries(data_processed)
@@ -83,7 +82,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       let sortable = [];
       for (var track in tracks) {
           sortable.push({
-          'Track Name': track,
+          'Track Name': tracks[track]['Track Name'],
           'Artist': tracks[track]['Artist'],
           'Count_total_streams' :tracks[track]['Count_total_streams'],
           'Streams': tracks[track]['Streams']
