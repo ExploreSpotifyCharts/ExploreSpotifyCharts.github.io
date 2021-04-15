@@ -36,8 +36,8 @@ export let heatmap = {
   var minMaxTotal = helper.getMinMaxStreams(dataTotal)
 
   //Création des échelles de couleur
-  const colorScaleStreams = legend.createColorScale(minMaxStreams.min, minMaxStreams.max, '#000000', '#1DB954')
-  const colorScaleTotal = legend.createColorScale(minMaxTotal.min, minMaxTotal.max,'#000000', '#FF7C00')
+  const colorScaleStreams = legend.createColorScale(0, minMaxStreams.max, '#000000', '#1DB954')
+  const colorScaleTotal = legend.createColorScale(0, minMaxTotal.max,'#000000', '#FF7C00')
   var colorScales = {streams: colorScaleStreams, total: colorScaleTotal}
 
   //Variables pour le placement des éléments
