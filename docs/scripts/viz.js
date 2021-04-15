@@ -309,6 +309,7 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
  */
 function setClickHandler(key,g,title) {
   switch(key) {
+    case 'Track Name':
     case 'Track_Name':
       g.on('click', function() {
         const tabElement = d3.select('#menuList li:nth-child(3)').node()
@@ -321,7 +322,14 @@ function setClickHandler(key,g,title) {
         interactivity.navigate(tabElement, title)
       })
       break
+    case 'Artist':
+    g.on('click', function() {
+      const tabElement = d3.select('#menuList li:nth-child(2)').node()
+      interactivity.navigate(tabElement, title)
+    })
+    break
     default:
+      console.log('Not implemented yet')
       break
   }
 }
