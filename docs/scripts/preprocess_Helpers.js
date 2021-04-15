@@ -57,7 +57,11 @@ export function reduceDataPerKey(data, key, keys_to_keep=[])
       acc[line[key]]['Streams'] = {}
       acc[line[key]]['Count_total_streams'] = 0
     }
-    acc[line[key]]['Streams'][dateISO] = line['Streams']
+    if (typeof acc[line[key]]['Streams'][dateISO] == 'undefined')
+    {
+      acc[line[key]]['Streams'][dateISO] = 0
+    }
+    acc[line[key]]['Streams'][dateISO] += line['Streams']
     acc[line[key]]['Count_total_streams'] += line['Streams']
     return acc
   }, {})
