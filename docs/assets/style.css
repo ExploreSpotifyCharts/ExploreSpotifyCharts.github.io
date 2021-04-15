@@ -131,6 +131,11 @@ input[type='submit']:hover {
     cursor: pointer;
 }
 
+input[type='submit']:disabled {
+    background-color: #cccccc;
+    border: 1px solid #cccccc;
+}
+
 /*Trick to overlaps browser radio button, since we can't change the style*/
 input[type='radio']:after {
     width: 10px;
