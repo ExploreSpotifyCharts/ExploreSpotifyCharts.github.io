@@ -139,7 +139,7 @@ input[type='radio']:after {
     top: -2px;
     left: -1px;
     position: relative;
-    background-color: 92929;
+    background-color: 292929;
     content: '';
     display: inline-block;
     visibility: visible;

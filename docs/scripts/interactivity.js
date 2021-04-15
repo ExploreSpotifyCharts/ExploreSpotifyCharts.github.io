@@ -220,7 +220,6 @@ function submit(e) {
   //Using JQuery to get form data
   const rawParams = $('#form').serialize();
   let params = parseParams(rawParams)
-  console.log(params)
   if (isFormValid(params)) {
     params = processParams(params)
     resetDataviz()
