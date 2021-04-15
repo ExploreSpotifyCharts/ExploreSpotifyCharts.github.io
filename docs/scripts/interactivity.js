@@ -77,6 +77,7 @@ function createFormAndViz(tab, value, additionalValue) {
         country = value ? value : 'Mondial'
         createDatePickers()
         createSuggestbox('Pays', countries.map(d => d.country), country)
+        createToogle()
         createCountryVisualisation(getCountryCode(country), country)
         break
       case "Tendances":
@@ -155,6 +156,21 @@ function createSuggestbox(label, data, defaultValue) {
 }
 
 /**
+ * Create a toogle 
+ */
+function createToogle() {
+  const container = d3.select('form .suggestboxes').append('div').attr('class','suggestbox')
+  container.append('span').text('Titre').style('padding-right','10px')
+
+  const toogle = container.append('label').attr('class','switch')
+
+  toogle.append('input').attr('type','checkbox').attr('value','artist').attr('name','aggregation')
+  toogle.append('span').attr('class','slider')
+
+  container.append('span').text('Artiste').style('padding-left','10px')
+}
+
+/**
  * Enable/Disable datepicker according to selection
  * @param {string} selection 
  */
@@ -202,11 +218,14 @@ function submit(e) {
     params = processParams(params)
     resetDataviz()
     if(!d3.select('#menuList li:nth-child(1).selected').empty()){ //Pays
+      const condition = params.findIndex( v => v[0] == 'aggregation') >= 0
+      const offset = condition ? 1 : 0
+
       const country = params[0][2]
       const country_name = params[0][1]
-      const period_start = params[2][1]
-      const period_end = params[3][1]
-      createCountryVisualisation(country, country_name, period_start, period_end)
+      const period_start = params[2 + offset][1]
+      const period_end = params[3 + offset][1]
+      createCountryVisualisation(country, country_name, period_start, period_end, condition)
     }
     if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artiste
       const artist = params[0][1]
@@ -468,9 +487,8 @@ function isFormValid(params) {
   }
 
   function processParams(params) {
-    let index = params.findIndex( v => v[0] == 'Pays')
+    const index = params.findIndex( v => v[0] == 'Pays')
     if(index >= 0) params[index].push(getCountryCode(params[index][1]))
-    //TODO: process for tendances date
     return params
   }
 

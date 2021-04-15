@@ -160,6 +160,6 @@ export function appendScale (label, placingVariables, colorScale, ids, scaleDime
   initLegendBar(ids.scale)
   draw(placingVariables.xScale, scaleDimensions, 'url(#' + ids.gradient +')', '#'+ids.scale, offset)
   //Affichage des bornes de l'échelle
-  writeLegendMin(minMax.min, placingVariables.xScale, placingVariables.yText+offset, scaleDimensions.textMargin)
+  writeLegendMin(0, placingVariables.xScale, placingVariables.yText+offset, scaleDimensions.textMargin)
   writeLegendMax(minMax.max, placingVariables.xScale+scaleDimensions.width, placingVariables.yText+offset, scaleDimensions.textMargin)
 }

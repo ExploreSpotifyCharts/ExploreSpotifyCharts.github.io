@@ -31,7 +31,7 @@ export function createArtistVisualisation(artist, country, country_name, start_d
     {
       
       helper.appendTitle(infog, artist+' ('+country_name+')')
-      const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth)
+      const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth, 'Par Titre :')
       let graphg = d3.select('.graph-g')
       viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
       viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')

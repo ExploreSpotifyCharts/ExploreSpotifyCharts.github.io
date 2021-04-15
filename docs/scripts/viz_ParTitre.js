@@ -45,7 +45,7 @@ export function createTrackVisualisation(track, artist, countries, start_date, e
         else
         {
             helper.appendTitle(infog, track+' (par '+artist+')')
-            const colorScales = viz.appendColorScales(data_preprocessed_titre.slice(0,1), data_preprocessed_titre.slice(1), index.vizWidth)
+            const colorScales = viz.appendColorScales(data_preprocessed_titre.slice(0,1), data_preprocessed_titre.slice(1), index.vizWidth, 'Par Pays :')
     
             let graphg = d3.select('.graph-g')
             viz.appendColumnTitles(graphg, index.vizWidth, 'Pays')
