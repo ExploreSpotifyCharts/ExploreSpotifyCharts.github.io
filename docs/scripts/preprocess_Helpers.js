@@ -14,6 +14,7 @@ export function SpotifyDataParser(d)
  
 export function parseDate(input) // parse a date in yyyy-mm-dd format
 {
+  if(input == null) return null
   let parts = input.split('-')
   return new Date(parts[0], parts[1]-1, parts[2]) // Month is 0-indexed
 }

@@ -6,24 +6,12 @@ import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
 export function createTrackVisualisation(track, artist, countries, start_date, end_date) {
-
-    //à supprimer à terme
-    // countries = []
-    // countries.push({'code':'be', 'country':'Belgique'})
-    // countries.push({'code':'ca', 'country':'Canada'})
-    // countries.push({'code':'es', 'country':'Espagne'})
-    // countries.push({'code':'fr', 'country':'France'})
-    // countries.push({'code':'global', 'country':'Mondial'})
-    // countries.push({'code':'jp', 'country':'Japon'})
-    //fin suppression à terme
+    if(end_date == null) end_date = start_date
 
     const target = document.getElementsByClassName('viz-container')[0]
     const spinner = new Spinner(index.spinnerOpts).spin(target)
 
     const tip = viz.initializeViz()
-
-    start_date = start_date ? start_date : '2017-01-01'
-    end_date = end_date ? end_date : '2020-04-20'
 
     let call_countries = []
     countries.forEach(country => call_countries.push(d3.csv(index.PATH+country['code']+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
