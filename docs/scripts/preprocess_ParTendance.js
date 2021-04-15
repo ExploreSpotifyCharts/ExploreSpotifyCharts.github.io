@@ -82,7 +82,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       let sortable = [];
       for (var track in tracks) {
           sortable.push({
-          'Track_Name': tracks[track]['Track Name'],
+          'Track_Name': tracks[track]['Track_Name'],
           'Artist': tracks[track]['Artist'],
           'Count_total_streams' :tracks[track]['Count_total_streams'],
           'Streams': tracks[track]['Streams']
