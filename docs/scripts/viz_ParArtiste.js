@@ -5,7 +5,7 @@ import * as viz from './viz.js'
 import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
-export function createArtistVisualisation(artist, country, country_name, start_date, end_date) {
+export function createArtistVisualisation(artist, start_date, end_date, country, country_name) {
   if(end_date == null) end_date = start_date
 
   const target = document.getElementsByClassName('viz-container')[0]

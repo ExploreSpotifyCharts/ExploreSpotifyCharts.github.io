@@ -97,7 +97,7 @@ function createFormAndViz(tab, value, additionalValue) {
         createDatePickers()
         createSuggestbox('Artiste', artists, artist)
         createSuggestbox('Pays', countries.map(d => d.country), 'Mondial', start_date, end_date)
-        createArtistVisualisation(artist)
+        createArtistVisualisation(artist,start_date,end_date)
         break
       case "Titre":
         createDatePickers()
@@ -242,7 +242,7 @@ function submit(e) {
       const period_start = params[3][1]
       const period_end = params[4] ? params[4][1] : null
 
-      createArtistVisualisation(artist, country, country_name, period_start, period_end)
+      createArtistVisualisation(artist, period_start, period_end, country, country_name)
     }
     if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
       const track = params[1][1]
