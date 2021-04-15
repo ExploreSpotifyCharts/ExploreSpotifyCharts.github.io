@@ -37,7 +37,7 @@ export function createTrendsVisualisation(country, country_name, start_day,start
         //En-tête de la visualisation
         let infog = d3.select('.info-g')
         helper.appendTitle(infog, 'Tendances ('+country_name+')')
-        const colorScales = viz.appendColorScales(concatDataTotal, concatDataStreams, index.vizWidth)
+        const colorScales = viz.appendColorScales(concatDataTotal, concatDataStreams, index.vizWidth, 'Par Titre :')
         //Paramètres de placement des vizu
         let betweenPaddingHorizontal = 20
         let trendVizWidth = index.vizWidth/2 - betweenPaddingHorizontal/2
