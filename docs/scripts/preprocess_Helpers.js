@@ -90,6 +90,7 @@ export function addTotalEntry_computeProportion(data)
   let newEntry = []
   newEntry[0] = 'Total'
   newEntry[1] = {}
+  newEntry[1]['Track_Name'] = 'Total'
   newEntry[1]['Streams'] = {}
   newEntry[1]['Count_total_streams'] = 0
 
@@ -158,10 +159,6 @@ export function formatData(data, key_name)
   let data_formatted = data.map(line => {
     let entry = {}
     entry[key_name] = line[0]
-    if (key_name == 'spotify_id' && line[0] == "Total")
-    {
-      entry['Track_Name'] = "Total"
-    }
     for (const [ key, value ] of Object.entries(line[1])) {
       entry[key] = value
     }

@@ -5,9 +5,7 @@ import * as viz from './viz.js'
 import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
-export function createTrackVisualisation(spotify_id, track, artist, countries, start_date, end_date) {
-
-    spotify_id = '6l7PqWKsgm4NLomOE7Veou' //à supprimer à terme
+export function createTrackVisualisation(track, artist, countries, start_date, end_date) {
 
     //à supprimer à terme
     // countries = []
@@ -29,7 +27,7 @@ export function createTrackVisualisation(spotify_id, track, artist, countries, s
 
     let call_countries = []
     countries.forEach(country => call_countries.push(d3.csv(index.PATH+country['code']+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-        const data_filtered = data.filter(line => line['spotify_id'] == spotify_id)
+        const data_filtered = data.filter(line => line['Track Name'] == track && line['Artist'] == artist)
         return data_filtered
     })))
 

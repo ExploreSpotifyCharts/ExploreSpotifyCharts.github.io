@@ -109,7 +109,7 @@ export function placeDates(id) {
  * @param {boolean} isTotal
  */
  export function createLine (g, title, key, isTotal,titleType) {
-    const complete_title = title
+   const complete_title = title
     let textSvg = g.append('text')
      .text(title)
      .attr('class', 'trackname-viz track'+String(key))
@@ -121,7 +121,7 @@ export function placeDates(id) {
       .style('cursor','auto')
       .style('fill','white')
     } else {
-        //setClickHandler(titleType,textSvg,complete_title)
+        setClickHandler(titleType,textSvg,complete_title)
     }
 
     while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
