@@ -8,7 +8,7 @@ export function SpotifyDataParser(d)
    Streams: +d.Streams, //convert to number
    date: parseDate(d.date),
    region: d.region,
-   spotify_id: String(d.spotify_id)
+   spotify_id: d.spotify_id
    }
 }
  

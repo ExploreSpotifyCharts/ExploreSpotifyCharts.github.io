@@ -4,7 +4,7 @@ import * as preprocess_Helpers from './preprocess_Helpers.js'
 /**
  * Get data for Explorer par titre for a period
  *
- * @param {object[]} data_countries The data for the countries (already filtered to only have the track of interest)
+ * @param {object[]} data_countries The data for the countries (already filtered to only have the track name of interest)
  * @param {string[]} country_codes The country codes (ordered as data_countries)
  * @param {Date} start The start date to considered data selected
  * @param {Date} end The end date to considered data selected

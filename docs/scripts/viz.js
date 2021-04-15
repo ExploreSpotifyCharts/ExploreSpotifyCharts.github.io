@@ -109,7 +109,7 @@ export function placeDates(id) {
  * @param {boolean} isTotal
  */
  export function createLine (g, title, key, isTotal,titleType) {
-   const complete_title = title
+    const complete_title = title
     let textSvg = g.append('text')
      .text(title)
      .attr('class', 'trackname-viz track'+String(key))
