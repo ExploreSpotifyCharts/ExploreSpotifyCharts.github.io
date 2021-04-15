@@ -28,7 +28,7 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
     }
     else
     {
-      let viz_title = "Écoutes des titres de "+artist+" ("+country_name+")"
+      let viz_title = "Titres de "+artist+" ("+country_name+")"
       helper.appendTitle(infog, viz_title)
       const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth, 'Par Titre :')
       let graphg = d3.select('.graph-g')
