@@ -27,7 +27,7 @@ export function createTrackVisualisation(track, artist, countries, start_date, e
 
     let call_countries = []
     countries.forEach(country => call_countries.push(d3.csv(index.PATH+country['code']+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-        const data_filtered = data.filter(line => line['Track Name'] == track && line['Artist'] == artist)
+        const data_filtered = data.filter(line => line['Track_Name'] == track && line['Artist'] == artist)
         return data_filtered
     })))
 

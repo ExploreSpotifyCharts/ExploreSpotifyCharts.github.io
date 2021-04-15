@@ -61,7 +61,7 @@ export function createTrendsVisualisation(country, country_name, start_day,start
                 //Elements généraux de la sous-vizu
                 viz.appendColumnTitles(g, trendVizWidth, 'Titres')
                 viz.appendDates(g, start_date, end_date, year.Year) 
-                viz.appendHeatMaps(g, year.Tracks, 'Track Name', colorScales, trendVizWidth, tip.streams, tip.total)
+                viz.appendHeatMaps(g, year.Tracks, 'Track_Name', colorScales, trendVizWidth, tip.streams, tip.total)
                 viz.placeDates(year.Year) 
                 trendVizHeight = g.node().getBBox().height
             } else {

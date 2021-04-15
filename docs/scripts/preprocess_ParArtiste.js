@@ -22,7 +22,7 @@ export function ExplorerParArtiste(data, artiste, start, end=null)
   data_processed = data_processed.filter(line => preprocess_Helpers.isValidDate(line['date']) && preprocess_Helpers.isDateToBeConsidered(line['date'], start, end))
   
   //Reduce by track name
-  data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'Track Name', ['Artist'])
+  data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'Track_Name', ['Artist'])
 
   //Sort on count_total_streams and get top k
   data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams'])
