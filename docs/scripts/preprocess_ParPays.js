@@ -18,10 +18,10 @@ export function ExplorerParPays_Track(data, start, end=null)
   data_processed = data_processed.filter(line => preprocess_Helpers.isValidDate(line['date']) && preprocess_Helpers.isDateToBeConsidered(line['date'], start, end))
   
   //Add track name + artist as key
-  data_processed.forEach(line => line['key'] = line['Track Name']+','+line['Artist'])
+  data_processed.forEach(line => line['key'] = line['Track_Name']+','+line['Artist'])
 
   //Reduce by track name
-  data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'key', ['Track Name', 'Artist'])
+  data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'key', ['Track_Name', 'Artist'])
 
   //Sort on count_total_streams and get top k
   const k = 50

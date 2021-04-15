@@ -290,7 +290,7 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
             .attr('transform', 'translate(0, '+ verticalOffset +')')
 
   //Affichage du titre
-  if(key == 'Track_Name' || 'Track Name') createLine(g, track[key], index, isTotal, key, track['Artist'])
+  if(key == 'Track_Name') createLine(g, track[key], index, isTotal, key, track['Artist'])
   else createLine(g, track[key], index, isTotal, key)
 
   //Affichage du nombre de streams et des statistiques
@@ -310,7 +310,6 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
  */
 function setClickHandler(key,g,title,artist) {
   switch(key) {
-    case 'Track Name':
     case 'Track_Name':
       g.on('click', function() {
         const tabElement = d3.select('#menuList li:nth-child(3)').node()
