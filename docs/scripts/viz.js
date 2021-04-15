@@ -121,7 +121,7 @@ export function placeDates(id) {
       .style('cursor','auto')
       .style('fill','white')
     } else {
-        setClickHandler(titleType,textSvg,complete_title)
+        //setClickHandler(titleType,textSvg,complete_title)
     }
 
     while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque

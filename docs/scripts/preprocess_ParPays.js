@@ -18,7 +18,7 @@ export function ExplorerParPays_Track(data, start, end=null)
   data_processed = data_processed.filter(line => preprocess_Helpers.isValidDate(line['date']) && preprocess_Helpers.isDateToBeConsidered(line['date'], start, end))
   
   //Reduce by track name
-  data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'Track Name', ['Artist'])
+  data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'spotify_id', ['Track Name', 'Artist'])
 
   //Sort on count_total_streams and get top k
   const k = 50
@@ -34,8 +34,9 @@ export function ExplorerParPays_Track(data, start, end=null)
   data_processed = preprocess_Helpers.sortStreamsOnDate(data_processed)
 
   //Formattage
-  data_processed = preprocess_Helpers.formatData(data_processed, 'Track_Name')
+  data_processed = preprocess_Helpers.formatData(data_processed, 'spotify_id')
 
+  console.log(data_processed)
   return data_processed
 }
 

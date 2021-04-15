@@ -8,7 +8,7 @@ export function SpotifyDataParser(d)
    Streams: +d.Streams, //convert to number
    date: parseDate(d.date),
    region: d.region,
-   spotify_id: d.spotify_id
+   spotify_id: String(d.spotify_id)
    }
 }
  
@@ -158,8 +158,17 @@ export function formatData(data, key_name)
   let data_formatted = data.map(line => {
     let entry = {}
     entry[key_name] = line[0]
+    if (key_name == 'spotify_id' && line[0] == "Total")
+    {
+      entry['Track_Name'] = "Total"
+    }
     for (const [ key, value ] of Object.entries(line[1])) {
       entry[key] = value
+    }
+    if (entry['Track Name'])
+    {
+      entry['Track_Name'] = entry['Track Name']
+      delete entry['Track Name']
     }
 
     let streams_dates = line[1]['Streams']

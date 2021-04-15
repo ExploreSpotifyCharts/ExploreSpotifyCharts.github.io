@@ -113,7 +113,8 @@ function createFormAndViz(tab, value) {
           countries_to_keep.splice(index, 1)
         }
         countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-        createTrackVisualisation(track, countries_to_keep)
+        const spotify_id = null
+        createTrackVisualisation(spotify_id, track, artist, countries_to_keep)
         break
   }
   //Reset form validation on changes
@@ -236,8 +237,8 @@ function submit(e) {
         countries_to_keep.splice(index, 1)
       }
       countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-      
-      createTrackVisualisation(track, countries_to_keep, period_start, period_end)
+      const spotify_id = null
+      createTrackVisualisation(spotify_id, track, artist, countries_to_keep, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
       createTrendsVisualisation(params[0][2],params[0][1],params[2][1],params[3][1],params[4][1],params[5][1])

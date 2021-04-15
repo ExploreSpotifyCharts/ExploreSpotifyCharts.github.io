@@ -47,6 +47,8 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
     }
   )
 
+  console.log(data_processed)
+
   //Reduce per year
   data_processed = data_processed.reduce(function (acc, line) {
     if (line['Track Name'] != '')
@@ -75,6 +77,8 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
   }, {})
   data_processed = Object.entries(data_processed)
 
+  console.log(data_processed)
+
   //sort tracks on number of streams and get top 5
   data_processed.forEach(line =>
     {
@@ -95,6 +99,8 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
 
       line[1]['Tracks'] = sortable.slice(0,5)
     })
+
+  console.log(data_processed)
 
   //for each year, add a total entry
   data_processed.forEach(line =>
@@ -120,6 +126,8 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       line[1]['Tracks'].unshift(newEntry)
   })
 
+  console.log(data_processed)
+
   //for each year, compute proportion
   data_processed.forEach(line =>
   {
@@ -132,6 +140,8 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       }
     )
   })
+
+  console.log(data_processed)
 
 
   //fill missing dates
@@ -154,6 +164,8 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
     }
   })
 
+  console.log(data_processed)
+
   //sort streams on date
   data_processed.forEach(line =>
   {
@@ -168,6 +180,8 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       track['Streams'] = sorted
     })
   })
+
+  console.log(data_processed)
 
   //format
   data_processed = data_processed.map(line => {
@@ -187,6 +201,8 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
     })
     return entry
   })
+
+  console.log(data_processed)
 
   //Add missing year entries and sort
   const years_in_data = data_processed.map(entry => entry['Year'])

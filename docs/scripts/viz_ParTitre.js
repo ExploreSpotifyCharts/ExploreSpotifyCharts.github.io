@@ -5,7 +5,9 @@ import * as viz from './viz.js'
 import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
-export function createTrackVisualisation(track, countries, start_date, end_date) {
+export function createTrackVisualisation(spotify_id, track, artist, countries, start_date, end_date) {
+
+    spotify_id = '6l7PqWKsgm4NLomOE7Veou' //à supprimer à terme
 
     //à supprimer à terme
     // countries = []
@@ -27,7 +29,7 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
 
     let call_countries = []
     countries.forEach(country => call_countries.push(d3.csv(index.PATH+country['code']+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
-        const data_filtered = data.filter(line => line['Track Name'] == track)
+        const data_filtered = data.filter(line => line['spotify_id'] == spotify_id)
         return data_filtered
     })))
 
@@ -44,7 +46,7 @@ export function createTrackVisualisation(track, countries, start_date, end_date)
         }
         else
         {
-            helper.appendTitle(infog, track)
+            helper.appendTitle(infog, track+' (par '+artist+')')
             const colorScales = viz.appendColorScales(data_preprocessed_titre.slice(0,1), data_preprocessed_titre.slice(1), index.vizWidth)
     
             let graphg = d3.select('.graph-g')
