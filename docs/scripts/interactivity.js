@@ -45,13 +45,13 @@ export function initialize() {
  * Navigate to the selected tab
  * @param {HTMLElement} element 
  */
- export function navigate(element,value) {
+ export function navigate(element,value, additionalValue) {
   const tab = element.innerText
   d3.selectAll('li').attr('class', null)
   d3.select(element).attr('class', 'selected')
   resetForm()
   resetDataviz()
-  createFormAndViz(tab,value)
+  createFormAndViz(tab,value,additionalValue)
 }
 
 /* Global var */
@@ -69,7 +69,7 @@ var artist_Selected_Tracks = []
  * Create the header form link to the tab
  * @param {String} tab 
  */
-function createFormAndViz(tab, value) {
+function createFormAndViz(tab, value, additionalValue) {
     let artist
     let country
     switch(tab) {
@@ -93,7 +93,7 @@ function createFormAndViz(tab, value) {
         break
       case "Titre":
         createDatePickers()
-        artist = value ? getArtistByTrack(value) : randomValue(artists)
+        artist = value ? additionalValue : randomValue(artists)
         artist_Selected_Tracks = getArtistTracks(artist)
         const track = value ? value : randomValue(artist_Selected_Tracks)
         createSuggestbox('Artiste', artists, artist)
@@ -465,15 +465,6 @@ function isFormValid(params) {
    */
   function randomValue(array) {
     return array[Math.floor(Math.random() * array.length)]
-  }
-
-  /**
-   * Return the track's artist
-   * @param {string} track 
-   * @returns {string}
-   */
-  function getArtistByTrack(track) {
-    return tracks_data.filter( d => d.track == track)[0].artist
   }
 
   function processParams(params) {
