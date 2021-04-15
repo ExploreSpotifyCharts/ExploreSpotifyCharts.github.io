@@ -37,7 +37,7 @@ export function ExplorerParArtiste(data, artiste, start, end=null)
   data_processed = preprocess_Helpers.sortStreamsOnDate(data_processed)
 
   //Formattage
-  data_processed = preprocess_Helpers.formatData(data_processed, 'Track Name')
+  data_processed = preprocess_Helpers.formatData(data_processed, 'Track_Name')
 
   return data_processed
 }
