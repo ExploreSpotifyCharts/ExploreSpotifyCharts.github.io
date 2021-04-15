@@ -55,11 +55,11 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       acc[line['Year']]['Tracks'] = {}
     }
   
-    const key = line['Track Name']+','+line['Artist']
+    const key = line['Track_Name']+','+line['Artist']
     if (typeof acc[line['Year']]['Tracks'][key] == 'undefined')
     {
       acc[line['Year']]['Tracks'][key] = {}
-      acc[line['Year']]['Tracks'][key]['Track Name'] = line['Track Name']
+      acc[line['Year']]['Tracks'][key]['Track_Name'] = line['Track_Name']
       acc[line['Year']]['Tracks'][key]['Artist'] = line['Artist']
       acc[line['Year']]['Tracks'][key]['Streams'] = {}
       acc[line['Year']]['Tracks'][key]['Count_total_streams'] = 0
@@ -82,7 +82,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       let sortable = [];
       for (var track in tracks) {
           sortable.push({
-          'Track Name': tracks[track]['Track Name'],
+          'Track_Name': tracks[track]['Track_Name'],
           'Artist': tracks[track]['Artist'],
           'Count_total_streams' :tracks[track]['Count_total_streams'],
           'Streams': tracks[track]['Streams']
@@ -99,7 +99,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
   data_processed.forEach(line =>
   {
     let newEntry = {}
-    newEntry['Track Name'] = 'Total'
+    newEntry['Track_Name'] = 'Total'
     newEntry['Count_total_streams'] = 0
     newEntry['Streams'] = {}
 

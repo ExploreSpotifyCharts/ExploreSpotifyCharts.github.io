@@ -3,7 +3,7 @@ export function SpotifyDataParser(d)
 {
  return {
    Position: +d.Position, //convert to number
-   'Track Name': parseTrackName_Artist(d['Track Name']),
+   Track_Name: parseTrackName_Artist(d['Track Name']), //here without underscore, cause it's the column name in the dataset
    Artist: parseTrackName_Artist(d.Artist),
    Streams: +d.Streams, //convert to number
    date: parseDate(d.date),
@@ -162,11 +162,6 @@ export function formatData(data, key_name)
     entry[key_name] = line[0]
     for (const [ key, value ] of Object.entries(line[1])) {
       entry[key] = value
-    }
-    if (entry['Track Name'])
-    {
-      entry['Track_Name'] = entry['Track Name']
-      delete entry['Track Name']
     }
 
     let streams_dates = line[1]['Streams']
