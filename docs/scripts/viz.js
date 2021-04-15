@@ -188,7 +188,7 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
       .attr("x", (d, i) => String(xOffset + width_size*i)+"px")
       .attr("y", -y) //Décalage du au fait que le rect se positionne automatiquement sous le texte dans le g
       .attr('height', heatmap.height + "px")
-      .attr('width', width_size + "px")
+      .attr('width', Math.ceil(width_size) + "px") //Appel à ceil pour résoudre le problème des stries entre les rect
       .attr('fill',d => color(d.Streams))
   }
 
