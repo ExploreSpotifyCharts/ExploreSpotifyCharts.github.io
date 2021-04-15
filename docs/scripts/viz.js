@@ -30,14 +30,14 @@ export let heatmap = {
  * @param {int} vizWidth Largeur de la viz pour le placement des éléments
  * @returns {object} Les colorscale à utiliser pour les heatmap
  */
- export function appendColorScales(dataTotal, dataStreams, vizWidth) {
+ export function appendColorScales(dataTotal, dataStreams, vizWidth, label) {
   //Valeurs extrêmes pour les bornes de l'échelle
   var minMaxStreams = helper.getMinMaxStreams(dataStreams)
   var minMaxTotal = helper.getMinMaxStreams(dataTotal)
 
   //Création des échelles de couleur
-  const colorScaleStreams = legend.createColorScale(minMaxStreams.min, minMaxStreams.max, '#000000', '#1DB954')
-  const colorScaleTotal = legend.createColorScale(minMaxTotal.min, minMaxTotal.max,'#000000', '#FF7C00')
+  const colorScaleStreams = legend.createColorScale(0, minMaxStreams.max, '#000000', '#1DB954')
+  const colorScaleTotal = legend.createColorScale(0, minMaxTotal.max,'#000000', '#FF7C00')
   var colorScales = {streams: colorScaleStreams, total: colorScaleTotal}
 
   //Variables pour le placement des éléments
@@ -55,7 +55,7 @@ export let heatmap = {
 
   //Affichage des échelles
   legend.appendScale('Total : ', placingVariables, colorScaleTotal, idTotal, scaleDimensions, minMaxTotal, 0)
-  legend.appendScale('Par Titre: ', placingVariables, colorScaleStreams, idStreams, scaleDimensions, minMaxStreams, scaleDimensions.height+2)
+  legend.appendScale(label, placingVariables, colorScaleStreams, idStreams, scaleDimensions, minMaxStreams, scaleDimensions.height+2)
 
   return colorScales
       

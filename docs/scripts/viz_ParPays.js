@@ -39,7 +39,7 @@ export function createCountryVisualisation(country, country_name, start_date, en
         else
         {
             helper.appendTitle(infog, country_name)
-            const colorScales = viz.appendColorScales(data_preprocessed.slice(0,1), data_preprocessed.slice(1), index.vizWidth)
+            const colorScales = viz.appendColorScales(data_preprocessed.slice(0,1), data_preprocessed.slice(1), index.vizWidth, 'Par Titre :')
 
             let graphg = d3.select('.graph-g')
             viz.appendColumnTitles(graphg, index.vizWidth, columnTitle)
