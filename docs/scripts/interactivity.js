@@ -129,6 +129,8 @@ function createFormAndViz(tab, value, additionalValue) {
  */
 function resetForm() {
   d3.selectAll('.suggestbox').remove()
+  d3.select("#day input[type='radio']").property('checked','false')
+  d3.select("#period input[type='radio']").property('checked','true')
 }
 
 /**
