@@ -11,7 +11,7 @@ export function createTrackVisualisation(track, artist, countries, start_date, e
     const target = document.getElementsByClassName('viz-container')[0]
     const spinner = new Spinner(index.spinnerOpts).spin(target)
 
-    const tip = viz.initializeViz()
+    const tip = viz.initializeViz(track)
 
     let call_countries = []
     countries.forEach(country => call_countries.push(d3.csv(index.PATH+country['code']+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {

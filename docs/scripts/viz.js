@@ -23,6 +23,8 @@ export let heatmap = {
   stat: 150
 }
 
+let pageID
+
 /**
  * Affiche les échelles de couleurs
  *
@@ -128,8 +130,16 @@ export function placeDates(id) {
       .style('fill','white')
     } else {
         setClickHandler(titleType,textSvg,complete_title,artist)
-        let tootlipContent = title == complete_title ? {artist: artist} : {artist:artist, title: complete_title}
-        if(tip != undefined) setHoverHandlerTrack(textSvg, tootlipContent, tip)
+        //Construction des données à passer au tooltip d'un item titre
+        if(tip != undefined) {
+          let tooltipContent
+          if(getPageID() == artist) tooltipContent = title == complete_title ? {} : {title: complete_title}
+          else tooltipContent = title == complete_title ? {artist: artist} : {artist:artist, title: complete_title}
+          if (!helper.isEmptyObject(tooltipContent)){
+            console.log('hello')
+            setHoverHandlerTrack(textSvg, tooltipContent, tip)
+          }
+        }
     }
     
  }
@@ -256,10 +266,10 @@ export function setHoverHandler (g, tip) {
     )
  }
 
- export function initializeViz() {
+ export function initializeViz(id) {
   //Création des groupes principaux
+  setPageID(id)
   const g = helper.generateG(index.margin, index.svgWidth, index.windowHeight)
-
   //Création du tootlip sur la heatmap
   const tip_streams = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Streams(d) })
   const tip_total = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Total(d) })
@@ -355,5 +365,22 @@ function setClickHandler(key,g,title,artist) {
       break
   }
 }
+
+/**
+ * Set click handler for interactivity
+ * @param {string} key 
+ */
+ function setPageID(id) {
+    pageID = id
+}
+
+/**
+ * Set click handler for interactivity
+ * @param {string} key 
+ */
+ function getPageID(id) {
+  return pageID
+}
+
 
 

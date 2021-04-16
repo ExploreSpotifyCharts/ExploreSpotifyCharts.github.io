@@ -39,7 +39,7 @@ export function getContents_Total (d) {
  export function getContents_Track (d) {
   // Generate tooltip contents
   let tooltip_string = '<span class="tooltip-value-streams">'
-  tooltip_string += '<strong> Artiste : </strong> '+ d.artist +'<br>'
+  if (d.artist != undefined) tooltip_string += '<strong> Artiste : </strong> '+ d.artist +'<br>'
   if (d.title != undefined) tooltip_string += '<strong> Titre : </strong> '+ d.title +'<br>'
   tooltip_string += '</span>'
   return tooltip_string

@@ -100,3 +100,16 @@ export function appendError (g, error) {
    .attr('fill', 'white')
    .text(error)
 }
+
+
+/**
+ * Génère un texte affichant une erreur
+ *
+ * @param {object} error L'erreur à afficher
+ */
+ export function isEmptyObject (object) {
+  return Object.keys(object).length === 0
+}
+
+
+

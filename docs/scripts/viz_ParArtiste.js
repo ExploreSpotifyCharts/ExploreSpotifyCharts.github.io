@@ -11,7 +11,7 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
   const target = document.getElementsByClassName('viz-container')[0]
   const spinner = new Spinner(index.spinnerOpts).spin(target)
 
-  const tip = viz.initializeViz()
+  const tip = viz.initializeViz(artist)
 
   country = country ? country : 'global'
   country_name = country_name ? country_name : 'Mondial'
@@ -33,7 +33,7 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
       let graphg = d3.select('.graph-g')
       viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
       viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
-      viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total)
+      viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total, tip.track)
       viz.placeDates('Artiste')
     helper.updateSvg()
     }

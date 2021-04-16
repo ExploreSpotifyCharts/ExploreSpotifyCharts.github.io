@@ -11,7 +11,7 @@ export function createTrendsVisualisation(start_day,start_month,end_day,end_mont
     const target = document.getElementsByClassName('viz-container')[0]
     const spinner = new Spinner(index.spinnerOpts).spin(target)
 
-    const tip = viz.initializeViz()
+    const tip = viz.initializeViz('Tendances')
 
     //paramètres par défaut
     country = country ? country : 'global'
