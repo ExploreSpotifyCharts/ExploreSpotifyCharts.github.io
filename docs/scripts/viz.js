@@ -115,6 +115,12 @@ export function placeDates(id) {
      .attr('class', 'trackname-viz track'+String(key))
      .attr('fill', 'white')
 
+    while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
+      title = title.slice(0, -10)
+      title = title + '...'
+      textSvg.text(title)
+    }
+
     if(isTotal){
       textSvg
       .style('font-weight', 'bold')
@@ -122,13 +128,8 @@ export function placeDates(id) {
       .style('fill','white')
     } else {
         setClickHandler(titleType,textSvg,complete_title,artist)
-        if(tip != undefined) setHoverHandlerTrack(textSvg, artist, title, tip)
-    }
-
-    while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
-      title = title.slice(0, -10)
-      title = title + '...'
-      textSvg.text(title)
+        let tootlipContent = title == complete_title ? {artist: artist} : {artist:artist, title: complete_title}
+        if(tip != undefined) setHoverHandlerTrack(textSvg, tootlipContent, tip)
     }
     
  }
@@ -218,12 +219,12 @@ export function setHoverHandler (g, tip) {
  * @param {*} tip_streams Le tooltip pour les streams
  * @param {*} tip_total Le tooltip pour le total
  */
- export function setHoverHandlerTrack (g, title, artist, tip) {
+ export function setHoverHandlerTrack (g, content, tip) {
   g.on('mouseover', function() {
-    tip.show({artist: artist, title: title}, this)
+    tip.show(content, this)
   })
   .on('mouseout',  function() {
-    tip.hide({artist: artist, title: title}, this)
+    tip.hide(content, this)
   })
   
 }
