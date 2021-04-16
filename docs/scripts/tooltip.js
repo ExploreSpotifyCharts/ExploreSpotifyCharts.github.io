@@ -29,3 +29,17 @@ export function getContents_Total (d) {
   tooltip_string += '</span>'
   return tooltip_string
 }
+
+/**
+ * Defines the contents of the tooltip for total heat map. See CSS for tooltip styling.
+ *
+ * @param {object} d The data associated to the hovered element
+ * @returns {string} The tooltip contents
+ */
+ export function getContents_Track (artist) {
+  // Generate tooltip contents
+  let tooltip_string = '<span class="tooltip-value-streams">'
+  tooltip_string += '<strong> Artiste : </strong> '+ artist +'<br>'
+  tooltip_string += '</span>'
+  return tooltip_string
+}
