@@ -23,7 +23,7 @@ export let heatmap = {
   stat: 150
 }
 
-let pageID
+let pageID //Variable contenant l'objet principal de la page : le pays, artiste ou titre étudié
 
 /**
  * Affiche les échelles de couleurs
@@ -106,9 +106,12 @@ export function placeDates(id) {
  * Génère le titre de la chanson pour une ligne
  *
  * @param {object} g La sélection dans laquelle on ajoute le titre
- * @param {string} title Titre de la ligne
+ * @param {string} title Texte de la ligne
  * @param {int} key L'index de la ligne pour la classe personnalisée
- * @param {boolean} isTotal
+ * @param {boolean} isTotal S'il s'agit de la ligne de total ou non pour le style
+ * @param {string} titleType Pour la redirection avec le clic vers la page associée
+ * @param {string} artist S'il s'agit d'un titre, l'artiste associé
+ * @param {object} tip Dans le cas approprié, le tooltip associé à l'item écrit
  */
  export function createLine (g, title, key, isTotal, titleType, artist, tip) {
     const complete_title = title
@@ -133,10 +136,9 @@ export function placeDates(id) {
         //Construction des données à passer au tooltip d'un item titre
         if(tip != undefined) {
           let tooltipContent
-          if(getPageID() == artist) tooltipContent = title == complete_title ? {} : {title: complete_title}
-          else tooltipContent = title == complete_title ? {artist: artist} : {artist:artist, title: complete_title}
-          if (!helper.isEmptyObject(tooltipContent)){
-            console.log('hello')
+          if(getPageID() == artist) tooltipContent = title == complete_title ? {} : {title: complete_title} //Pour la page Artiste
+          else tooltipContent = title == complete_title ? {artist: artist} : {artist:artist, title: complete_title} //Pour la page Pays et Tendances
+          if (!helper.isEmptyObject(tooltipContent)){ //Affiche le tooltip seulement s'il y a du contenu
             setHoverHandlerTrack(textSvg, tooltipContent, tip)
           }
         }
@@ -223,11 +225,11 @@ export function setHoverHandler (g, tip) {
 }
 
 /**
- * Map du hover (tooltip) pour l'interaction avec les rectangles des heatmaps
+ * Map du hover (tooltip) pour l'interaction avec les items de type titre
  *
- * @param {object} g La sélection dans laquelle on récupère les objets à map avec le tooltip
- * @param {*} tip_streams Le tooltip pour les streams
- * @param {*} tip_total Le tooltip pour le total
+ * @param {object} g Le text svg concerné par le hover
+ * @param {object} content L'objet contenant le contenu du tooltip
+ * @param {*} tip Le tooltip 
  */
  export function setHoverHandlerTrack (g, content, tip) {
   g.on('mouseover', function() {
@@ -247,6 +249,7 @@ export function setHoverHandler (g, tip) {
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  * @param {object} tip_streams Tooltip à associer aux streams
  * @param {object} tip_total Tooltip à associer au total
+ * @param {object} tip_track Tooltip à associer à un item titre
  */
  export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total, tip_track) {
     //Calcul du placement par rapport aux éléments précédents
@@ -266,6 +269,12 @@ export function setHoverHandler (g, tip) {
     )
  }
 
+ /**
+ * Génère les lignes
+ *
+ * @param {string} id L'ID de la page 
+ * @returns {object} les différents tooltip apparaissant sur la page
+ */
  export function initializeViz(id) {
   //Création des groupes principaux
   setPageID(id)
@@ -367,18 +376,18 @@ function setClickHandler(key,g,title,artist) {
 }
 
 /**
- * Set click handler for interactivity
- * @param {string} key 
+ * Fixe l'ID de la page
+ * @param {string} id
  */
  function setPageID(id) {
     pageID = id
 }
 
 /**
- * Set click handler for interactivity
- * @param {string} key 
+ * Renvoie l'id de la page
+ * @returns {string} l'id de la page
  */
- function getPageID(id) {
+ function getPageID() {
   return pageID
 }
 

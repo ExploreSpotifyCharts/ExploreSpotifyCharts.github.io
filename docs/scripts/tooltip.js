@@ -31,7 +31,7 @@ export function getContents_Total (d) {
 }
 
 /**
- * Defines the contents of the tooltip for total heat map. See CSS for tooltip styling.
+ * Defines the contents of the tooltip for title item 
  *
  * @param {object} d The data associated to the hovered element
  * @returns {string} The tooltip contents

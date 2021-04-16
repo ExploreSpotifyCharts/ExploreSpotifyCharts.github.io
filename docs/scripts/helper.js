@@ -103,9 +103,9 @@ export function appendError (g, error) {
 
 
 /**
- * Génère un texte affichant une erreur
+ * Vérifie si un objet est vide ou non
  *
- * @param {object} error L'erreur à afficher
+ * @param {object} object L'objet à étudier
  */
  export function isEmptyObject (object) {
   return Object.keys(object).length === 0
