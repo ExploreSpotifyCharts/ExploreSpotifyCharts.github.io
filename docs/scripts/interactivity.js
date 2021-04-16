@@ -1,5 +1,5 @@
 import { createCountryVisualisation } from "./viz_ParPays.js"
-import { createArtistVisualisation } from "./viz_ParArtiste.js"
+import { createArtistVisualisation, createArtistVisualisation_Countries } from "./viz_ParArtiste.js"
 import { createTrackVisualisation } from "./viz_ParTitre.js"
 import { createTrendsVisualisation } from "./viz_ParTendances.js"
 import { PATH } from "../index.js"
@@ -243,6 +243,13 @@ function submit(e) {
       const period_end = params[4] ? params[4][1] : null
 
       createArtistVisualisation(artist, period_start, period_end, country, country_name)
+      /*
+      let countries_to_keep = getCountriesForArtist(artist)
+      const index = countries_to_keep.indexOf('global')
+      if (index != -1) { countries_to_keep.splice(index, 1) }
+      countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
+      createArtistVisualisation_Countries(artist, countries_to_keep, period_start, period_end)
+      */
     }
     if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
       const track = params[1][1]
@@ -252,10 +259,7 @@ function submit(e) {
 
       let countries_to_keep = getCountriesForTrackArtist(track, artist)
       const index = countries_to_keep.indexOf('global')
-      if (index != -1)
-      {
-        countries_to_keep.splice(index, 1)
-      }
+      if (index != -1) { countries_to_keep.splice(index, 1) }
       countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
       createTrackVisualisation(track, artist, countries_to_keep, period_start, period_end)
     }
@@ -357,6 +361,16 @@ function getArtistTracks(artist) {
 function getCountriesForTrackArtist(title, artist) {
   return tracks_data
           .filter( track => track.artist == artist && track.track == title)[0].countries
+}
+
+/**
+ * Retrieve all countries where an artist appears
+ * @param {string} artist 
+ * @returns {string[]}
+ */
+function getCountriesForArtist(artist) {
+  return artists_countries
+          .filter( e => e.artist == artist )[0].countries
 }
 
 /**

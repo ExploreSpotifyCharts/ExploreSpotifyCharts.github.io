@@ -47,3 +47,56 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
       console.log(error)
   })
 }
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+export function createArtistVisualisation_Countries(artist, countries, start_date, end_date) {
+  if(end_date == null) end_date = start_date
+
+  const target = document.getElementsByClassName('viz-container')[0]
+  const spinner = new Spinner(index.spinnerOpts).spin(target)
+
+  const tip = viz.initializeViz(artist)
+
+  let call_countries = []
+  countries.forEach(country => call_countries.push(d3.csv(index.PATH+country['code']+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
+      const data_filtered = data.filter(line => line['Artist'] == artist)
+      return data_filtered
+  })))
+
+  Promise.all(call_countries)
+      .then(function(files) {
+      const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste_Countries(files, countries, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
+      
+      console.log()
+      spinner.stop()
+      let infog = d3.select('.info-g')
+
+      if (data_preprocessed_artist.length <= 1)
+      {
+        helper.appendError(infog, index.no_data_error)
+      }
+      else
+      {
+          helper.appendTitle(infog, artist)
+          const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth, 'Par Pays :')
+  
+          let graphg = d3.select('.graph-g')
+          viz.appendColumnTitles(graphg, index.vizWidth, 'Pays')
+          viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
+          viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
+          viz.placeDates('Artiste')
+          helper.updateSvg()
+
+      }
+      helper.enabledInteraction()
+  })
+      .catch(function(err) {
+      spinner.stop()
+      helper.appendError(index.other_error)
+      helper.enabledInteraction()
+      console.log(err)
+  })
+  
+}

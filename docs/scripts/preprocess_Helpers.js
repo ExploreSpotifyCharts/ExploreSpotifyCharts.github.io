@@ -81,7 +81,11 @@ export function reduceDataToOneElement(data, key_to_use)
     {
       const date = line['date']
       const dateISO = date.toISOString().split('T')[0]
-      output[1]['Streams'][dateISO] = line['Streams']
+      if (typeof output[1]['Streams'][dateISO] == 'undefined')
+      {
+        output[1]['Streams'][dateISO] = 0
+      }
+      output[1]['Streams'][dateISO] += line['Streams']
       output[1]['Count_total_streams'] += line['Streams']
     }
   )
