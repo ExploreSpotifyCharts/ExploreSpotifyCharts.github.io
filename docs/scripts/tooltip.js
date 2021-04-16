@@ -33,12 +33,14 @@ export function getContents_Total (d) {
 /**
  * Defines the contents of the tooltip for title item. See CSS for tooltip styling.
  *
- * @param {object} d The data associated to the hovered element
- * @returns {string} The tooltip contents
+ * @param {object} titre Le titre à afficher
+ * @param {object} artiste L'artiste à afficher
+ * 
+ * @returns {string} La chaine de caractères dans le tootltip
  */
- export function getContents_Artiste (artiste) {
-  // Generate tooltip contents
+ export function getContents_Track (titre, artiste) {
   let tooltip_string = '<span class="tooltip-value-streams">'
+  tooltip_string += '<strong> Titre : </strong> '+ titre +'<br>'
   tooltip_string += '<strong> Artiste : </strong> '+ artiste +'<br>'
   tooltip_string += '</span>'
   return tooltip_string

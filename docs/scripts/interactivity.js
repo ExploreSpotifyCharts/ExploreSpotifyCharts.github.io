@@ -21,52 +21,46 @@ export function initialize() {
     countries = data_countries.map(line => {
       return {code: String(line['country code']), country: String(line['country'])}
     })
-    d3.csv(PATH+'extra/artist_track'+'.csv', d3.autoType).then(function (data_titres) {
-      artists_tracks = data_titres.map(line => {
-        return {Artist: parseTrackName_Artist(String(line['Artist'])), Track: parseTrackName_Artist(String(line['Track Name']))}
+    d3.csv(PATH+'extra/artists_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
+      artists = data_artists_countries.map(line => parseTrackName_Artist(String(line['Artist'])))
+
+      artists_countries = data_artists_countries.map(line => {
+        return {artist: parseTrackName_Artist(String(line['Artist'])), countries: String(line['Countries']).split('|')}
       })
-      d3.csv(PATH+'extra/artist_countries'+'.csv', d3.autoType).then(function (data_artists_countries) {
-        artists = data_artists_countries.map(line => parseTrackName_Artist(String(line['Artist'])))
-
-        artists_countries = data_artists_countries.map(line => {
-          return {artist: parseTrackName_Artist(String(line['Artist'])), countries: String(line['Countries']).split('|')}
+      d3.csv(PATH+'extra/tracks_data'+'.csv', d3.autoType).then(function (data_tracks_countries) {
+        tracks_data = data_tracks_countries.map(line => {
+          return {artist: parseTrackName_Artist(String(line['Artist'])), track: parseTrackName_Artist(String(line['Track Name'])), countries: String(line['Countries']).split('|')}
         })
-        d3.csv(PATH+'extra/track_countries'+'.csv', d3.autoType).then(function (data_tracks_countries) {
-          tracks_countries = data_tracks_countries.map(line => {
-            return {track: parseTrackName_Artist(String(line['Track Name'])), countries: String(line['Countries']).split('|')}
-          })
-          d3.csv(PATH+'extra/artists_global'+'.csv', d3.autoType).then(function (data_artists_global) {
-            artists_global = data_artists_global.map(line => parseTrackName_Artist(String(line['Artist'])))
+        d3.csv(PATH+'extra/artists_global'+'.csv', d3.autoType).then(function (data_artists_global) {
+          artists_global = data_artists_global.map(line => parseTrackName_Artist(String(line['Artist'])))
 
-            createFormAndViz('Pays')
-          })
+          createFormAndViz('Pays')
         })
       })
     })
-  })  
+  }) 
 }
 
 /**
  * Navigate to the selected tab
  * @param {HTMLElement} element 
  */
- export function navigate(element,value) {
+ export function navigate(element,value, additionalValue) {
   const tab = element.innerText
   d3.selectAll('li').attr('class', null)
   d3.select(element).attr('class', 'selected')
   resetForm()
   resetDataviz()
-  createFormAndViz(tab,value)
+  createFormAndViz(tab,value,additionalValue)
 }
 
 /* Global var */
 
 var countries = []
-var artists_tracks = []
 var artists = []
 var artists_global = []
 var artists_countries = []
-var tracks_countries = []
+var tracks_data = []
 var artist_Selected_Tracks = []
 
 /* Private function*/
@@ -75,7 +69,7 @@ var artist_Selected_Tracks = []
  * Create the header form link to the tab
  * @param {String} tab 
  */
-function createFormAndViz(tab, value) {
+function createFormAndViz(tab, value, additionalValue) {
     let artist
     let country
     switch(tab) {
@@ -100,21 +94,21 @@ function createFormAndViz(tab, value) {
         break
       case "Titre":
         createDatePickers()
-        artist = value ? getArtistByTrack(value) : randomValue(artists)
+        artist = value ? additionalValue : randomValue(artists)
         artist_Selected_Tracks = getArtistTracks(artist)
         const track = value ? value : randomValue(artist_Selected_Tracks)
         createSuggestbox('Artiste', artists, artist)
         d3.select('#Artiste').on('input',updateTrackList)
         
         createSuggestbox('Titre', artist_Selected_Tracks, track)
-        let countries_to_keep = tracks_countries.filter(element => element.track == track)[0].countries
+        let countries_to_keep = getCountriesForTrackArtist(track, artist)
         const index = countries_to_keep.indexOf('global')
         if (index != -1)
         {
           countries_to_keep.splice(index, 1)
         }
         countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-        createTrackVisualisation(track, countries_to_keep)
+        createTrackVisualisation(track, artist, countries_to_keep)
         break
   }
   //Reset form validation on changes
@@ -248,15 +242,14 @@ function submit(e) {
       const period_start = params[3][1]
       const period_end = params[4][1]
 
-      let countries_to_keep = tracks_countries.filter(element => element.track == track)[0].countries
+      let countries_to_keep = getCountriesForTrackArtist(track, artist)
       const index = countries_to_keep.indexOf('global')
       if (index != -1)
       {
         countries_to_keep.splice(index, 1)
       }
       countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-      
-      createTrackVisualisation(track, countries_to_keep, period_start, period_end)
+      createTrackVisualisation(track, artist, countries_to_keep, period_start, period_end)
     }
     if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
       createTrendsVisualisation(params[0][2],params[0][1],params[2][1],params[3][1],params[4][1],params[5][1])
@@ -335,9 +328,20 @@ function createDatePickers() {
  * @returns {string[]}
  */
 function getArtistTracks(artist) {
-  return artists_tracks
-          .filter( track => track.Artist == artist)
-          .map(track => track.Track)
+  return tracks_data
+          .filter( track => track.artist == artist)
+          .map(track => track.track)
+}
+
+/**
+ * Retrieve all countries where a track appears
+ * @param {string} title
+ * @param {string} artist 
+ * @returns {string[]}
+ */
+function getCountriesForTrackArtist(title, artist) {
+  return tracks_data
+          .filter( track => track.artist == artist && track.track == title)[0].countries
 }
 
 /**
@@ -480,15 +484,6 @@ function isFormValid(params) {
    */
   function randomValue(array) {
     return array[Math.floor(Math.random() * array.length)]
-  }
-
-  /**
-   * Return the track's artist
-   * @param {string} track 
-   * @returns {string}
-   */
-  function getArtistByTrack(track) {
-    return artists_tracks.filter( d => d.Track == track)[0].Artist
   }
 
   function processParams(params) {

@@ -109,6 +109,7 @@ export function placeDates(id) {
  * @param {boolean} isTotal
  */
  export function createLine (g, title, key, isTotal, titleType, artiste, tip_artiste,) {
+ export function createLine (g, title, key, isTotal,titleType, artist) {
     const complete_title = title
     let textSvg = g.append('text')
      .text(title)
@@ -123,6 +124,7 @@ export function placeDates(id) {
     } else {
         setClickHandler(titleType,textSvg,complete_title)
         setHoverHandlerTrack(tip_artiste, textSvg, artiste)
+        setClickHandler(titleType,textSvg,complete_title,artist)
     }
 
     while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
@@ -309,7 +311,8 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip_
             .attr('transform', 'translate(0, '+ verticalOffset +')')
 
   //Affichage du titre
-  createLine(g, track[key], index, isTotal, key, track['Artist'], tip_artiste)
+  if(key == 'Track_Name' || 'Track Name') createLine(g, track[key], index, isTotal, key, track['Artist'])
+  else createLine(g, track[key], index, isTotal, key)
 
   //Affichage du nombre de streams et des statistiques
   createStreamStats(g, index, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
@@ -325,13 +328,13 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip_
  * Set click handler for interactivity
  * @param {string} key 
  */
-function setClickHandler(key,g,title) {
+function setClickHandler(key,g,title,artist) {
   switch(key) {
     case 'Track Name':
     case 'Track_Name':
       g.on('click', function() {
         const tabElement = d3.select('#menuList li:nth-child(3)').node()
-        interactivity.navigate(tabElement, title)
+        interactivity.navigate(tabElement, title, artist)
       })
       break
     case 'Region':
@@ -351,5 +354,4 @@ function setClickHandler(key,g,title) {
       break
   }
 }
-
-
+ }
