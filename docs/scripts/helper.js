@@ -103,6 +103,17 @@ export function appendError (g, error) {
    .text(error)
 }
 
+
+/**
+ * Vérifie si un objet est vide ou non
+ *
+ * @param {object} object L'objet à étudier
+ */
+ export function isEmptyObject (object) {
+  return Object.keys(object).length === 0
+}
+
+
 export function enabledInteraction() {
    //Enable menu click since the viz is load
    d3.selectAll('li').on("click", function() {navigate(this)})

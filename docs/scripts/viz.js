@@ -23,6 +23,8 @@ export let heatmap = {
   stat: 150
 }
 
+let pageID //Variable contenant l'objet principal de la page : le pays, artiste ou titre étudié
+
 /**
  * Affiche les échelles de couleurs
  *
@@ -104,16 +106,25 @@ export function placeDates(id) {
  * Génère le titre de la chanson pour une ligne
  *
  * @param {object} g La sélection dans laquelle on ajoute le titre
- * @param {string} title Titre de la ligne
+ * @param {string} title Texte de la ligne
  * @param {int} key L'index de la ligne pour la classe personnalisée
- * @param {boolean} isTotal
+ * @param {boolean} isTotal S'il s'agit de la ligne de total ou non pour le style
+ * @param {string} titleType Pour la redirection avec le clic vers la page associée
+ * @param {string} artist S'il s'agit d'un titre, l'artiste associé
+ * @param {object} tip Dans le cas approprié, le tooltip associé à l'item écrit
  */
- export function createLine (g, title, key, isTotal,titleType, artist) {
+ export function createLine (g, title, key, isTotal, titleType, artist, tip) {
     const complete_title = title
     let textSvg = g.append('text')
      .text(title)
      .attr('class', 'trackname-viz track'+String(key))
      .attr('fill', 'white')
+
+    while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
+      title = title.slice(0, -10)
+      title = title + '...'
+      textSvg.text(title)
+    }
 
     if(isTotal){
       textSvg
@@ -122,12 +133,15 @@ export function placeDates(id) {
       .style('fill','white')
     } else {
         setClickHandler(titleType,textSvg,complete_title,artist)
-    }
-
-    while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
-      title = title.slice(0, -10)
-      title = title + '...'
-      textSvg.text(title)
+        //Construction des données à passer au tooltip d'un item titre
+        if(tip != undefined) {
+          let tooltipContent
+          if(getPageID() == artist) tooltipContent = title == complete_title ? {} : {title: complete_title} //Pour la page Artiste
+          else tooltipContent = title == complete_title ? {artist: artist} : {artist:artist, title: complete_title} //Pour la page Pays et Tendances
+          if (!helper.isEmptyObject(tooltipContent)){ //Affiche le tooltip seulement s'il y a du contenu
+            setHoverHandlerTrack(textSvg, tooltipContent, tip)
+          }
+        }
     }
     
  }
@@ -211,6 +225,23 @@ export function setHoverHandler (g, tip) {
 }
 
 /**
+ * Map du hover (tooltip) pour l'interaction avec les items de type titre
+ *
+ * @param {object} g Le text svg concerné par le hover
+ * @param {object} content L'objet contenant le contenu du tooltip
+ * @param {*} tip Le tooltip 
+ */
+ export function setHoverHandlerTrack (g, content, tip) {
+  g.on('mouseover', function() {
+    tip.show(content, this)
+  })
+  .on('mouseout',  function() {
+    tip.hide(content, this)
+  })
+  
+}
+
+/**
  * Génère les lignes
  *
  * @param {object} data La data à afficher
@@ -218,8 +249,9 @@ export function setHoverHandler (g, tip) {
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  * @param {object} tip_streams Tooltip à associer aux streams
  * @param {object} tip_total Tooltip à associer au total
+ * @param {object} tip_track Tooltip à associer à un item titre
  */
- export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total) {
+ export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total, tip_track) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -232,21 +264,30 @@ export function setHoverHandler (g, tip) {
     //Affichage de chaque ligne
     data.slice(1).forEach(function (track, index)
       {
-        appendLine(graphg, initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key)
+        appendLine(graphg, initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key, tip_track)
       }
     )
  }
 
- export function initializeViz() {
+ /**
+ * Génère les lignes
+ *
+ * @param {string} id L'ID de la page 
+ * @returns {object} les différents tooltip apparaissant sur la page
+ */
+ export function initializeViz(id) {
   //Création des groupes principaux
+  setPageID(id)
   const g = helper.generateG(index.margin, index.svgWidth, index.windowHeight)
-
-  //Création du tootlip
+  //Création du tootlip sur la heatmap
   const tip_streams = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Streams(d) })
   const tip_total = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Total(d) })
   g.call(tip_streams)
   g.call(tip_total)
-  return {streams: tip_streams,total: tip_total}
+  //Création du tooltip sur les items titres
+  const tip_track = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Track(d) })
+  g.call(tip_track)
+  return {streams: tip_streams,total: tip_total, track: tip_track}
  }
 
  /**
@@ -281,7 +322,7 @@ export function appendColumnTitles (graphg, vizWidth, leftTitle) {
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  */
-export function appendLine(graphg, initialOffset, index, track, colorScale, tip, vizWidth, isTotal, key) {
+export function appendLine(graphg, initialOffset, index, track, colorScale, tip, vizWidth, isTotal, key, tip_track) {
   //Création du groupe contenant les informations de la ligne
   const verticalOffset = (initialOffset + index*(heatmap.height+heatmap.padding))
   let g = graphg
@@ -290,7 +331,7 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
             .attr('transform', 'translate(0, '+ verticalOffset +')')
 
   //Affichage du titre
-  if(key == 'Track_Name') createLine(g, track[key], index, isTotal, key, track['Artist'])
+  if(key == 'Track_Name') createLine(g, track[key], index, isTotal, key, track['Artist'], tip_track)
   else createLine(g, track[key], index, isTotal, key)
 
   //Affichage du nombre de streams et des statistiques
@@ -333,5 +374,22 @@ function setClickHandler(key,g,title,artist) {
       break
   }
 }
+
+/**
+ * Fixe l'ID de la page
+ * @param {string} id
+ */
+ function setPageID(id) {
+    pageID = id
+}
+
+/**
+ * Renvoie l'id de la page
+ * @returns {string} l'id de la page
+ */
+ function getPageID() {
+  return pageID
+}
+
 
 

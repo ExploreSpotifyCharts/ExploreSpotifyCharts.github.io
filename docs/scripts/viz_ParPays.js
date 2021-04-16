@@ -11,7 +11,7 @@ export function createCountryVisualisation(country, country_name, start_date, en
     const target = document.getElementsByClassName('viz-container')[0]
     const spinner = new Spinner(index.spinnerOpts).spin(target)
 
-    const tip = viz.initializeViz()
+    const tip = viz.initializeViz(country)
 
     d3.csv(index.PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
         let data_preprocessed
@@ -42,7 +42,7 @@ export function createCountryVisualisation(country, country_name, start_date, en
             let graphg = d3.select('.graph-g')
             viz.appendColumnTitles(graphg, index.vizWidth, columnTitle)
             viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Pays')
-            viz.appendHeatMaps(graphg, data_preprocessed, lineTitle, colorScales, index.vizWidth, tip.streams, tip.total)
+            viz.appendHeatMaps(graphg, data_preprocessed, lineTitle, colorScales, index.vizWidth, tip.streams, tip.total, tip.track)
             viz.placeDates('Pays')
             helper.updateSvg()
         }
