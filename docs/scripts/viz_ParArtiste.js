@@ -36,11 +36,14 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
       viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total, tip.track)
       viz.placeDates('Artiste')
     helper.updateSvg()
+
     }
+    helper.enabledInteraction()
   }, function(error)
   {
       spinner.stop()
       helper.appendError(index.other_error)
+      helper.enabledInteraction()
       console.log(error)
   })
 }

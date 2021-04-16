@@ -90,10 +90,12 @@ export function createTrendsVisualisation(start_day,start_month,end_day,end_mont
                     .style('stroke', 'white')
         
         helper.updateSvg()
-                    
+        helper.enabledInteraction()
+
     }, function(error)
     {
         spinner.stop()
+        helper.enabledInteraction()
         console.log(error)
     })
 }

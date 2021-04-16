@@ -10,7 +10,6 @@ import { parseTrackName_Artist } from "./preprocess_Helpers.js"
  */
 export function initialize() {
   //Add events listerners to reactive elements
-  d3.selectAll('li').on("click", function() {navigate(this)})
   d3.selectAll('input[type="radio"]').on("click", function() {selectField(this.value)})
 
   //Using jQuery because d3 do not support submit event
@@ -520,4 +519,7 @@ function isFormValid(params) {
 
   function resetDataviz() {
     d3.selectAll('#main-g').remove()
+    //Disable menu and submit button during the load
+    d3.selectAll('li').on("click", null)
+    d3.select('input[type="submit"]').property('disabled',true)
   }

@@ -1,3 +1,5 @@
+import {navigate} from './interactivity.js'
+
 /**
  * Génère le SVG qui contient toute la visualisation
  *
@@ -112,4 +114,8 @@ export function appendError (g, error) {
 }
 
 
-
+export function enabledInteraction() {
+   //Enable menu click since the viz is load
+   d3.selectAll('li').on("click", function() {navigate(this)})
+   d3.select("input[type=submit]").property('disabled',false)
+}
