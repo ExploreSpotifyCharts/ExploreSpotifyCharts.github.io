@@ -46,10 +46,12 @@ export function createCountryVisualisation(country, country_name, start_date, en
             viz.placeDates('Pays')
             helper.updateSvg()
         }
+        helper.enabledInteraction()
     }, function(error)
     {
         spinner.stop()
         helper.appendError(index.other_error)
+        helper.enabledInteraction()
         console.log(error)
     })
 }

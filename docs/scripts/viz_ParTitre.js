@@ -41,11 +41,14 @@ export function createTrackVisualisation(track, artist, countries, start_date, e
             viz.appendHeatMaps(graphg, data_preprocessed_titre, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
             viz.placeDates('Titre')
             helper.updateSvg()
+
         }
+        helper.enabledInteraction()
     })
         .catch(function(err) {
         spinner.stop()
         helper.appendError(index.other_error)
+        helper.enabledInteraction()
         console.log(err)
     })
     
