@@ -108,7 +108,7 @@ export function placeDates(id) {
  * @param {int} key L'index de la ligne pour la classe personnalisée
  * @param {boolean} isTotal
  */
- export function createLine (g, title, key, isTotal,titleType, artist, tip) {
+ export function createLine (g, title, key, isTotal, titleType, artist, tip) {
     const complete_title = title
     let textSvg = g.append('text')
      .text(title)
@@ -122,7 +122,7 @@ export function placeDates(id) {
       .style('fill','white')
     } else {
         setClickHandler(titleType,textSvg,complete_title,artist)
-        if(tip != undefined) setHoverHandlerTrack(textSvg, artist, tip)
+        if(tip != undefined) setHoverHandlerTrack(textSvg, artist, title, tip)
     }
 
     while (textSvg.node().getComputedTextLength() > heatmap.text) { //Si le titre est trop long, on le tronque
@@ -218,12 +218,12 @@ export function setHoverHandler (g, tip) {
  * @param {*} tip_streams Le tooltip pour les streams
  * @param {*} tip_total Le tooltip pour le total
  */
- export function setHoverHandlerTrack (g, artist, tip) {
+ export function setHoverHandlerTrack (g, title, artist, tip) {
   g.on('mouseover', function() {
-    tip.show(artist, this)
+    tip.show({artist: artist, title: title}, this)
   })
   .on('mouseout',  function() {
-    tip.hide(artist, this)
+    tip.hide({artist: artist, title: title}, this)
   })
   
 }
