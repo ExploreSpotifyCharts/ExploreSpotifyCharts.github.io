@@ -17,15 +17,18 @@ export function createCountryVisualisation(country, country_name, start_date, en
         let data_preprocessed
         let columnTitle
         let lineTitle
+        let legendDescription
         if (!isArtist){
             data_preprocessed = preprocess_ParPays.ExplorerParPays_Track(data, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
             columnTitle = 'Titres'
             lineTitle = 'Track_Name'
+            legendDescription = 'Par Titre :'
         }  
         else {
             data_preprocessed = preprocess_ParPays.ExplorerParPays_Artist(data, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
             columnTitle = 'Artistes'
             lineTitle = 'Artist'
+            legendDescription = 'Par Artiste :'
         }
         spinner.stop()
 
@@ -37,7 +40,7 @@ export function createCountryVisualisation(country, country_name, start_date, en
         else
         {
             helper.appendTitle(infog, country_name)
-            const colorScales = viz.appendColorScales(data_preprocessed.slice(0,1), data_preprocessed.slice(1), index.vizWidth, 'Par Titre :')
+            const colorScales = viz.appendColorScales(data_preprocessed.slice(0,1), data_preprocessed.slice(1), index.vizWidth, legendDescription)
 
             let graphg = d3.select('.graph-g')
             viz.appendColumnTitles(graphg, index.vizWidth, columnTitle)

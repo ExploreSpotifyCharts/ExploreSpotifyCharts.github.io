@@ -1,5 +1,5 @@
 import { createCountryVisualisation } from "./viz_ParPays.js"
-import { createArtistVisualisation } from "./viz_ParArtiste.js"
+import { createArtistVisualisation, createArtistVisualisation_Countries } from "./viz_ParArtiste.js"
 import { createTrackVisualisation } from "./viz_ParTitre.js"
 import { createTrendsVisualisation } from "./viz_ParTendances.js"
 import { PATH } from "../index.js"
@@ -78,7 +78,7 @@ function createFormAndViz(tab, value, additionalValue) {
         country = value ? value : 'Mondial'
         createDatePickers()
         createSuggestbox('Pays', countries.map(d => d.country), country)
-        createToogle()
+        createToogle(tab)
         createCountryVisualisation(getCountryCode(country), country, start_date, end_date)
         break
       case "Tendances":
@@ -95,6 +95,7 @@ function createFormAndViz(tab, value, additionalValue) {
         artist = value ? value : randomValue(artists_global)
         createDatePickers()
         createSuggestbox('Artiste', artists, artist)
+        createToogle(tab)
         createSuggestbox('Pays', countries.map(d => d.country), 'Mondial', start_date, end_date)
         createArtistVisualisation(artist,start_date,end_date)
         break
@@ -128,6 +129,8 @@ function createFormAndViz(tab, value, additionalValue) {
  */
 function resetForm() {
   d3.selectAll('.suggestbox').remove()
+  d3.selectAll('.toogle').remove()
+
   d3.select("#day input[type='radio']").property('checked','false')
   d3.select("#period input[type='radio']").property('checked','true')
 }
@@ -137,7 +140,7 @@ function resetForm() {
  * @param {string} label 
  */
 function createSuggestbox(label, data, defaultValue) {
-  const suggestboxe = d3.select('form .suggestboxes').append('div').attr('class','suggestbox')
+  const suggestboxe = d3.select('form .suggestboxes').append('div').attr('class','suggestbox').attr('id','suggestbox_' + label)
 
   suggestboxe
   .append('label')
@@ -164,18 +167,21 @@ function createSuggestbox(label, data, defaultValue) {
 }
 
 /**
- * Create a toogle 
+ * Create a toogle
+ * @param {string} tab 
  */
-function createToogle() {
-  const container = d3.select('form .suggestboxes').append('div').attr('class','suggestbox')
+function createToogle(tab) {
+  const label = tab == 'Pays' ? 'Artiste' : 'Pays'
+  const container = d3.select('form .suggestboxes').append('div').attr('class','toogle')
   container.append('span').text('Titre').style('padding-right','10px')
 
   const toogle = container.append('label').attr('class','switch')
 
   toogle.append('input').attr('type','checkbox').attr('value','artist').attr('name','aggregation')
+  if (tab == 'Artiste') toogle.select('input').on('click', updateForm)
   toogle.append('span').attr('class','slider')
 
-  container.append('span').text('Artiste').style('padding-left','10px')
+  container.append('span').text(label).style('padding-left','10px')
 }
 
 /**
@@ -236,13 +242,23 @@ function submit(e) {
       createCountryVisualisation(country, country_name, period_start, period_end, condition)
     }
     if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artiste
+      const condition = params.findIndex( v => v[0] == 'aggregation') >= 0
+
       const artist = params[0][1]
       const country = params[1][2]
       const country_name = params[1][1]
       const period_start = params[3][1]
       const period_end = params[4] ? params[4][1] : null
-
-      createArtistVisualisation(artist, period_start, period_end, country, country_name)
+      
+      if (condition) {
+        let countries_to_keep = getCountriesForArtist(artist)
+        const index = countries_to_keep.indexOf('global')
+        if (index != -1) { countries_to_keep.splice(index, 1) }
+        countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
+        createArtistVisualisation_Countries(artist, countries_to_keep, period_start, period_end)
+      } else {
+        createArtistVisualisation(artist, period_start, period_end, country, country_name, condition)
+      }
     }
     if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
       const track = params[1][1]
@@ -252,10 +268,7 @@ function submit(e) {
 
       let countries_to_keep = getCountriesForTrackArtist(track, artist)
       const index = countries_to_keep.indexOf('global')
-      if (index != -1)
-      {
-        countries_to_keep.splice(index, 1)
-      }
+      if (index != -1) { countries_to_keep.splice(index, 1) }
       countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
       createTrackVisualisation(track, artist, countries_to_keep, period_start, period_end)
     }
@@ -357,6 +370,16 @@ function getArtistTracks(artist) {
 function getCountriesForTrackArtist(title, artist) {
   return tracks_data
           .filter( track => track.artist == artist && track.track == title)[0].countries
+}
+
+/**
+ * Retrieve all countries where an artist appears
+ * @param {string} artist 
+ * @returns {string[]}
+ */
+function getCountriesForArtist(artist) {
+  return artists_countries
+          .filter( e => e.artist == artist )[0].countries
 }
 
 /**
@@ -522,4 +545,17 @@ function isFormValid(params) {
     //Disable menu and submit button during the load
     d3.selectAll('li').on("click", null)
     d3.select('input[type="submit"]').property('disabled',true)
+  }
+
+  /**
+   * Hide country suggestbox on toogle click or display it if it was already hidden
+   */
+  function updateForm() {
+    if(this.checked) {
+      d3.select('#suggestbox_Pays').style('opacity','0')
+      d3.select('#suggestbox_Pays input').property('disabled',true)
+    } else {
+      d3.select('#suggestbox_Pays').style('opacity','100')
+      d3.select('#suggestbox_Pays input').property('disabled',false)
+    }
   }
