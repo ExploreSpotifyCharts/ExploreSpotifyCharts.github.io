@@ -95,7 +95,7 @@ form {
 .suggestboxes {
     display: flex;
     justify-content: space-between;
-    width: 800px;
+    width: 900px;
 }
 
 .suggestbox {
