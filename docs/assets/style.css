@@ -95,11 +95,15 @@ form {
 .suggestboxes {
     display: flex;
     justify-content: space-between;
-    width: 700px;
+    width: 800px;
 }
 
 .suggestbox {
     margin: 5px auto 5px 90px;
+}
+
+.toogle {
+    margin: 5px auto 5px 45px;
 }
 
 .datepickers {
