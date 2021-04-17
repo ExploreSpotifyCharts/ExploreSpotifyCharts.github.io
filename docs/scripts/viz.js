@@ -234,6 +234,7 @@ export function setHoverHandler (g, tip) {
  export function setHoverHandlerTrack (g, content, tip) {
   g.on('mouseover', function() {
     tip.show(content, this)
+    tip.attr('class', 'd3-tip') //on attribut la classe maintenant pour ne pas avoir la flèche
   })
   .on('mouseout',  function() {
     tip.hide(content, this)
@@ -285,7 +286,7 @@ export function setHoverHandler (g, tip) {
   g.call(tip_streams)
   g.call(tip_total)
   //Création du tooltip sur les items titres
-  const tip_track = d3.tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents_Track(d) })
+  const tip_track = d3.tip().html(function (d) { return tooltip.getContents_Track(d) })
   g.call(tip_track)
   return {streams: tip_streams,total: tip_total, track: tip_track}
  }
