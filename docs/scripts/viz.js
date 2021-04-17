@@ -132,7 +132,7 @@ export function placeDates(id) {
       .style('cursor','auto')
       .style('fill','white')
     } else {
-        setClickHandler(titleType,textSvg,complete_title,artist)
+        setClickHandler(titleType,textSvg,complete_title,artist,tip)
         //Construction des données à passer au tooltip d'un item titre
         if(tip != undefined) {
           let tooltipContent
@@ -349,12 +349,13 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
  * Set click handler for interactivity
  * @param {string} key 
  */
-function setClickHandler(key,g,title,artist) {
+function setClickHandler(key,g,title,artist,tip) {
   switch(key) {
     case 'Track_Name':
       g.on('click', function() {
         const tabElement = d3.select('#menuList li:nth-child(3)').node()
         interactivity.navigate(tabElement, title, artist)
+        if (tip) {tip.hide(null, this)}
       })
       break
     case 'Region':
