@@ -49,6 +49,7 @@ export function initialize() {
   d3.selectAll('li').attr('class', null)
   d3.select(element).attr('class', 'selected')
   resetForm()
+  window.scrollTo(0,0)
   resetDataviz()
   createFormAndViz(tab,value,additionalValue)
 }
