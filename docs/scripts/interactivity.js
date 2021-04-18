@@ -101,6 +101,8 @@ function createFormAndViz(tab, value, additionalValue) {
         createArtistVisualisation(artist,start_date,end_date)
         //Change width to feet in the additional elements
         d3.select('.suggestboxes').style('width','1000px')
+        d3.select('#suggestbox_Pays').style('margin-left','0px')
+        d3.select('.toogle').style('margin','5px 70px 5px 0px')
         break
       case "Titre":
         createDatePickers()
