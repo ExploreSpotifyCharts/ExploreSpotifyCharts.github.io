@@ -2,7 +2,7 @@ import { createCountryVisualisation } from "./viz_ParPays.js"
 import { createArtistVisualisation, createArtistVisualisation_Countries } from "./viz_ParArtiste.js"
 import { createTrackVisualisation } from "./viz_ParTitre.js"
 import { createTrendsVisualisation } from "./viz_ParTendances.js"
-import { PATH } from "../index.js"
+import { margin, PATH } from "../index.js"
 import { parseTrackName_Artist } from "./preprocess_Helpers.js"
 
 /**
@@ -93,11 +93,16 @@ function createFormAndViz(tab, value, additionalValue) {
         break
       case "Artiste":
         artist = value ? value : randomValue(artists_global)
+        //Create the elements
         createDatePickers()
         createSuggestbox('Artiste', artists, artist)
         createToogle(tab)
         createSuggestbox('Pays', countries.map(d => d.country), 'Mondial', start_date, end_date)
         createArtistVisualisation(artist,start_date,end_date)
+        //Change width to feet in the additional elements
+        d3.select('.suggestboxes').style('width','1000px')
+        d3.select('#suggestbox_Pays').style('margin-left','0px')
+        d3.select('.toogle').style('margin','5px 70px 5px 0px')
         break
       case "Titre":
         createDatePickers()
@@ -118,6 +123,8 @@ function createFormAndViz(tab, value, additionalValue) {
         createTrackVisualisation(track, artist, countries_to_keep, start_date, end_date)
         break
   }
+  //
+  //d3.select('.datepickers .datepicker:nth-child(2)').style('margin-left','45px')
   //Reset form validation on changes
   d3.selectAll(".suggestboxes input").on("change",function() {
     this.setCustomValidity("")
@@ -130,6 +137,8 @@ function createFormAndViz(tab, value, additionalValue) {
 function resetForm() {
   d3.selectAll('.suggestbox').remove()
   d3.selectAll('.toogle').remove()
+
+  d3.select('.suggestboxes').style('width','700px')
 
   d3.select("#day input[type='radio']").property('checked','false')
   d3.select("#period input[type='radio']").property('checked','true')
@@ -171,17 +180,35 @@ function createSuggestbox(label, data, defaultValue) {
  * @param {string} tab 
  */
 function createToogle(tab) {
-  const label = tab == 'Pays' ? 'Artiste' : 'Pays'
+  const value = tab == 'Pays' ? 'Artistes' : 'Pays'
   const container = d3.select('form .suggestboxes').append('div').attr('class','toogle')
-  container.append('span').text('Titre').style('padding-right','10px')
+  container
+  .append('span')
+  .text('Vue par :')
+
+  container
+  .append('span')
+  .text('Titres')
+  .style('font-weight','bold')
+  .attr('class','option')
 
   const toogle = container.append('label').attr('class','switch')
 
-  toogle.append('input').attr('type','checkbox').attr('value','artist').attr('name','aggregation')
+  toogle
+  .append('input')
+  .attr('type','checkbox')
+  .attr('value','artist')
+  .attr('name','aggregation')
+
   if (tab == 'Artiste') toogle.select('input').on('click', updateForm)
+  else toogle.select('input').on('click', updateSelection)
+
   toogle.append('span').attr('class','slider')
 
-  container.append('span').text(label).style('padding-left','10px')
+  container
+  .append('span')
+  .text(value)
+  .attr('class','option')
 }
 
 /**
@@ -551,6 +578,7 @@ function isFormValid(params) {
    * Hide country suggestbox on toogle click or display it if it was already hidden
    */
   function updateForm() {
+    updateSelection(this)
     if(this.checked) {
       d3.select('#suggestbox_Pays').style('opacity','0')
       d3.select('#suggestbox_Pays input').property('disabled',true)
@@ -558,4 +586,17 @@ function isFormValid(params) {
       d3.select('#suggestbox_Pays').style('opacity','100')
       d3.select('#suggestbox_Pays input').property('disabled',false)
     }
+  }
+
+  /**
+   * Put in bold the current aggragation selection
+   */
+  function updateSelection(element) {
+    if(this?.checked || element?.checked) {
+      d3.select('.toogle span:nth-child(2)').style('font-weight','normal')
+      d3.select('.toogle span:nth-child(4)').style('font-weight','bold')
+    } else {
+      d3.select('.toogle span:nth-child(2)').style('font-weight','bold')
+      d3.select('.toogle span:nth-child(4)').style('font-weight','normal')
+    } 
   }

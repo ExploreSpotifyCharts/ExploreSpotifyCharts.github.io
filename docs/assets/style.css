@@ -89,13 +89,12 @@ li.selected {
 form {
     display: flex;
     flex-flow: column wrap;
-
 }
 
 .suggestboxes {
     display: flex;
     justify-content: space-between;
-    width: 900px;
+    width: 700px;
 }
 
 .suggestbox {
@@ -103,17 +102,16 @@ form {
 }
 
 .toogle {
-    margin: 5px auto 5px 45px;
+    margin: 5px auto 5px 85px;
 }
 
 .datepickers {
     display: flex;
     justify-content: space-between;
-    width: 1000px;
 }
 
 .datepicker {
-    margin: 0px auto 5px 85px;
+    margin: 0px 40px 5px 85px;
     justify-content: space-between;
 }
 
@@ -125,10 +123,11 @@ input {
 }
 
 input[type='submit'] {
-    border: 1px solid #1db954;
-    margin: 0px auto 5px 20px;
+    border: 2px solid white;
+    margin: 0px auto 5px auto;
     height: 30px;
     background-color: #1db954;
+    border-radius: 17px;
 }
 
 input[type='submit']:hover {
@@ -137,7 +136,7 @@ input[type='submit']:hover {
 
 input[type='submit']:disabled {
     background-color: #999999;
-    border: 1px solid #999999;
+    border-color: #999999;
 }
 
 /*Trick to overlaps browser radio button, since we can't change the style*/
@@ -237,6 +236,13 @@ select:focus {
 
 option {
     color: black;
+}
+
+.option {
+    display: inline-block;
+    font: 400 13.3333px Arial;
+    text-align: center;
+    width: 53px;
 }
 
 /* ----------------Legend styles -----------------*/
