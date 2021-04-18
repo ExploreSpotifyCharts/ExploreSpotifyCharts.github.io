@@ -94,7 +94,7 @@ form {
 .suggestboxes {
     display: flex;
     justify-content: space-between;
-    width: 900px;
+    width: 700px;
 }
 
 .suggestbox {
@@ -102,7 +102,7 @@ form {
 }
 
 .toogle {
-    margin: 5px auto 5px 45px;
+    margin: 5px auto 5px 85px;
 }
 
 .datepickers {
@@ -111,7 +111,7 @@ form {
 }
 
 .datepicker {
-    margin: 0px auto 5px 85px;
+    margin: 0px 40px 5px 85px;
     justify-content: space-between;
 }
 
@@ -236,6 +236,13 @@ select:focus {
 
 option {
     color: black;
+}
+
+.option {
+    display: inline-block;
+    font: 400 13.3333px Arial;
+    text-align: center;
+    width: 53px;
 }
 
 /* ----------------Legend styles -----------------*/
