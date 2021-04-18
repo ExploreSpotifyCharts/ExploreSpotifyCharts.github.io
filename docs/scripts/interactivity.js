@@ -178,7 +178,7 @@ function createSuggestbox(label, data, defaultValue) {
  * @param {string} tab 
  */
 function createToogle(tab) {
-  const value = tab == 'Pays' ? 'Artiste' : 'Pays'
+  const value = tab == 'Pays' ? 'Artistes' : 'Pays'
   const container = d3.select('form .suggestboxes').append('div').attr('class','toogle')
   container
   .append('span')
@@ -186,7 +186,7 @@ function createToogle(tab) {
 
   container
   .append('span')
-  .text('Titre')
+  .text('Titres')
   .style('font-weight','bold')
   .attr('class','option')
 
