@@ -28,7 +28,8 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
     }
     else
     {
-      helper.appendTitle(infog, artist+' ('+country_name+')')
+      let viz_title = "Popularité des titres de "+artist+" ("+country_name+")"
+      helper.appendTitle(infog, viz_title)
       const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth, 'Par Titre :')
       let graphg = d3.select('.graph-g')
       viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
@@ -79,15 +80,16 @@ export function createArtistVisualisation_Countries(artist, countries, start_dat
       }
       else
       {
-          helper.appendTitle(infog, artist)
-          const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth, 'Par Pays :')
-  
-          let graphg = d3.select('.graph-g')
-          viz.appendColumnTitles(graphg, index.vizWidth, 'Pays')
-          viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
-          viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
-          viz.placeDates('Artiste')
-          helper.updateSvg()
+        let viz_title = "Popularité des titres de "+artist+" en fonction des pays"
+        helper.appendTitle(infog, viz_title)
+        const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth, 'Par Pays :')
+
+        let graphg = d3.select('.graph-g')
+        viz.appendColumnTitles(graphg, index.vizWidth, 'Pays')
+        viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
+        viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
+        viz.placeDates('Artiste')
+        helper.updateSvg()
 
       }
       helper.enabledInteraction()
