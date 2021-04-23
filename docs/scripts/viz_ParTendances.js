@@ -13,10 +13,6 @@ export function createTrendsVisualisation(start_day,start_month,end_day,end_mont
 
     const tip = viz.initializeViz('Tendances')
 
-    //paramètres par défaut
-    country = country ? country : 'global'
-    country_name = country_name ? country_name : 'Mondial'
-
     let start_date = start_day +'/'+ start_month
     let end_date = end_day +'/'+ end_month
     d3.csv(index.PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
