@@ -103,7 +103,7 @@ function createFormAndViz(tab, value, additionalValue) {
         createSuggestbox('Artiste', artists, artist)
         createToogle(tab)
         createSuggestbox('Pays', countries.map(d => d.country), state.country, state.startDate, state.endDate)
-        createArtistVisualisation(artist,state.startDate,state.endDate)
+        createArtistVisualisation(artist,state.startDate,state.endDate, getCountryCode(state.country), state.country)
         //Change width to feet in the additional elements
         d3.select('.suggestboxes').style('width','1000px')
         d3.select('#suggestbox_Pays').style('margin-left','0px')
