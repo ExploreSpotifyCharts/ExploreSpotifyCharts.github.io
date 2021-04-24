@@ -18,6 +18,8 @@ import * as tooltip from './scripts/tooltip.js'
 
 import * as interactivity from './scripts/interactivity.js'
 
+import * as onboarding from './scripts/onboarding.js'
+
 /**
  * @file This file is the entry-point for the the code for Team 3 project for the course INF8808.
  * @author Justine Marlow
@@ -56,11 +58,15 @@ export var spinnerOpts = {
   speed: 1.9, // Rounds per second
   trail: 50, // Afterglow percentage
   className: 'spinner', // The CSS class to assign to the spinner
+  zIndex: 99
 };
 
 
 
 (function (d3) {
+
+  //Mise en place du onboarding
+  onboarding.initialize()
 
   //Mise en place de l'intéraction
   interactivity.initialize()
