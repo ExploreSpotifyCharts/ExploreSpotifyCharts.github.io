@@ -30,11 +30,14 @@ export function initialize() {
         tracks_data = data_tracks_countries.map(line => {
           return {artist: parseTrackName_Artist(String(line['Artist'])), track: parseTrackName_Artist(String(line['Track Name'])), countries: String(line['Countries']).split('|')}
         })
-        d3.csv(PATH+'extra/artists_global'+'.csv', d3.autoType).then(function (data_artists_global) {
-          artists_global = data_artists_global.map(line => parseTrackName_Artist(String(line['Artist'])))
-
-          createFormAndViz('Pays')
+        artists_countries.forEach( element => {
+          element.countries.forEach( country => {
+            if (typeof artists_grouped_by_countries[country] == 'undefined') artists_grouped_by_countries[country] = []
+            artists_grouped_by_countries[country].push(element.artist)
+          })
         })
+
+        createFormAndViz('Pays')
       })
     })
   }) 
@@ -58,7 +61,7 @@ export function initialize() {
 
 var countries = []
 var artists = []
-var artists_global = []
+var artists_grouped_by_countries = {}
 var artists_countries = []
 var tracks_data = []
 var artist_Selected_Tracks = []
@@ -99,7 +102,7 @@ function createFormAndViz(tab, value, additionalValue) {
         createTrendsVisualisation(state.startDay,state.startMonth,state.endDay,state.endMonth,getCountryCode(state.country),state.country)
         break
       case "Artiste":
-        artist = value ? value : randomValue(artists_global)
+        artist = value ? value : randomValue(artists_grouped_by_countries[getCountryCode(state.country)])
         //Create the elements
         createDatePickers()
         createSuggestbox('Artiste', artists, artist)
