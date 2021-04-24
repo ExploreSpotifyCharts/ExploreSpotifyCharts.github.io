@@ -3,6 +3,8 @@ export function initialize() {
     const backText = 'Précédent'
     const finishText = 'Explorer'
 
+    let text
+
     const tour = new Shepherd.Tour({
         defaultStepOptions: {
           scrollTo: false
@@ -10,8 +12,10 @@ export function initialize() {
         useModalOverlay: true
       })
 
+    text = "<p style='color:#158a3f'> Bienvenue sur Explore Spotify Charts </p>"
+    text += "Cet outils vous permet de visualiser les données du top-200 quotidien de Spotify de début janvier 2017 à début avril 2020, et ce pour 51 régions du monde (50 pays et le top mondial)."
     tour.addStep({
-        text: "<p style='color:#158a3f'> Bienvenue </p> Blablabla.",
+        text: text,
         buttons: [
             {
               action() {
@@ -22,8 +26,10 @@ export function initialize() {
           ],
       })
 
+    text = "<p style='color:#158a3f'> Menu </p>"
+    text += "À partir de ce menu, vous pouvez choisir votre angle d'exploration : sélectionner un <span style='color:#158a3f'> pays</span>, un <span style='color:#158a3f'> artiste</span>, un <span style='color:#158a3f'> titre</span> ou bien une période de l'année afin de comparer les <span style='color:#158a3f'> tendances</span>."
     tour.addStep({
-        text: "<p style='color:#158a3f'> Menu </p> Joli menu t'as vu.",
+        text: text,
         attachTo: {
           element: '#menuList',
           on: 'left'
@@ -45,8 +51,11 @@ export function initialize() {
           ],
       })
 
+
+    text = "<p style='color:#158a3f'> Paramètres </p>"
+    text += "C'est ici que vous allez pouvoir sélectionner les paramètres pour générer une visualisation. <br> <br> Ici, pour Explorer Par Pays, il vous faut sélectionner un <span style='color:#158a3f'> pays</span> et une <span style='color:#158a3f'> période de temps</span>. Vous pouvez également choisir de grouper les données par <span style='color:#158a3f'> titre</span> ou par <span style='color:#158a3f'> artiste</span>."
       tour.addStep({
-        text: "<p style='color:#158a3f'> Paramètres </p> Là tu peux gérer les paramètres, c'est vachement bien fait.",
+        text: text,
         attachTo: {
           element: '#form',
           on: 'bottom'
@@ -68,8 +77,10 @@ export function initialize() {
           ],
       })
 
+      text = "<p style='color:#158a3f'> Actualiser </p>"
+      text += "Une fois les paramètres sélectionnés, il suffit de cliquer sur ce bouton pour générer la visualisation."
       tour.addStep({
-        text: "<p style='color:#158a3f'> Submit </p> Là tu cliques pour générer la viz",
+        text: text,
         attachTo: {
           element: '#submit',
           on: 'bottom'
@@ -91,8 +102,10 @@ export function initialize() {
           ],
       })
 
+      text = "<p style='color:#158a3f'> Visualisation </p>"
+      text += "C'est ici qu'apparaîtra la visualisation générée."
       tour.addStep({
-        text: "<p style='color:#158a3f'> Viz </p> Là tu verras la viz, elle est belle hein ?",
+        text: text,
         attachTo: {
           element: '#main-g',
           on: 'top'
@@ -114,8 +127,10 @@ export function initialize() {
           ],
       })
 
+      text = "<p style='color:#158a3f'> Fin du tutoriel </p>"
+      text += "Vous en savez maintenant assez pour commencer votre exploration !"
       tour.addStep({
-        text: "<p style='color:#158a3f'> Fin du tuto </p> Allez, vas explorer maintenant.",
+        text: text,
         buttons: [
             {
               action() {
