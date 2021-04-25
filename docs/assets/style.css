@@ -349,6 +349,13 @@ option {
 .shepherd-button.shepherd-button-secondary:not(:disabled):hover{
     background:#d6d9db;
     color:rgba(0,0,0,.75)}
+
+.shepherd-button.shepherd-button-third{
+        background:#FF7C00}
+.shepherd-button.shepherd-button-third:not(:disabled):hover{
+        background:#BF5D00}
+
+
 .shepherd-button:disabled{cursor:not-allowed}
 
 .shepherd-footer{

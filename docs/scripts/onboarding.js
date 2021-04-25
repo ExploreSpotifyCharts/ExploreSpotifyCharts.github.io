@@ -1,6 +1,7 @@
 export function initialize() {
     const nextText = 'Suivant'
     const backText = 'Précédent'
+    const cancelText = 'Quitter'
     const finishText = 'Explorer'
 
     let text
@@ -17,6 +18,13 @@ export function initialize() {
     tour.addStep({
         text: text,
         buttons: [
+            {
+              action: function() {
+                return this.cancel();
+              },
+              classes: 'shepherd-button-third',
+              text: cancelText,
+            },
             {
               action() {
                 return this.next();
@@ -36,6 +44,13 @@ export function initialize() {
         },
         buttons: [
             {
+              action: function() {
+                return this.cancel();
+              },
+              classes: 'shepherd-button-third',
+              text: cancelText,
+            },
+            {
               action() {
                 return this.back();
               },
@@ -53,7 +68,7 @@ export function initialize() {
 
 
     text = "<p style='color:#158a3f'> Paramètres </p>"
-    text += "C'est ici que vous allez pouvoir sélectionner les paramètres pour générer une visualisation. <br> <br> Ici, pour Explorer Par Pays, il vous faut sélectionner un <span style='color:#158a3f'> pays</span> et une <span style='color:#158a3f'> période de temps</span>. Vous pouvez également choisir de grouper les données par <span style='color:#158a3f'> titre</span> ou par <span style='color:#158a3f'> artiste</span>."
+    text += "C'est ici que vous allez pouvoir sélectionner les paramètres pour générer une visualisation. <br> <br> Par exemple, pour Explorer Par Pays, il vous faut sélectionner un <span style='color:#158a3f'> pays</span> et une <span style='color:#158a3f'> période de temps</span>. Vous pouvez également choisir de grouper les données par <span style='color:#158a3f'> titre</span> ou par <span style='color:#158a3f'> artiste</span>."
       tour.addStep({
         text: text,
         attachTo: {
@@ -61,6 +76,13 @@ export function initialize() {
           on: 'bottom'
         },
         buttons: [
+            {
+              action: function() {
+                return this.cancel();
+              },
+              classes: 'shepherd-button-third',
+              text: cancelText,
+            },
             {
               action() {
                 return this.back();
@@ -87,6 +109,13 @@ export function initialize() {
         },
         buttons: [
             {
+              action: function() {
+                return this.cancel();
+              },
+              classes: 'shepherd-button-third',
+              text: cancelText,
+            },
+            {
               action() {
                 return this.back();
               },
@@ -111,6 +140,13 @@ export function initialize() {
           on: 'top'
         },
         buttons: [
+            {
+              action: function() {
+                return this.cancel();
+              },
+              classes: 'shepherd-button-third',
+              text: cancelText,
+            },
             {
               action() {
                 return this.back();
