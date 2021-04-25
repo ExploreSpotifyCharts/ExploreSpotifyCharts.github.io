@@ -344,11 +344,9 @@ option {
     color:hsla(0,0%,100%,.75)}
 
 .shepherd-button.shepherd-button-secondary{
-    background:#f1f2f3;
-    color:rgba(0,0,0,.75)}
+    background:#a4a4a4}
 .shepherd-button.shepherd-button-secondary:not(:disabled):hover{
-    background:#d6d9db;
-    color:rgba(0,0,0,.75)}
+    background:#7b7b7b}
 
 .shepherd-button.shepherd-button-third{
         background:#FF7C00}
