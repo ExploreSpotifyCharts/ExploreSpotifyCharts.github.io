@@ -285,7 +285,6 @@ function submit(e) {
   let params = parseParams(rawParams)
   if (isFormValid(params)) {
     params = processParams(params)
-    console.log(params)
     resetDataviz()
     if(!d3.select('#menuList li:nth-child(1).selected').empty()){ //Pays
       state.isArtist = params.findIndex( v => v[0] == 'aggregation') >= 0
