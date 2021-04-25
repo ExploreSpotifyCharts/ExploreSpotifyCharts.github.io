@@ -2,7 +2,7 @@ import { createCountryVisualisation } from "./viz_ParPays.js"
 import { createArtistVisualisation, createArtistVisualisation_Countries } from "./viz_ParArtiste.js"
 import { createTrackVisualisation } from "./viz_ParTitre.js"
 import { createTrendsVisualisation } from "./viz_ParTendances.js"
-import { margin, PATH } from "../index.js"
+import { PATH } from "../index.js"
 import { parseTrackName_Artist } from "./preprocess_Helpers.js"
 
 /**
@@ -30,11 +30,14 @@ export function initialize() {
         tracks_data = data_tracks_countries.map(line => {
           return {artist: parseTrackName_Artist(String(line['Artist'])), track: parseTrackName_Artist(String(line['Track Name'])), countries: String(line['Countries']).split('|')}
         })
-        d3.csv(PATH+'extra/artists_global'+'.csv', d3.autoType).then(function (data_artists_global) {
-          artists_global = data_artists_global.map(line => parseTrackName_Artist(String(line['Artist'])))
-
-          createFormAndViz('Pays')
+        artists_countries.forEach( element => {
+          element.countries.forEach( country => {
+            if (typeof artists_grouped_by_countries[country] == 'undefined') artists_grouped_by_countries[country] = []
+            artists_grouped_by_countries[country].push(element.artist)
+          })
         })
+
+        createFormAndViz('Pays')
       })
     })
   }) 
@@ -48,7 +51,7 @@ export function initialize() {
   const tab = element.innerText
   d3.selectAll('li').attr('class', null)
   d3.select(element).attr('class', 'selected')
-  resetForm()
+  resetForm(tab)
   window.scrollTo(0,0)
   resetDataviz()
   createFormAndViz(tab,value,additionalValue)
@@ -58,10 +61,24 @@ export function initialize() {
 
 var countries = []
 var artists = []
-var artists_global = []
+var artists_grouped_by_countries = {}
 var artists_countries = []
 var tracks_data = []
 var artist_Selected_Tracks = []
+
+var state = {
+  country: 'Mondial',
+  startDate: '2017-01-01',
+  endDate: '2020-04-20',
+  startDay: '01',
+  startMonth: '01',
+  endDay: '31',
+  endMonth: '12',
+  isArtist: false,
+  isCountries: false
+}
+
+
 
 /* Private function*/
 
@@ -70,36 +87,34 @@ var artist_Selected_Tracks = []
  * @param {String} tab 
  */
 function createFormAndViz(tab, value, additionalValue) {
-    const start_date = '2017-01-01'
-    const end_date = '2020-04-20'
     let artist
-    let country
     switch(tab) {
       case "Pays":
-        country = value ? value : 'Mondial'
+        state.country = value ? value : state.country
         createDatePickers()
-        createSuggestbox('Pays', countries.map(d => d.country), country)
+        createSuggestbox('Pays', countries.map(d => d.country), state.country)
         createToogle(tab)
-        createCountryVisualisation(getCountryCode(country), country, start_date, end_date)
+        createCountryVisualisation(getCountryCode(state.country), state.country, state.startDate, state.endDate, state.isArtist)
         break
       case "Tendances":
-        const start_day = '01'
-        const start_month = '01'
-        const end_day = '31'
-        const end_month = '12'
-
         createMonthDayPickers()
-        createSuggestbox('Pays',  countries.map(d => d.country), 'Mondial')
-        createTrendsVisualisation(start_day,start_month,end_day,end_month)
+        createSuggestbox('Pays',  countries.map(d => d.country), state.country)
+        createTrendsVisualisation(state.startDay,state.startMonth,state.endDay,state.endMonth,getCountryCode(state.country),state.country)
         break
       case "Artiste":
-        artist = value ? value : randomValue(artists_global)
+        artist = value ? value : randomValue(artists_grouped_by_countries[getCountryCode(state.country)])
         //Create the elements
         createDatePickers()
         createSuggestbox('Artiste', artists, artist)
         createToogle(tab)
-        createSuggestbox('Pays', countries.map(d => d.country), 'Mondial', start_date, end_date)
-        createArtistVisualisation(artist,start_date,end_date)
+        createSuggestbox('Pays', countries.map(d => d.country), state.country, state.startDate, state.endDate)
+        if (state.isCountries) {
+          let countries_to_keep = getCountriesForArtist(artist)
+          const index = countries_to_keep.indexOf('global')
+          if (index != -1) { countries_to_keep.splice(index, 1) }
+          countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
+          createArtistVisualisation_Countries(artist, countries_to_keep, state.startDate, state.endDate)
+        } else createArtistVisualisation(artist,state.startDate,state.endDate, getCountryCode(state.country), state.country)
         //Change width to feet in the additional elements
         d3.select('.suggestboxes').style('width','1000px')
         d3.select('#suggestbox_Pays').style('margin-left','0px')
@@ -121,11 +136,9 @@ function createFormAndViz(tab, value, additionalValue) {
           countries_to_keep.splice(index, 1)
         }
         countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-        createTrackVisualisation(track, artist, countries_to_keep, start_date, end_date)
+        createTrackVisualisation(track, artist, countries_to_keep, state.startDate, state.endDate)
         break
   }
-  //
-  //d3.select('.datepickers .datepicker:nth-child(2)').style('margin-left','45px')
   //Reset form validation on changes
   d3.selectAll(".suggestboxes input").on("change",function() {
     this.setCustomValidity("")
@@ -135,14 +148,19 @@ function createFormAndViz(tab, value, additionalValue) {
 /**
  * Empty the form
  */
-function resetForm() {
+function resetForm(tab) {
   d3.selectAll('.suggestbox').remove()
   d3.selectAll('.toogle').remove()
-
   d3.select('.suggestboxes').style('width','700px')
-
-  d3.select("#day input[type='radio']").property('checked','false')
-  d3.select("#period input[type='radio']").property('checked','true')
+  //Select the right period
+  const bool = tab == 'Tendances' ? state.endDay != null : state.endDate != null
+  if (bool) {
+    d3.select("#day input[type='radio']").property('checked',"true")
+    d3.select("#period input[type='radio']").property('checked',"false")
+  } else {
+    d3.select("#period input[type='radio']").property('checked',"true")
+    d3.select("#day input[type='radio']").property('checked',"false")
+  }
 }
 
 /**
@@ -195,14 +213,14 @@ function createToogle(tab) {
 
   const toogle = container.append('label').attr('class','switch')
 
-  toogle
+  const input = toogle
   .append('input')
   .attr('type','checkbox')
   .attr('value','artist')
   .attr('name','aggregation')
 
-  if (tab == 'Artiste') toogle.select('input').on('click', updateForm)
-  else toogle.select('input').on('click', updateSelection)
+  if (tab == 'Artiste') input.on('click', function() {updateForm(this)})
+  else input.on('click', updateSelection)
 
   toogle.append('span').attr('class','slider')
 
@@ -210,6 +228,15 @@ function createToogle(tab) {
   .append('span')
   .text(value)
   .attr('class','option')
+
+  if (tab == 'Artiste' && state.isCountries) {
+    input.property('checked','true')
+    updateForm(input.node())
+  }
+  else if (tab == 'Pays' && state.isArtist) {
+    input.property('checked','true')
+    updateSelection(input.node())
+  }
 }
 
 /**
@@ -260,55 +287,55 @@ function submit(e) {
     params = processParams(params)
     resetDataviz()
     if(!d3.select('#menuList li:nth-child(1).selected').empty()){ //Pays
-      const condition = params.findIndex( v => v[0] == 'aggregation') >= 0
-      const offset = condition ? 1 : 0
+      state.isArtist = params.findIndex( v => v[0] == 'aggregation') >= 0
+      const offset = state.isArtist ? 1 : 0
 
-      const country = params[0][2]
-      const country_name = params[0][1]
-      const period_start = params[2 + offset][1]
-      const period_end = params[3 + offset] ? params[3 + offset][1] : null
-      createCountryVisualisation(country, country_name, period_start, period_end, condition)
+      const countryCode = params[0][2]
+      state.country = params[0][1]
+      state.startDate = params[2 + offset][1]
+      state.endDate = params[3 + offset] ? params[3 + offset][1] : null
+      createCountryVisualisation(countryCode, state.country, state.startDate, state.endDate, state.isArtist)
     }
     if(!d3.select('#menuList li:nth-child(2).selected').empty()){  //Artiste
-      const condition = params.findIndex( v => v[0] == 'aggregation') >= 0
+      state.isCountries = params.findIndex( v => v[0] == 'aggregation') >= 0
 
       const artist = params[0][1]
-      const country = params[1][2]
-      const country_name = params[1][1]
-      const period_start = params[3][1]
-      const period_end = params[4] ? params[4][1] : null
+      state.startDate = params[3][1]
+      state.endDate = params[4] ? params[4][1] : null
       
-      if (condition) {
+      if (state.isCountries) {
         let countries_to_keep = getCountriesForArtist(artist)
         const index = countries_to_keep.indexOf('global')
         if (index != -1) { countries_to_keep.splice(index, 1) }
         countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-        createArtistVisualisation_Countries(artist, countries_to_keep, period_start, period_end)
+        createArtistVisualisation_Countries(artist, countries_to_keep, state.startDate, state.endDate)
       } else {
-        createArtistVisualisation(artist, period_start, period_end, country, country_name, condition)
+        const countryCode = params[1][2]
+        state.country = params[1][1]
+        createArtistVisualisation(artist, state.startDate, state.endDate, countryCode, state.country)
       }
     }
     if(!d3.select('#menuList li:nth-child(3).selected').empty()){ //Titre
       const track = params[1][1]
       const artist = params[0][1]
-      const period_start = params[3][1]
-      const period_end = params[4] ?  params[4][1] : null
+      state.startDate = params[3][1]
+      state.endDate = params[4] ?  params[4][1] : null
 
       let countries_to_keep = getCountriesForTrackArtist(track, artist)
       const index = countries_to_keep.indexOf('global')
       if (index != -1) { countries_to_keep.splice(index, 1) }
       countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
-      createTrackVisualisation(track, artist, countries_to_keep, period_start, period_end)
+      createTrackVisualisation(track, artist, countries_to_keep, state.startDate, state.endDate)
     }
     if(!d3.select('#menuList li:nth-child(4).selected').empty()){ //Tendances
-        const country = params[0][2]
-        const country_name = params[0][1] 
-        const start_day = params[2][1]
-        const start_month = params[3][1]
-        const end_day = params[4] ? params[4] [1] : null
-        const end_month = params[5] ? params[5][1] : null
+        const countryCode = params[0][2]
+        state.country = params[0][1] 
+        state.startDay = params[2][1]
+        state.startMonth = params[3][1]
+        state.endDay = params[4] ? params[4][1] : null
+        state.endMonth = params[5] ? params[5][1] : null
 
-        createTrendsVisualisation(start_day,start_month,end_day,end_month,country,country_name)
+        createTrendsVisualisation(state.startDay,state.startMonth,state.endDay,state.endMonth,countryCode,state.country)
     }
   }
 }
@@ -329,11 +356,11 @@ function createMonthDayPickers(){
 
   d3.selectAll("#day select").property("disabled",true)
   d3.selectAll("select[name='day']").selectAll("option").data(days).enter().append("option")
-    .attr('selected', d => d == '01' ? "selected" : null)
+    .attr('selected', d => d == state.startDay ? "selected" : null)
     .attr('value', d => d)
     .text(d => d)
   d3.selectAll("select[name='month']").selectAll("option").data(months).enter().append("option")
-    .attr('selected', d => d == '01' ? "selected" : null)
+    .attr('selected', d => d == state.startMonth ? "selected" : null)
     .attr('value', d => d)
     .text(d => d)
 
@@ -345,7 +372,9 @@ function createMonthDayPickers(){
 
   d3.selectAll("input[type='date']").remove()
 
-  //Set default value to 31/12 for the period end date
+  //Set default value for the period end date
+  const endDay = state.endDay ? state.endDay : '31'
+  const endMonth = state.endMonth ? state.endMonth : '12'
   d3.select("#period select:nth-child(5)").selectAll('option').attr('selected', d => d == '31' ? "selected" : null)
   d3.select("#period select:nth-child(6)").selectAll('option').attr('selected', d => d == '12' ? "selected" : null)
 
@@ -360,7 +389,8 @@ function createMonthDayPickers(){
  */
 function createDatePickers() {
     //Using JQuery to append elements to a specific position
-    const datepicker =  "<input type='date' name='date' value='2017-01-01'  min='2017-01-01' max='2020-04-20'></input>"
+    const datepicker =  "<input type='date' name='date' value='" + state.startDate +"' min='2017-01-01' max='2020-04-20'></input>"
+    const endDate = state.endDate ? state.endDate : '2020-04-20'
     $("select[name='month']").after(datepicker)
 
     if($("#day input[type='radio']").is(":checked")) {
@@ -375,7 +405,7 @@ function createDatePickers() {
   })
 
   d3.selectAll("select").remove()
-  d3.select("#period input[type='date']:nth-child(4)").attr('value','2020-04-20')
+  d3.select("#period input[type='date']:nth-child(4)").attr('value',endDate)
 }
 
 /**
@@ -578,9 +608,9 @@ function isFormValid(params) {
   /**
    * Hide country suggestbox on toogle click or display it if it was already hidden
    */
-  function updateForm() {
-    updateSelection(this)
-    if(this.checked) {
+  function updateForm(element) {
+    updateSelection(element)
+    if(element.checked) {
       d3.select('#suggestbox_Pays').style('opacity','0')
       d3.select('#suggestbox_Pays input').property('disabled',true)
     } else {

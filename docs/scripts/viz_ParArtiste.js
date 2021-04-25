@@ -12,9 +12,6 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
   const spinner = new Spinner(index.spinnerOpts).spin(target)
 
   const tip = viz.initializeViz(artist)
-
-  country = country ? country : 'global'
-  country_name = country_name ? country_name : 'Mondial'
   
   d3.csv(index.PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
     const data_preprocessed_artist = preprocess_ParArtiste.ExplorerParArtiste(data, artist, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))

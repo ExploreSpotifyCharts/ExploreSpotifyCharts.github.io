@@ -116,9 +116,8 @@ form {
 }
 
 input {
-    background-color: #292929;
-    border: none;
-    border-bottom: 1px solid white;
+    background-color: #353535;
+    border: 1px solid #353535;
     margin: 5px;
 }
 
