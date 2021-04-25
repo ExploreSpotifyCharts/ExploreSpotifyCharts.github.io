@@ -355,7 +355,6 @@ option {
 .shepherd-button.shepherd-button-third:not(:disabled):hover{
         background:#BF5D00}
 
-
 .shepherd-button:disabled{cursor:not-allowed}
 
 .shepherd-footer{
@@ -366,41 +365,6 @@ option {
     padding:0 .75rem .75rem}
 .shepherd-footer .shepherd-button:last-child{margin-right:0}
 
-.shepherd-cancel-icon{
-    background:transparent;
-    border:none;
-    color:hsla(0,0%,50.2%,.75);
-    font-size:2em;
-    cursor:pointer;
-    font-weight:400;
-    margin:0;
-    padding:0;
-    transition:color .5s ease}
-.shepherd-cancel-icon:hover{color:rgba(0,0,0,.75)}
-
-.shepherd-has-title .shepherd-content .shepherd-cancel-icon{color:hsla(0,0%,50.2%,.75)}
-
-.shepherd-has-title .shepherd-content .shepherd-cancel-icon:hover{color:rgba(0,0,0,.75)}
-
-.shepherd-title{
-    color:rgba(0,0,0,.75);
-    display:flex;
-    font-size:1rem;
-    font-weight:400;
-    flex:1 0 auto;
-    margin:0;padding:0}
-
-.shepherd-header{
-    align-items:center;
-    border-top-left-radius:5px;
-    border-top-right-radius:5px;
-    display:flex;
-    justify-content:flex-end;
-    line-height:2em;
-    padding:.75rem .75rem 0}
-    
-.shepherd-has-title .shepherd-content .shepherd-header{background:#e6e6e6;padding:1em}
-
 .shepherd-text{
     color:rgba(0,0,0,.75);
     font-size:1rem;
@@ -410,6 +374,8 @@ option {
 .shepherd-text p:last-child{margin-bottom:0}
 
 .shepherd-content{
+    color:rgba(0,0,0,.75);
+    background:#e6e6e6;padding:1em;
     z-index: 999;
     border-radius:5px;
     outline:none;
@@ -437,7 +403,6 @@ option {
 .shepherd-element[data-popper-placement^=left]>.shepherd-arrow{right:-8px}.shepherd-element[data-popper-placement^=right]>
 .shepherd-arrow{left:-8px}
 .shepherd-element.shepherd-centered>.shepherd-arrow{opacity:0}
-.shepherd-element.shepherd-has-title[data-popper-placement^=bottom]>
 .shepherd-arrow:before{background-color:#e6e6e6}
 .shepherd-target-click-disabled.shepherd-enabled.shepherd-target,.shepherd-target-click-disabled.shepherd-enabled.shepherd-target *{pointer-events:none}
 .shepherd-modal-overlay-container{height:0;left:0;opacity:0;overflow:hidden;pointer-events:none;position:fixed;top:0;transition:all .3s ease-out,height 0ms .3s,opacity .3s 0ms;width:100vw;z-index:9997}
