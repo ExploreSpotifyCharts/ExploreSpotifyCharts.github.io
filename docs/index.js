@@ -58,7 +58,7 @@ export var spinnerOpts = {
   speed: 1.9, // Rounds per second
   trail: 50, // Afterglow percentage
   className: 'spinner', // The CSS class to assign to the spinner
-  zIndex: 99
+  zIndex: 1
 };
 
 

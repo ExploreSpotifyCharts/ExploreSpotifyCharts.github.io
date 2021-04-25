@@ -391,7 +391,7 @@ option {
     transition:opacity .3s,visibility .3s;
     visibility:hidden;
     width:100%;
-    z-index:9999}
+    z-index:2}
 
 .shepherd-enabled.shepherd-element{opacity:1;visibility:visible}
 .shepherd-element[data-popper-reference-hidden]:not(.shepherd-centered){opacity:0;pointer-events:none;visibility:hidden}
@@ -405,6 +405,6 @@ option {
 .shepherd-element.shepherd-centered>.shepherd-arrow{opacity:0}
 .shepherd-arrow:before{background-color:#e6e6e6}
 .shepherd-target-click-disabled.shepherd-enabled.shepherd-target,.shepherd-target-click-disabled.shepherd-enabled.shepherd-target *{pointer-events:none}
-.shepherd-modal-overlay-container{height:0;left:0;opacity:0;overflow:hidden;pointer-events:none;position:fixed;top:0;transition:all .3s ease-out,height 0ms .3s,opacity .3s 0ms;width:100vw;z-index:9997}
+.shepherd-modal-overlay-container{height:0;left:0;opacity:0;overflow:hidden;pointer-events:none;position:fixed;top:0;transition:all .3s ease-out,height 0ms .3s,opacity .3s 0ms;width:100vw;z-index:1}
 .shepherd-modal-overlay-container.shepherd-modal-is-visible{height:100vh;opacity:.5;transition:all .3s ease-out,height 0s 0s,opacity .3s 0s}
 .shepherd-modal-overlay-container.shepherd-modal-is-visible path{pointer-events:all}
