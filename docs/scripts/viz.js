@@ -141,11 +141,16 @@ export function placeDates(id) {
     .attr('transform','translate(' + HorizontalOffset + ' ,' + verticalOffset + ')')
 
     scale.range([0, heatmap.width]) //Maj de la scale
-    let values =  scale.ticks(4).slice(0,5).concat(scale.domain()[1]) 
-    console.log(values)
+    let values = scale.ticks(tick).slice(0,tick+1).concat(scale.domain()[1])
+    if (scale.domain()[0].getTime() == scale.domain()[1].getTime()) {
+    }
     let axisDate = d3.axisTop().scale(scale)
                      .tickValues(values)
                      .tickFormat(d3.timeFormat("%d/%m/%Y")) //Nouvel axe
+    
+    if (scale.domain()[0].getTime() == scale.domain()[1].getTime()) {
+      axisDate.tickSizeOuter(0)
+    }
 
     g.call(axisDate)
   }
