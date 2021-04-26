@@ -103,6 +103,50 @@ export function placeDates(id) {
 }
 
 /**
+ * Génère l'axe des dates
+ *
+ */
+ export function appendAxisDates(graphg, startDate, endDate) {
+
+  //Définit un groupe qui contiendra les dates avec le bon décalage vertical
+  let g = graphg
+    .append('g')
+    .attr('class', 'dates-g')
+  
+  let scale = d3.scaleTime()
+                .domain([startDate, endDate])
+                .range([0, heatmap.width])
+  
+  let axisDate = d3.axisTop().scale(scale)
+  
+  g.call(axisDate) //Création de l'axe pour obtenir la hauteur pour le placement des heatmap
+  return scale
+}
+
+ /**
+ * Place l'axe des dates
+ */
+  export function placeAxisDates(graphg, scale) {
+    //Variable pour le placement
+    let infoSize = d3.select('.info-g').node().getBBox()
+    let titleSize = d3.select('.column-titles-g').node().getBBox()
+    let verticalOffset = infoSize.height + titleSize.height + 20
+    let HorizontalOffset = heatmap.text
+
+    graphg.select('.dates-g').remove() //Enlève les anciens éléments, utiles juste pour obtenir la hauteur
+
+    let g = graphg //nouveau groupe avec placement en fonction des données maj
+    .append('g')
+    .attr('class', 'dates-g')
+    .attr('transform','translate(' + HorizontalOffset + ' ,' + verticalOffset + ')')
+    let axisDate = d3.axisTop().scale(scale)
+                      .tickValues( scale.ticks( 5 ).concat( scale.domain()[1] ) )
+                     .tickFormat(d3.timeFormat("%d/%m/%Y")) //Nouvel axe
+
+    g.call(axisDate)
+  }
+
+/**
  * Génère le titre de la chanson pour une ligne
  *
  * @param {object} g La sélection dans laquelle on ajoute le titre
