@@ -126,7 +126,7 @@ export function placeDates(id) {
  /**
  * Place l'axe des dates
  */
-  export function placeAxisDates(graphg, scale) {
+  export function placeAxisDates(graphg, scale, tick) {
     //Variable pour le placement
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
@@ -139,8 +139,12 @@ export function placeDates(id) {
     .append('g')
     .attr('class', 'dates-g')
     .attr('transform','translate(' + HorizontalOffset + ' ,' + verticalOffset + ')')
+
+    scale.range([0, heatmap.width]) //Maj de la scale
+    let values =  scale.ticks(4).slice(0,5).concat(scale.domain()[1]) 
+    console.log(values)
     let axisDate = d3.axisTop().scale(scale)
-                      .tickValues( scale.ticks( 5 ).concat( scale.domain()[1] ) )
+                     .tickValues(values)
                      .tickFormat(d3.timeFormat("%d/%m/%Y")) //Nouvel axe
 
     g.call(axisDate)

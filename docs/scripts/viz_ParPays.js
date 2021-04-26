@@ -49,7 +49,7 @@ export function createCountryVisualisation(country, country_name, start_date, en
             viz.appendColumnTitles(graphg, index.vizWidth, columnTitle)
             let timeScale = viz.appendAxisDates(graphg, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
             viz.appendHeatMaps(graphg, data_preprocessed, lineTitle, colorScales, index.vizWidth, tip.streams, tip.total, tip.track)
-            viz.placeAxisDates(graphg, timeScale)
+            viz.placeAxisDates(graphg, timeScale, 4)
             helper.updateSvg()
         }
         helper.enabledInteraction()
