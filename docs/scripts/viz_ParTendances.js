@@ -58,9 +58,9 @@ export function createTrendsVisualisation(start_day,start_month,end_day,end_mont
                 //Axes des dates
                 let start_date_current = year.Year + start_date 
                 let end_date_current = year.Year + end_date
-                let timeScale = viz.appendAxisDates(g, preprocess_Helpers.parseDate(start_date_current), preprocess_Helpers.parseDate(end_date_current))
-                viz.appendHeatMaps(g, year.Tracks, 'Track_Name', colorScales, trendVizWidth, tip.streams, tip.total, tip.track)
-                viz.placeAxisDates(g, timeScale, 2)
+                let timeScale = viz.appendAxisDates(g, preprocess_Helpers.parseDate(start_date_current), preprocess_Helpers.parseDate(end_date_current), year.Year)
+                viz.appendHeatMaps(g, year.Tracks, 'Track_Name', colorScales, trendVizWidth, tip.streams, tip.total, tip.track, year.Year)
+                viz.placeAxisDates(g, timeScale, 2, year.Year)
                 trendVizHeight = g.node().getBBox().height
             } else {
                 let errorOffset = infogHeight+yearTitleHeight

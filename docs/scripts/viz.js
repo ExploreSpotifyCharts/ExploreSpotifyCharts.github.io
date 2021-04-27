@@ -64,55 +64,20 @@ let pageID //Variable contenant l'objet principal de la page : le pays, artiste 
       
 }
 
-
-/**
- * Génère les dates
- *
- * @param {string} startDate Date de début de l'affichage des données
- * @param {string} endDate Date de fin de l'affichage des données
- * @param {int} vizWidth Largeur de la viz pour le placement
- */
- export function appendDates(graphg, startDate, endDate, id) {
-    let infoSize = d3.select('.info-g').node().getBBox()
-    let titleSize = d3.select('.column-titles-g').node().getBBox()
-    let verticalOffset = infoSize.height + titleSize.height + 20
-
-    //Définit un groupe qui contiendra les dates avec le bon décalage
-    let g = graphg
-      .append('g')
-      .attr('class', 'dates-g')
-      .attr('transform','translate(0 ,' + verticalOffset + ')')
-
-    //Affichage Dates
-    g.append('text').text(startDate).attr('fill', 'white').attr('class', 'date-viz').attr('id','startDate'+id)
-    g.append('text').text(endDate).attr('fill', 'white').attr('class', 'date-viz').attr('id','endDate'+id) 
- }
-
- /**
- * Place les dates en fonction de la largeur de la heatmap
- */
-export function placeDates(id) {
-
-  let startDateText = d3.select('#startDate'+id)
-  let HorizontalOffsetStart = heatmap.text
-  startDateText.attr('transform', 'translate(' + HorizontalOffsetStart + ', 0)')
-
-  let endDateText = d3.select('#endDate'+id)
-  let offset = endDateText.node().getComputedTextLength()
-  let HorizontalOffsetEnd = heatmap.text + heatmap.width - offset
-  endDateText.attr('transform', 'translate(' + HorizontalOffsetEnd + ', 0)')
-}
-
 /**
  * Génère l'axe des dates
+ * @param graphg le g dans lequel on ajoute les éléments
+ * @param startDate la date de début de l'axe
+ * @param endDate la date de fin de l'axe
  *
  */
- export function appendAxisDates(graphg, startDate, endDate) {
+ export function appendAxisDates(graphg, startDate, endDate, year) {
 
   //Définit un groupe qui contiendra les dates avec le bon décalage vertical
+  let dateClass = (year != undefined) ? 'dates-g-'+ year : 'dates-g'
   let g = graphg
     .append('g')
-    .attr('class', 'dates-g')
+    .attr('class', dateClass)
   
   let scale = d3.scaleTime()
                 .domain([startDate, endDate])
@@ -126,15 +91,18 @@ export function placeDates(id) {
 
  /**
  * Place l'axe des dates
+ * @param graphg le groupe dans lequel on ajoute les éléments
+ * @param scale l'échelle de temps pour la création de l'axe
+ * @param tick le nombre de ticks désirés sur l'axe
  */
-  export function placeAxisDates(graphg, scale, tick) {
+  export function placeAxisDates(graphg, scale, tick, year) {
     //Variable pour le placement
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let verticalOffset = infoSize.height + titleSize.height + 35
     let HorizontalOffset = heatmap.text
-
-    graphg.select('.dates-g').remove() //Enlève les anciens éléments, utiles juste pour obtenir la hauteur
+    let dateClass = (year != undefined) ? '.dates-g-'+ year : '.dates-g'
+    graphg.select(dateClass).remove() //Enlève les anciens éléments, utiles juste pour obtenir la hauteur
 
     let g = graphg //nouveau groupe avec placement en fonction des données maj
     .append('g')
@@ -157,20 +125,23 @@ export function placeDates(id) {
 
     //Modification de l'apparence des ticks si on a une période avec des valeurs sur les bornes
     if (scale.domain()[0].getTime() == scale.domain()[1].getTime()) { 
-      styleTick(g, axisDate, scale, values.length, true)
-    } else {
-      styleTick(g, axisDate, scale, values.length, false)
+      styleTick(g, axisDate, scale,true)
+    } else if (values.length > 2) {
+      styleTick(g, axisDate, scale,false)
     }
   }
 
 /**
  * Stylisation des ticks (si jour simple, valeurs extrêmes)
+ * @param g groupe dans lequel on modifie les éléments
+ * @param axisDate axe duquel on modifie les éléments
+ * @param scale la scale utilisée dans l'axe
+ * @param isOneDay booléen pour le choix du style
  */
-  export function styleTick(g, axisDate, scale, values, isOneDay) {
-    console.log(values)
-    if (isOneDay){
+  export function styleTick(g, axisDate, scale, isOneDay) {
+    if (isOneDay){ //Si un jour, pas de bornes
       axisDate.tickSizeOuter(0)
-    } else if (values>2) {
+    } else { //Si plus de deux valeurs, hauteur augmentée des bornes pour éviter la superpisition des labels
       axisDate.tickSizeOuter(15)
       let extremeTicks = g.selectAll(".tick")
                           .filter(function(d, i) {
@@ -179,7 +150,7 @@ export function placeDates(id) {
       extremeTicks.selectAll('text').attr('transform','translate(0,-10)')
     }
 
-    g.call(axisDate)
+    g.call(axisDate) //Mis à jour de l'axe
 
   }
   
@@ -334,11 +305,13 @@ export function setHoverHandler (g, tip) {
  * @param {object} tip_total Tooltip à associer au total
  * @param {object} tip_track Tooltip à associer à un item titre
  */
- export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total, tip_track) {
+ export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total, tip_track, year) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
-    let datesSize = d3.select('.dates-g').node().getBBox()
+    let dateClass = (year != undefined) ? '.dates-g-'+year : '.dates-g'
+    console.log(dateClass)
+    let datesSize = d3.select(dateClass).node().getBBox()
     const initialOffset = infoSize.height + titleSize.height + datesSize.height + 40
 
     //Affichage de la ligne de total
