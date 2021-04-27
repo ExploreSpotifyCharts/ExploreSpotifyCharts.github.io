@@ -23,6 +23,7 @@ export let heatmap = {
   stat: 150
 }
 
+
 let pageID //Variable contenant l'objet principal de la page : le pays, artiste ou titre étudié
 
 /**
@@ -130,7 +131,7 @@ export function placeDates(id) {
     //Variable pour le placement
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
-    let verticalOffset = infoSize.height + titleSize.height + 20
+    let verticalOffset = infoSize.height + titleSize.height + 35
     let HorizontalOffset = heatmap.text
 
     graphg.select('.dates-g').remove() //Enlève les anciens éléments, utiles juste pour obtenir la hauteur
@@ -143,19 +144,45 @@ export function placeDates(id) {
     scale.range([0, heatmap.width]) //Maj de la scale
     
     //Création de la list de valeurs pour les ticks
-    let values = scale.ticks(tick).slice(0,tick+1).concat(scale.domain()[1])
-    console.log(values)
+    let values = scale.ticks(tick).slice(0,tick+1)
+    if (values[values.length-1].getTime()!=scale.domain()[1].getTime())values.push(scale.domain()[1]) //Ajout de la dernière borne si différente
+    if (values[0].getTime()!=scale.domain()[0].getTime()) values.push(scale.domain()[0]) //Ajout de la première borne si différente
 
     //Nouvel axe
     let axisDate = d3.axisTop().scale(scale)
                      .tickValues(values)
                      .tickFormat(d3.timeFormat("%d/%m/%Y")) 
-    if (scale.domain()[0].getTime() == scale.domain()[1].getTime()) { //cas du jour seul
+
+    g.call(axisDate)
+
+    //Modification de l'apparence des ticks si on a une période avec des valeurs sur les bornes
+    if (scale.domain()[0].getTime() == scale.domain()[1].getTime()) { 
+      styleTick(g, axisDate, scale, values.length, true)
+    } else {
+      styleTick(g, axisDate, scale, values.length, false)
+    }
+  }
+
+/**
+ * Stylisation des ticks (si jour simple, valeurs extrêmes)
+ */
+  export function styleTick(g, axisDate, scale, values, isOneDay) {
+    console.log(values)
+    if (isOneDay){
       axisDate.tickSizeOuter(0)
+    } else if (values>2) {
+      axisDate.tickSizeOuter(15)
+      let extremeTicks = g.selectAll(".tick")
+                          .filter(function(d, i) {
+                            return d.getTime() == scale.domain()[0].getTime() || d.getTime() == scale.domain()[1].getTime() 
+                          })
+      extremeTicks.selectAll('text').attr('transform','translate(0,-10)')
     }
 
     g.call(axisDate)
+
   }
+  
 
 /**
  * Génère le titre de la chanson pour une ligne
@@ -312,7 +339,7 @@ export function setHoverHandler (g, tip) {
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let datesSize = d3.select('.dates-g').node().getBBox()
-    const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
+    const initialOffset = infoSize.height + titleSize.height + datesSize.height + 40
 
     //Affichage de la ligne de total
     appendLine(graphg, initialOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true, key)
@@ -320,7 +347,7 @@ export function setHoverHandler (g, tip) {
     //Affichage de chaque ligne
     data.slice(1).forEach(function (track, index)
       {
-        appendLine(graphg, initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key, tip_track)
+        appendLine(graphg, initialOffset+45, index, track, colorScales.streams, tip_streams, vizWidth, false, key, tip_track)
       }
     )
  }
