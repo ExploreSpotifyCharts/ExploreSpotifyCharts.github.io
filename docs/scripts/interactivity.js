@@ -512,7 +512,7 @@ function isFormValid(params) {
         const startMonth =  params[index + 2][1]
         const endDay =  params[index + 3][1]
         const endMonth =  params[index + 4][1]
-        if (isDateInvalid(startDay,startMonth,'period') && isDateInvalid(endDay,endMonth,'period')) {
+        if (isDateInvalid(startDay,startMonth,'period') || isDateInvalid(endDay,endMonth,'period')) {
           validationResult = false
         }
         startDate = new Date(startMonth + '-' + startDay)
