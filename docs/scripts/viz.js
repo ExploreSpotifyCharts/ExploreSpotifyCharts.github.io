@@ -100,14 +100,14 @@ let pageID //Variable contenant l'objet principal de la page : le pays, artiste 
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let verticalOffset = infoSize.height + titleSize.height + 35
-    let HorizontalOffset = heatmap.text
+    let horizontalOffset = heatmap.text
     let dateClass = (year != undefined) ? '.dates-g-'+ year : '.dates-g'
     graphg.select(dateClass).remove() //Enlève les anciens éléments, utiles juste pour obtenir la hauteur
 
     let g = graphg //nouveau groupe avec placement en fonction des données maj
     .append('g')
     .attr('class', 'dates-g')
-    .attr('transform','translate(' + HorizontalOffset + ' ,' + verticalOffset + ')')
+    .attr('transform','translate(' + horizontalOffset + ' ,' + verticalOffset + ')')
 
     scale.range([0, heatmap.width]) //Maj de la scale
     
@@ -310,7 +310,6 @@ export function setHoverHandler (g, tip) {
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
     let dateClass = (year != undefined) ? '.dates-g-'+year : '.dates-g'
-    console.log(dateClass)
     let datesSize = d3.select(dateClass).node().getBBox()
     const initialOffset = infoSize.height + titleSize.height + datesSize.height + 40
 
