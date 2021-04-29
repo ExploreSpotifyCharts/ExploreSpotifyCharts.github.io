@@ -4,6 +4,15 @@ import * as preprocess_Helpers from './preprocess_Helpers.js'
 import * as preprocess_ParTendance from './preprocess_ParTendance.js'
 import * as helper from './helper.js'
 
+/**
+ * Crée la visualisation pour Explorer Par Tendances
+ * @param {int} start_day Le jour de la date de début de la période sélectionnée
+ * @param {int} start_month Le mois de la date de début de la période sélectionnée
+ * @param {int} end_day Le jour de la date de fin de la période sélectionnée (peut être null, dans ce cas on prendra la date de fin comme date de début pour réduire la période étudiée à la journée de début)
+ * @param {int} end_month Le mois de la date de fin de la période sélectionnée (peut être null, dans ce cas on prendra la date de fin comme date de début pour réduire la période étudiée à la journée de début)
+ * @param {string} country Code du pays sélectionné
+ * @param {string[]} country_name Nom du pays sélectionné
+ */
 export function createTrendsVisualisation(start_day,start_month,end_day,end_month,country,country_name) {
     if(end_day == null) end_day = start_day
     if(end_month == null) end_month = start_month

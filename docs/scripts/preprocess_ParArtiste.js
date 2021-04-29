@@ -1,49 +1,56 @@
 import * as preprocess_Helpers from './preprocess_Helpers.js'
 
-//API -------------------------------------------------------------------------------------------------------
 /**
- * Get data for Explorer par artiste for a period and a country
+ * Génère les données pour la vue Explorer par Artiste (toggle sur Titres)
  *
- * @param {object[]} data The data for the country selected (can be 'global')
- * @param {string} artiste The artist name of interest
- * @param {Date} start The start date to considered data selected
- * @param {Date} end The end date to considered data selected
- * @returns {object[]} Table of objects containing the data of interest
+ * @param {object[]} data Les données brutes chargées correspondant au pays sélectionné
+ * @param {string} artiste Le nom de l'artiste d'intérêt
+ * @param {Date} start Le début de la période sélectionnée
+ * @param {Date} end La fin de la période sélectionnée (peut être null : dans ce cas, la période sélectionnée se réduit au jour de début)
+ * @returns {object[]} Les données d'intérêt pour générer la visualisation
  */
 export function ExplorerParArtiste(data, artiste, start, end=null) 
 { 
   if (!end) { end = start }
   let data_processed = data
   
-  //Filter on artist
+  //Filtre sur l'artiste
   data_processed = data_processed.filter(line => line['Artist'] == artiste)
 
-  //Filter on date
+  //Filtre sur les dates
   data_processed = data_processed.filter(line => preprocess_Helpers.isValidDate(line['date']) && preprocess_Helpers.isDateToBeConsidered(line['date'], start, end))
   
-  //Reduce by track name
+  //Réduction par titre de chanson
   data_processed = preprocess_Helpers.reduceDataPerKey(data_processed, 'Track_Name', ['Artist'])
 
-  //Sort on count_total_streams and get top k
+  //Tri sur le nombre total de streams de chaque entrée
   data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams'])
 
-  //Add one entry for total (per day and global) and Compute % for each track
+  //Ajout du total et des proportions
   data_processed = preprocess_Helpers.addTotalEntry_computeProportion(data_processed)
 
-  //Add zeros on missing dates
+  //Ajout des dates manquantes
   data_processed = preprocess_Helpers.fillMissingDates(data_processed, start, end)
 
-  //Sort on streams on date
+  //Tri des streams par date
   data_processed = preprocess_Helpers.sortStreamsOnDate(data_processed)
 
-  //Formattage
+  //Formatage
   data_processed = preprocess_Helpers.formatData(data_processed, 'Track_Name')
 
   return data_processed
 }
 
 //--------------------------------------------------------------------------------------------------------
-
+/**
+ * Génère les données pour la vue Explorer par Artiste (toggle sur Pays)
+ *
+ * @param {object[][]} data_countries Les données brutes chargées correspondant à l'artiste sélectionné (plusieurs pays, données déjà filtrées pour n'avoir que l'artiste d'intérêt)
+ * @param {string[]} countries Les noms des pays (ordonnés comme les données brutes)
+ * @param {Date} start Le début de la période sélectionnée
+ * @param {Date} end La fin de la période sélectionnée (peut être null : dans ce cas, la période sélectionnée se réduit au jour de début)
+ * @returns {object[]} Les données d'intérêt pour générer la visualisation
+ */
 export function ExplorerParArtiste_Countries(data_countries, countries, start, end=null)
 { 
   if (!end) { end = start }
@@ -55,32 +62,32 @@ export function ExplorerParArtiste_Countries(data_countries, countries, start, e
 
       let data_country_preprocessed = data_country
 
-      //Filter on date
+      //Filtre sur la date
       data_country_preprocessed = data_country_preprocessed.filter(line => preprocess_Helpers.isValidDate(line['date']) && preprocess_Helpers.isDateToBeConsidered(line['date'], start, end))
       
-      //Reduce
+      //Reduction à un élément
       data_country_preprocessed = preprocess_Helpers.reduceDataToOneElement(data_country_preprocessed, country_name)
 
-      //Check if there is data for that country and push if so
+      //Vérification que des données sont disponibles pour ce pays, et si oui, ajout aux données conservées
       if (data_country_preprocessed[1]['Count_total_streams'] != 0)
       {
         data_processed.push(data_country_preprocessed)
       }
     })
 
-    //Sort on count_total_streams and get top k
+    //Tri sur le nombre total de streams de chaque entrée
     data_processed.sort((a,b) => b[1]['Count_total_streams']-a[1]['Count_total_streams'])
 
-    //Add one entry for total (per day and global) and Compute % for each track
+    //Ajout du total et des proportions
     data_processed = preprocess_Helpers.addTotalEntry_computeProportion(data_processed)
   
-    //Add zeros on missing dates
+    //Ajout des dates manquantes
     data_processed = preprocess_Helpers.fillMissingDates(data_processed, start, end)
   
-    //Sort on streams on date
+    //Tri des streams par date
     data_processed = preprocess_Helpers.sortStreamsOnDate(data_processed)
   
-    //Formattage
+    //Formatage
     data_processed = preprocess_Helpers.formatData(data_processed, 'Region')
   
     return data_processed

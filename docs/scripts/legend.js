@@ -94,10 +94,10 @@ export function initLegendBar (id) {
  * Affichage du gradient
  *
  * @param {number} x La position x de l'échelle
- * @param {number} y La position y de l'échelle
- * @param {number} height La hauteur de l'échelle
- * @param {number} width La largeur de l'échelle
+ * @param {object} scaleDimensions Les dimensions utiles au positionnement et au dimensionnement de l'échelle
  * @param {string} fill Le remplissage de l'échelle
+ * @param {string} id L'identifiant du rect
+ * @param {number} offset Le décalage en y
  */
  export function draw (x, scaleDimensions, fill, id, offset) {
     d3.select(id)

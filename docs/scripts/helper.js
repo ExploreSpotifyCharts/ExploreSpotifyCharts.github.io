@@ -40,8 +40,8 @@ import {navigate} from './interactivity.js'
 /**
  * Détermine les valeurs min et max des streams
  *
- * @param {object} data la data à étudier
- * @returns {object} un objet avec le min et le max
+ * @param {object} data La data à étudier
+ * @returns {object} Un objet avec le min et le max
  */
  export function getMinMaxStreams (data) {
   //Valeurs extrêmes de stream sur un jour
@@ -70,16 +70,18 @@ import {navigate} from './interactivity.js'
 }
 
 /**
- * Formatte les nombres longs en introduisant des espaces entre trois digits
- *
+ * Formate un nombre long en introduisant des espaces entre trois digits
+ * @param {number} num Le nombre long à formater
+ * @returns {string} Le nombre long formaté
  */
 export function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
 }
 
 /**
- * Formatte les dates de YYYY-MM-DD à DD/MM/YYYY
- *
+ * Formate une date de YYYY-MM-DD à DD/MM/YYYY
+ * @param {string} input La date à formater
+ * @returns {string} La date formatée
  */
 export function formatDate(input) {
   if(input == null) return null
@@ -94,7 +96,7 @@ export function formatDate(input) {
 /**
  * Génère un texte affichant une erreur
  *
- * @param {object} error L'erreur à afficher
+ * @param {string} error L'erreur à afficher
  */
 export function appendError (g, error) {
   return g.append('text')
@@ -108,14 +110,16 @@ export function appendError (g, error) {
  * Vérifie si un objet est vide ou non
  *
  * @param {object} object L'objet à étudier
+ * @returns {bool} Vrai si l'objet est vide
  */
  export function isEmptyObject (object) {
   return Object.keys(object).length === 0
 }
 
-
+/**
+ * Autorise l'interaction puisque la visualisation est chargée
+ */
 export function enabledInteraction() {
-   //Enable menu click since the viz is load
    d3.selectAll('li').on("click", function() {navigate(this)})
    d3.select("input[type=submit]").property('disabled',false)
 }

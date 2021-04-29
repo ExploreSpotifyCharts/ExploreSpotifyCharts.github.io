@@ -1,3 +1,6 @@
+/**
+ * Crée le onboarding (tutoriel initial)
+ */
 export function initialize() {
     const nextText = 'Suivant'
     const backText = 'Précédent'

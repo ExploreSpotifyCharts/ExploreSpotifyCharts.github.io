@@ -1,15 +1,15 @@
 import * as preprocess_Helpers from './preprocess_Helpers.js'
 
-//API -------------------------------------------------------------------------------------------------------
 /**
- * Get data for Explorer par tendance for a period of the year and a country
+ * Génère les données pour la vue Explorer par Tendances
  *
- * @param {object[]} data The data for the country selected (can be 'global')
- * @param {int} start_day The start day to considered data selected
- * @param {int} start_month The start month to considered data selected
- * @param {int} end_day The end day to considered data selected
- * @param {int} end_month The end day to considered data selected
- * @returns {object[]} Table of objects containing the data of interest
+ * @param {object[]} data Les données brutes chargées correspondant au pays sélectionné
+ * @param {string} artiste Le nom de l'artiste d'intérêt
+ * @param {int} start_day Le jour de la date de début de la période sélectionnée
+ * @param {int} start_month Le mois de la date de début de la période sélectionnée
+ * @param {int} end_day Le jour de la date de fin de la période sélectionnée (peut être null, dans ce cas on prendra la date de fin comme date de début pour réduire la période étudiée à la journée de début)
+ * @param {int} end_month Le mois de la date de fin de la période sélectionnée (peut être null, dans ce cas on prendra la date de fin comme date de début pour réduire la période étudiée à la journée de début)
+ * @returns {object[]} Les données d'intérêt pour générer la visualisation
  */
 export function ExplorerParTendance(data, start_day, start_month, end_day=null, end_month=null) 
 {
@@ -22,17 +22,17 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
   let dates = {}
   for (let year = 2017; year <= 2020; year++) {
     dates[year] = {}
-    dates[year]['start'] = new Date(year, start_month-1, start_day) //month is 0-indexed
-    dates[year]['end'] = new Date(year, end_month-1, end_day) //month is 0-indexed
+    dates[year]['start'] = new Date(year, start_month-1, start_day) //Les mois sont indéxés à partir de 0
+    dates[year]['end'] = new Date(year, end_month-1, end_day) //Les mois sont indéxés à partir de 0
   }
 
   let data_processed = data
 
-  //Filter on date
+  //Filtre sur la date
   data_processed = data_processed.filter(line => 
     {
       const current_date = line['date']
-      if (!(preprocess_Helpers.isValidDate(current_date))) //get valid date
+      if (!(preprocess_Helpers.isValidDate(current_date)))
       {
         return false
       }
@@ -40,14 +40,14 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       return preprocess_Helpers.isDateToBeConsidered(current_date, dates[year]['start'], dates[year]['end'])
     })
 
-  //Add year as key
+  //Ajout d'une clé 'Year' pour l'année
   data_processed.forEach(line =>
     {
       line['Year'] = line['date'].getFullYear()
     }
   )
 
-  //Reduce per year
+  //Réduction des données sur la clé 'Year'
   data_processed = data_processed.reduce(function (acc, line) {
     if (typeof acc[line['Year']] == 'undefined')
     {
@@ -74,7 +74,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
   }, {})
   data_processed = Object.entries(data_processed)
 
-  //sort tracks on number of streams and get top 5
+  //Tri sur le nombre total de streams de chaque entrée et récupération du top 5
   data_processed.forEach(line =>
     {
       var tracks = line[1]['Tracks']
@@ -95,7 +95,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       line[1]['Tracks'] = sortable.slice(0,5)
     })
 
-  //for each year, add a total entry
+  //Pour chaque année, ajout d'une entrée 'Total'
   data_processed.forEach(line =>
   {
     let newEntry = {}
@@ -119,7 +119,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
       line[1]['Tracks'].unshift(newEntry)
   })
 
-  //for each year, compute proportion
+  //Pour chaque année, calcule de la proportion de chaque entrée par rapport au 'Total'
   data_processed.forEach(line =>
   {
     const total = line[1]['Tracks'][0]['Count_total_streams']
@@ -133,7 +133,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
   })
 
 
-  //fill missing dates
+  //Ajout des dates manquantes
   data_processed.forEach(line =>
   {
     const year = line[0]
@@ -153,7 +153,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
     }
   })
 
-  //sort streams on date
+  //Tri des streams par date
   data_processed.forEach(line =>
   {
     line[1]['Tracks'].forEach(track =>
@@ -168,7 +168,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
     })
   })
 
-  //format
+  //Formatage
   data_processed = data_processed.map(line => {
     let entry = {}
     entry['Year'] = line[0]
@@ -187,7 +187,7 @@ export function ExplorerParTendance(data, start_day, start_month, end_day=null, 
     return entry
   })
 
-  //Add missing year entries and sort
+  //Ajout des entrées d'années manquantes et tri sur les années (pour avoir toujours 4 entrées [2017-2018-2019-2020])
   const years_in_data = data_processed.map(entry => entry['Year'])
   for (const year in dates)
   {
