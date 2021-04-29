@@ -13,8 +13,8 @@ export function createTrendsVisualisation(start_day,start_month,end_day,end_mont
 
     const tip = viz.initializeViz('Tendances')
 
-    let start_date = start_day +'/'+ start_month
-    let end_date = end_day +'/'+ end_month
+    let start_date = '-' + start_month +'-'+ start_day
+    let end_date = '-' + end_month +'-'+ end_day
     d3.csv(index.PATH+country+'.csv', preprocess_Helpers.SpotifyDataParser).then(function (data) {
         const data_preprocessed_tendance = preprocess_ParTendance.ExplorerParTendance(data, start_day, start_month, end_day, end_month)
         spinner.stop()
@@ -55,9 +55,12 @@ export function createTrendsVisualisation(start_day,start_month,end_day,end_mont
             if(year.Tracks.length > 0) {
                 //Elements généraux de la sous-vizu
                 viz.appendColumnTitles(g, trendVizWidth, 'Titres')
-                viz.appendDates(g, start_date, end_date, year.Year) 
-                viz.appendHeatMaps(g, year.Tracks, 'Track_Name', colorScales, trendVizWidth, tip.streams, tip.total, tip.track)
-                viz.placeDates(year.Year) 
+                //Axes des dates
+                let start_date_current = year.Year + start_date 
+                let end_date_current = year.Year + end_date
+                let timeScale = viz.appendAxisDates(g, preprocess_Helpers.parseDate(start_date_current), preprocess_Helpers.parseDate(end_date_current), year.Year)
+                viz.appendHeatMaps(g, year.Tracks, 'Track_Name', colorScales, trendVizWidth, tip.streams, tip.total, tip.track, year.Year)
+                viz.placeAxisDates(g, timeScale, 2, year.Year)
                 trendVizHeight = g.node().getBBox().height
             } else {
                 let errorOffset = infogHeight+yearTitleHeight

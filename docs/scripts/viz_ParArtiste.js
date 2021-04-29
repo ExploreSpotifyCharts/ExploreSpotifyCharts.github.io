@@ -30,9 +30,9 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
       const colorScales = viz.appendColorScales(data_preprocessed_artist.slice(0,1), data_preprocessed_artist.slice(1), index.vizWidth, 'Par Titre :')
       let graphg = d3.select('.graph-g')
       viz.appendColumnTitles(graphg, index.vizWidth, 'Titres')
-      viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
+      let timeScale = viz.appendAxisDates(graphg, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
       viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Track_Name', colorScales, index.vizWidth, tip.streams, tip.total, tip.track)
-      viz.placeDates('Artiste')
+      viz.placeAxisDates(graphg, timeScale, 4)
     helper.updateSvg()
 
     }
@@ -83,9 +83,9 @@ export function createArtistVisualisation_Countries(artist, countries, start_dat
 
         let graphg = d3.select('.graph-g')
         viz.appendColumnTitles(graphg, index.vizWidth, 'Pays')
-        viz.appendDates(graphg, helper.formatDate(start_date), helper.formatDate(end_date), 'Artiste')
+        let timeScale = viz.appendAxisDates(graphg, preprocess_Helpers.parseDate(start_date), preprocess_Helpers.parseDate(end_date))
         viz.appendHeatMaps(graphg, data_preprocessed_artist, 'Region', colorScales, index.vizWidth, tip.streams, tip.total)
-        viz.placeDates('Artiste')
+        viz.placeAxisDates(graphg, timeScale, 4)
         helper.updateSvg()
 
       }

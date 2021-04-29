@@ -23,6 +23,7 @@ export let heatmap = {
   stat: 150
 }
 
+
 let pageID //Variable contenant l'objet principal de la page : le pays, artiste ou titre étudié
 
 /**
@@ -63,44 +64,96 @@ let pageID //Variable contenant l'objet principal de la page : le pays, artiste 
       
 }
 
-
 /**
- * Génère les dates
+ * Génère l'axe des dates
+ * @param graphg le g dans lequel on ajoute les éléments
+ * @param startDate la date de début de l'axe
+ * @param endDate la date de fin de l'axe
  *
- * @param {string} startDate Date de début de l'affichage des données
- * @param {string} endDate Date de fin de l'affichage des données
- * @param {int} vizWidth Largeur de la viz pour le placement
  */
- export function appendDates(graphg, startDate, endDate, id) {
-    let infoSize = d3.select('.info-g').node().getBBox()
-    let titleSize = d3.select('.column-titles-g').node().getBBox()
-    let verticalOffset = infoSize.height + titleSize.height + 20
+ export function appendAxisDates(graphg, startDate, endDate, year) {
 
-    //Définit un groupe qui contiendra les dates avec le bon décalage
-    let g = graphg
-      .append('g')
-      .attr('class', 'dates-g')
-      .attr('transform','translate(0 ,' + verticalOffset + ')')
-
-    //Affichage Dates
-    g.append('text').text(startDate).attr('fill', 'white').attr('class', 'date-viz').attr('id','startDate'+id)
-    g.append('text').text(endDate).attr('fill', 'white').attr('class', 'date-viz').attr('id','endDate'+id) 
- }
+  //Définit un groupe qui contiendra les dates avec le bon décalage vertical
+  let dateClass = (year != undefined) ? 'dates-g-'+ year : 'dates-g'
+  let g = graphg
+    .append('g')
+    .attr('class', dateClass)
+  
+  let scale = d3.scaleTime()
+                .domain([startDate, endDate])
+                .range([0, heatmap.width])
+  
+  let axisDate = d3.axisTop().scale(scale)
+  
+  g.call(axisDate) //Création de l'axe pour obtenir la hauteur pour le placement des heatmap
+  return scale
+}
 
  /**
- * Place les dates en fonction de la largeur de la heatmap
+ * Place l'axe des dates
+ * @param graphg le groupe dans lequel on ajoute les éléments
+ * @param scale l'échelle de temps pour la création de l'axe
+ * @param tick le nombre de ticks désirés sur l'axe
  */
-export function placeDates(id) {
+  export function placeAxisDates(graphg, scale, tick, year) {
+    //Variable pour le placement
+    let infoSize = d3.select('.info-g').node().getBBox()
+    let titleSize = d3.select('.column-titles-g').node().getBBox()
+    let verticalOffset = infoSize.height + titleSize.height + 35
+    let horizontalOffset = heatmap.text
+    let dateClass = (year != undefined) ? '.dates-g-'+ year : '.dates-g'
+    graphg.select(dateClass).remove() //Enlève les anciens éléments, utiles juste pour obtenir la hauteur
 
-  let startDateText = d3.select('#startDate'+id)
-  let HorizontalOffsetStart = heatmap.text
-  startDateText.attr('transform', 'translate(' + HorizontalOffsetStart + ', 0)')
+    let g = graphg //nouveau groupe avec placement en fonction des données maj
+    .append('g')
+    .attr('class', 'dates-g')
+    .attr('transform','translate(' + horizontalOffset + ' ,' + verticalOffset + ')')
 
-  let endDateText = d3.select('#endDate'+id)
-  let offset = endDateText.node().getComputedTextLength()
-  let HorizontalOffsetEnd = heatmap.text + heatmap.width - offset
-  endDateText.attr('transform', 'translate(' + HorizontalOffsetEnd + ', 0)')
-}
+    scale.range([0, heatmap.width]) //Maj de la scale
+    
+    //Création de la list de valeurs pour les ticks
+    let values = scale.ticks(tick).slice(0,tick+1)
+    if (values[values.length-1].getTime()!=scale.domain()[1].getTime())values.push(scale.domain()[1]) //Ajout de la dernière borne si différente
+    if (values[0].getTime()!=scale.domain()[0].getTime()) values.push(scale.domain()[0]) //Ajout de la première borne si différente
+
+    //Nouvel axe
+    let axisDate = d3.axisTop().scale(scale)
+                     .tickValues(values)
+                     .tickFormat(d3.timeFormat("%d/%m/%Y")) 
+
+    g.call(axisDate)
+
+    //Modification de l'apparence des ticks si on a une période avec des valeurs sur les bornes
+    if (scale.domain()[0].getTime() == scale.domain()[1].getTime()) { 
+      styleTick(g, axisDate, scale,true)
+    } else if (values.length > 2) {
+      styleTick(g, axisDate, scale,false)
+    }
+  }
+
+/**
+ * Stylisation des ticks (si jour simple, valeurs extrêmes)
+ * @param g groupe dans lequel on modifie les éléments
+ * @param axisDate axe duquel on modifie les éléments
+ * @param scale la scale utilisée dans l'axe
+ * @param isOneDay booléen pour le choix du style
+ */
+  export function styleTick(g, axisDate, scale, isOneDay) {
+    if (isOneDay){ //Si un jour, pas de bornes
+      axisDate.tickSizeOuter(0)
+    } else { //Si plus de deux valeurs, hauteur augmentée des bornes pour éviter la superpisition des labels
+      axisDate.tickSizeOuter(15)
+      let extremeTicks = g.selectAll(".tick")
+                          .filter(function(d, i) {
+                            return d.getTime() == scale.domain()[0].getTime() || d.getTime() == scale.domain()[1].getTime() 
+                          })
+      extremeTicks.selectAll('text').attr('transform','translate(0,-10)')
+    }
+
+    g.call(axisDate) //Mis à jour de l'axe
+
+  }
+  
 
 /**
  * Génère le titre de la chanson pour une ligne
@@ -252,12 +305,13 @@ export function setHoverHandler (g, tip) {
  * @param {object} tip_total Tooltip à associer au total
  * @param {object} tip_track Tooltip à associer à un item titre
  */
- export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total, tip_track) {
+ export function appendHeatMaps(graphg, data, key, colorScales, vizWidth, tip_streams, tip_total, tip_track, year) {
     //Calcul du placement par rapport aux éléments précédents
     let infoSize = d3.select('.info-g').node().getBBox()
     let titleSize = d3.select('.column-titles-g').node().getBBox()
-    let datesSize = d3.select('.dates-g').node().getBBox()
-    const initialOffset = infoSize.height + titleSize.height + datesSize.height + 25
+    let dateClass = (year != undefined) ? '.dates-g-'+year : '.dates-g'
+    let datesSize = d3.select(dateClass).node().getBBox()
+    const initialOffset = infoSize.height + titleSize.height + datesSize.height + 40
 
     //Affichage de la ligne de total
     appendLine(graphg, initialOffset, 0, data.slice(0,1)[0], colorScales.total, tip_total, vizWidth, true, key)
@@ -265,7 +319,7 @@ export function setHoverHandler (g, tip) {
     //Affichage de chaque ligne
     data.slice(1).forEach(function (track, index)
       {
-        appendLine(graphg, initialOffset+50, index, track, colorScales.streams, tip_streams, vizWidth, false, key, tip_track)
+        appendLine(graphg, initialOffset+45, index, track, colorScales.streams, tip_streams, vizWidth, false, key, tip_track)
       }
     )
  }
