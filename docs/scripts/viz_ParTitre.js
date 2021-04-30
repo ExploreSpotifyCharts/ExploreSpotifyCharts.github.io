@@ -2,9 +2,17 @@ import * as preprocess_Helpers from './preprocess_Helpers.js'
 import * as preprocess_ParTitre from './preprocess_ParTitre.js'
 import * as helper from './helper.js'
 import * as viz from './viz.js'
-import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
+/**
+ * Crée la visualisation pour Explorer Par Titre
+ *
+ * @param {string} track Nom du titre sélectionné
+ * @param {string} artist Nom de l'artiste associé au titre
+ * @param {string[]} countries Liste des pays dans lesquels le titre apparaît
+ * @param {string} start_date Début de la période sélectionnée
+ * @param {string} end_date Fin de la période sélectionnée
+ */
 export function createTrackVisualisation(track, artist, countries, start_date, end_date) {
     if(end_date == null) end_date = start_date
 

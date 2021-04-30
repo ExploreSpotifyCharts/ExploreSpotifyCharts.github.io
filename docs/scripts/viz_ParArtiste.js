@@ -2,9 +2,17 @@ import * as preprocess_Helpers from './preprocess_Helpers.js'
 import * as preprocess_ParArtiste from './preprocess_ParArtiste.js'
 import * as helper from './helper.js'
 import * as viz from './viz.js'
-import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
+/**
+ * Crée la visualisation pour Explorer Par Artiste (Toggle sur Titres)
+ *
+ * @param {string} artist Nom de l'artiste sélectionné
+ * @param {string} start_date Début de la période sélectionnée
+ * @param {string} end_date Fin de la période sélectionnée
+ * @param {string} country Code du pays sélectionné
+ * @param {string} country_name Nom du pays sélectionné
+ */
 export function createArtistVisualisation(artist, start_date, end_date, country, country_name) {
   if(end_date == null) end_date = start_date
 
@@ -48,7 +56,14 @@ export function createArtistVisualisation(artist, start_date, end_date, country,
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-
+/**
+ * Crée la visualisation pour Explorer Par Artiste (Toggle sur Pays)
+ *
+ * @param {string} artist Nom de l'artiste sélectionné
+ * @param {string[]} countries Liste des pays dans lesquels l'artiste apparaît
+ * @param {string} start_date Début de la période sélectionnée
+ * @param {string} end_date Fin de la période sélectionnée
+ */
 export function createArtistVisualisation_Countries(artist, countries, start_date, end_date) {
   if(end_date == null) end_date = start_date
 

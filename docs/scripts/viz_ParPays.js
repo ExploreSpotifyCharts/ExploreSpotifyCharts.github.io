@@ -5,6 +5,15 @@ import * as viz from './viz.js'
 import * as tooltip from './tooltip.js'
 import * as index from '../index.js'
 
+/**
+ * Crée la visualisation pour Explorer Par Pays (Toggle sur Titres ou sur Artistes)
+ *
+ * @param {string} country Code du pays sélectionné
+ * @param {string[]} country_name Nom du pays sélectionné
+ * @param {string} start_date Début de la période sélectionnée
+ * @param {string} end_date Fin de la période sélectionnée
+ * @param {boolean} isArtist Vrai si le toggle est sur Artistes
+ */
 export function createCountryVisualisation(country, country_name, start_date, end_date, isArtist) {
     if(end_date == null) end_date = start_date
 

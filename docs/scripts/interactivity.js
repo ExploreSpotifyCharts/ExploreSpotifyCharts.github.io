@@ -6,16 +6,16 @@ import { PATH } from "../index.js"
 import { parseTrackName_Artist } from "./preprocess_Helpers.js"
 
 /**
- *  Initialize view element
+ *  Initialise la vue
  */
 export function initialize() {
-  //Add events listerners to reactive elements
+  //Ajout des listeners aux éléments réactifs
   d3.selectAll('input[type="radio"]').on("click", function() {selectField(this.value)})
 
-  //Using jQuery because d3 do not support submit event
+  //On utilise jQuery car d3 ne supporte pas un évènement submit
   $('#form').on('submit', submit)
 
-  //Load data
+  //Chargement des données utiles à l'interaction
   d3.csv(PATH+'extra/countries'+'.csv', d3.autoType).then(function (data_countries) {
     countries = data_countries.map(line => {
       return {code: String(line['country code']), country: String(line['country'])}
@@ -44,10 +44,12 @@ export function initialize() {
 }
 
 /**
- * Navigate to the selected tab
- * @param {HTMLElement} element 
+ * Navigue vers l'onglet du menu approprié
+ * @param {HTMLElement} element Élément du menu cliqué
+ * @param {string} value Potentielle valeur avec laquelle initialiser la nouvelle vue (pays ou artiste ou titre)
+ * @param {string} additionalValue Potentielle valeur additionnelle utile avec laquelle initialiser la nouvelle vue (artiste associé au titre)
  */
- export function navigate(element,value, additionalValue) {
+ export function navigate(element, value, additionalValue) {
   const tab = element.innerText
   d3.selectAll('li').attr('class', null)
   d3.select(element).attr('class', 'selected')
@@ -84,7 +86,9 @@ var state = {
 
 /**
  * Create the header form link to the tab
- * @param {String} tab 
+ * @param {string} tab Nom de la vue à générer (Pays, Tendances, Artiste ou Titre)
+ * @param {string} value Potentielle valeur avec laquelle initialiser la nouvelle vue (pays ou artiste ou titre)
+ * @param {string} additionalValue Potentielle valeur additionnelle utile avec laquelle initialiser la nouvelle vue (artiste associé au titre)
  */
 function createFormAndViz(tab, value, additionalValue) {
     let artist
@@ -103,7 +107,7 @@ function createFormAndViz(tab, value, additionalValue) {
         break
       case "Artiste":
         artist = value ? value : randomValue(artists_grouped_by_countries[getCountryCode(state.country)])
-        //Create the elements
+        //Création des éléments
         createDatePickers()
         createSuggestbox('Artiste', artists, artist)
         createToogle(tab)
@@ -115,7 +119,7 @@ function createFormAndViz(tab, value, additionalValue) {
           countries_to_keep = countries.filter(element => countries_to_keep.includes(element.code))
           createArtistVisualisation_Countries(artist, countries_to_keep, state.startDate, state.endDate)
         } else createArtistVisualisation(artist,state.startDate,state.endDate, getCountryCode(state.country), state.country)
-        //Change width to feet in the additional elements
+        //Adaptation de la largeur pour s'adapter aux éléments supplémentaires
         d3.select('.suggestboxes').style('width','1000px')
         d3.select('#suggestbox_Pays').style('margin-left','0px')
         d3.select('.toogle').style('margin','5px 70px 5px 0px')
@@ -139,20 +143,21 @@ function createFormAndViz(tab, value, additionalValue) {
         createTrackVisualisation(track, artist, countries_to_keep, state.startDate, state.endDate)
         break
   }
-  //Reset form validation on changes
+  //Reset de la validation des changements
   d3.selectAll(".suggestboxes input").on("change",function() {
     this.setCustomValidity("")
   }) 
 }
 
 /**
- * Empty the form
+ * Reset le formulaire (header)
+ * @param {string} tab Nom de la vue (Pays, Tendances, Artiste ou Titre)
  */
 function resetForm(tab) {
   d3.selectAll('.suggestbox').remove()
   d3.selectAll('.toogle').remove()
   d3.select('.suggestboxes').style('width','700px')
-  //Select the right period
+  //Selection du bon choix de temps (jour VS période)
   const bool = tab == 'Tendances' ? state.endDay != null : state.endDate != null
   if (bool) {
     d3.select("#day input[type='radio']").property('checked',"true")
@@ -164,8 +169,8 @@ function resetForm(tab) {
 }
 
 /**
- * Create a suggestbox tag with the given label
- * @param {string} label 
+ * Crée une suggestox étant donné le label
+ * @param {string} label Label à utiliser
  */
 function createSuggestbox(label, data, defaultValue) {
   const suggestboxe = d3.select('form .suggestboxes').append('div').attr('class','suggestbox').attr('id','suggestbox_' + label)
@@ -187,7 +192,7 @@ function createSuggestbox(label, data, defaultValue) {
   .append('datalist')
   .attr('id', "list" + label)
   
-  //Faster than D3
+  //Plus rapide que D3
   data.forEach((d) => {
     const option = "<option value=\"" + d + "\"></option>"
     $('#list' + label).append(option)
@@ -195,8 +200,8 @@ function createSuggestbox(label, data, defaultValue) {
 }
 
 /**
- * Create a toogle
- * @param {string} tab 
+ * Crée le toggle associé à la vue
+ * @param {string} tab Nom de la vue (Pays, Tendances, Artiste ou Titre)
  */
 function createToogle(tab) {
   const value = tab == 'Pays' ? 'Artistes' : 'Pays'
@@ -240,8 +245,8 @@ function createToogle(tab) {
 }
 
 /**
- * Enable/Disable datepicker according to selection
- * @param {string} selection 
+ * Active/Désactive le datepicker conformément à la sélection
+ * @param {string} selection Jour ou période
  */
 function selectField(selection){
   if (selection == "day") {
@@ -260,9 +265,9 @@ function selectField(selection){
 }
 
 /**
- * Parse parameters
- * @param {string} params 
- * @returns {object[]}
+ * Parse les paramètres
+ * @param {string} params Paramètres à parser
+ * @returns {object[]} Paramètres parsés
  */
 function parseParams(params) {
   let param_array = decodeURIComponent(params).split("&")
@@ -274,13 +279,13 @@ function parseParams(params) {
 }
 
 /**
- * Get data from the formular
- * @param {event} e 
+ * Récupère les données du formulaire
+ * @param {event} e Évènement de soumission du formulaire
  */
 function submit(e) {
-  //Prevent form to be submitted
+  //Prévention de la soumission par défaut
   e.preventDefault();
-  //Using JQuery to get form data
+  //Utilisation de JQuery pour récupèrer les données
   const rawParams = $('#form').serialize();
   let params = parseParams(rawParams)
   if (isFormValid(params)) {
@@ -341,10 +346,10 @@ function submit(e) {
 }
 
 /**
- * Create the day and month pickers
+ * Crée les champs de sélection jour et mois (pour Tendances)
  */
 function createMonthDayPickers(){
-  //Using JQuery to append element to a specific position
+  //Utilisation de JQuery pour ajouter les éléments à une position spécifique
   const daySelect = "<select name='day' value='01'></select>"
   const monthSelect = "<select name='month' value='01'></select>"
 
@@ -372,23 +377,23 @@ function createMonthDayPickers(){
 
   d3.selectAll("input[type='date']").remove()
 
-  //Set default value for the period end date
+  //Set des valeurs par défaut
   const endDay = state.endDay ? state.endDay : '31'
   const endMonth = state.endMonth ? state.endMonth : '12'
   d3.select("#period select:nth-child(5)").selectAll('option').attr('selected', d => d == '31' ? "selected" : null)
   d3.select("#period select:nth-child(6)").selectAll('option').attr('selected', d => d == '12' ? "selected" : null)
 
-  //Reset form validation on changes
+  //Reset de la validation des changements
   d3.selectAll("select").on("change",function() {
     this.setCustomValidity("")
   })
 }
 
 /**
- * Create the datepickers
+ * Crée les champs de sélection de date (pour Pays, Artiste et Titre)
  */
 function createDatePickers() {
-    //Using JQuery to append elements to a specific position
+    //Utilisation de JQuery pour ajouter les éléments à une position spécifique
     const datepicker =  "<input type='date' name='date' value='" + state.startDate +"' min='2017-01-01' max='2020-04-20'></input>"
     const endDate = state.endDate ? state.endDate : '2020-04-20'
     $("select[name='month']").after(datepicker)
@@ -399,7 +404,7 @@ function createDatePickers() {
       selectField('period')
     }
 
-  //Reset form validation on changes
+  //Reset de la validation des changements
   d3.selectAll("#period input").on("change",function() {
     this.setCustomValidity("")
   })
@@ -409,9 +414,9 @@ function createDatePickers() {
 }
 
 /**
- * Retrieve all artist's tracks
- * @param {string} artist 
- * @returns {string[]}
+ * Récupère tous les titres d'un artiste
+ * @param {string} artist L'artiste
+ * @returns {string[]} Les titres de l'artiste
  */
 function getArtistTracks(artist) {
   return tracks_data
@@ -420,10 +425,10 @@ function getArtistTracks(artist) {
 }
 
 /**
- * Retrieve all countries where a track appears
- * @param {string} title
- * @param {string} artist 
- * @returns {string[]}
+ * Récupère tous les pays dans lesquels le titre apparaît
+ * @param {string} title Le titre
+ * @param {string} artist L'artiste associé au titre
+ * @returns {string[]} Les pays
  */
 function getCountriesForTrackArtist(title, artist) {
   return tracks_data
@@ -431,9 +436,9 @@ function getCountriesForTrackArtist(title, artist) {
 }
 
 /**
- * Retrieve all countries where an artist appears
- * @param {string} artist 
- * @returns {string[]}
+ * Récupère tous les pays dans lesquels l'artiste apparaît
+ * @param {string} artist L'artiste
+ * @returns {string[]} Les pays
  */
 function getCountriesForArtist(artist) {
   return artists_countries
@@ -441,7 +446,7 @@ function getCountriesForArtist(artist) {
 }
 
 /**
- * Load the track list related to the selected artist
+ * Charge les titres associés à l'artiste sélectionné
  */
 function updateTrackList() {
   const currentVal = this.value;
@@ -456,11 +461,11 @@ function updateTrackList() {
 }
 
 /**
- * Check if the date is invalid
- * @param {string} day 
- * @param {string} month 
+ * Vérifie si une date est valide
+ * @param {string} day Jour sélectionné
+ * @param {string} month Mois sélectionné
  * @param {string} duration 
- * @returns {boolean}
+ * @returns {boolean} Vrai si la date est valide
  */
 function isDateInvalid(day,month,duration) {
   const error = "La date n'existe pas"
@@ -486,22 +491,22 @@ function isDateInvalid(day,month,duration) {
 }
 
 /**
- * Return true if the form is valid, false otherwise
- * @param {object[][]} params 
- * @returns {boolean}
+ * Vérifie la validité des données du formulaire
+ * @param {object[][]} params Données entrées dans le formulaire
+ * @returns {boolean} Vrai si le formulaire est valide
  */
 function isFormValid(params) {
   let validationResult = true;    
-  //Date and duration validation
+  //Validation : Jour
     let index = params.findIndex( v => v[0] == 'duration')
-    //Case tab tendances and single day
+    //Tab tendances
     if(params[index][0] == 'duration' && params[index][1] == 'day') {
       if (params[index + 1][0] == 'day') {
         const day = params[index + 1][1]
         const month =  params[index + 2][1]
         validationResult = !isDateInvalid(day,month,'day')
       }
-    //Case period
+    //Validation : Période
     } else {
       let startDate
       let endDate
@@ -517,7 +522,7 @@ function isFormValid(params) {
         }
         startDate = new Date(startMonth + '-' + startDay)
         endDate = new Date(endMonth + '-' + endDay)
-      //Other tabs
+      //Autres tabs
       } else {
         startDate = new Date(params[index + 1][1])
         endDate = new Date(params[index + 2][1])
@@ -532,7 +537,7 @@ function isFormValid(params) {
         validationResult = false
       }
     }
-    //Artist, Country and track validation
+    //Validation Artiste, Pays et Titre
     index = params.findIndex( v => v[0] == 'Pays')
     if (index >= 0) validationResult = validationResult && validateField(params[index][1],'Pays')
 
@@ -545,10 +550,10 @@ function isFormValid(params) {
   }
 
   /**
-   * Return true if the field is valid, false otherwise
-   * @param {string} fieldValue 
-   * @param {string} fieldName 
-   * @returns {boolean}
+   * Vérifie la validité d'un champ du formulaire
+   * @param {string} fieldValue Valeur du champ
+   * @param {string} fieldName  Nom du champ
+   * @returns {boolean} Vrai si le champ est valide
    */
   function validateField(fieldValue, fieldName) {
     let data
@@ -566,7 +571,8 @@ function isFormValid(params) {
         break
     }
     if(data.filter(value => value == fieldValue).length > 0) return true
-    //Display error if the field is invalid
+    
+    //Affichage d'une erreur
     const error = word + fieldName.toLowerCase() + " " + fieldValue +" n'existe pas"
     d3.select("#" + fieldName).node().setCustomValidity(error)
     d3.select("#" + fieldName).node().reportValidity()
@@ -574,14 +580,19 @@ function isFormValid(params) {
   }
 
   /**
-   * Get a random value from the array
-   * @param {any[]} arry 
-   * @returns {any}
+   * Choix d'une valeur aléatoire dans un tableau
+   * @param {any[]} array Tableau
+   * @returns {any} Élément sélectionné aléatoirement
    */
   function randomValue(array) {
     return array[Math.floor(Math.random() * array.length)]
   }
 
+  /**
+   * Process des paramètres du formulaire
+   * @param {object[][]} params Paramètres entrés dans le formulaire
+   * @returns {object[][]} Paramètres après process
+   */
   function processParams(params) {
     const index = params.findIndex( v => v[0] == 'Pays')
     if(index >= 0) params[index].push(getCountryCode(params[index][1]))
@@ -589,15 +600,18 @@ function isFormValid(params) {
   }
 
   /**
-   * Return the code of the country
-   * @param {string} country 
-   * @returns {string}
+   * Retourne le code associé à un pays
+   * @param {string} country Nom du pays
+   * @returns {string} Code du pays
    */
   function getCountryCode(country) {
     const index = countries.findIndex(v => v.country == country)
     return countries[index].code
   }
 
+  /**
+   * Réinitialise la vue
+   */
   function resetDataviz() {
     d3.selectAll('#main-g').remove()
     //Disable menu and submit button during the load
@@ -606,7 +620,8 @@ function isFormValid(params) {
   }
 
   /**
-   * Hide country suggestbox on toogle click or display it if it was already hidden
+   * Cache/Montre la suggestbox Pays en fonction de la position du toggle (Explorer par Artiste)
+   * @param {object} element La suggestbox
    */
   function updateForm(element) {
     updateSelection(element)
@@ -620,7 +635,8 @@ function isFormValid(params) {
   }
 
   /**
-   * Put in bold the current aggragation selection
+   * Met en gras le texte de la sélection courante du toggle (Explorer par Artiste)
+   * @param {object} element La suggestbox
    */
   function updateSelection(element) {
     if(this?.checked || element?.checked) {

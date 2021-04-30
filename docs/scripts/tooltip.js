@@ -1,13 +1,13 @@
 import * as helper from './helper.js'
 
 /**
- * Defines the contents of the tooltip for streams heat maps. See CSS for tooltip styling.
+ * Définit le contenu du tooltip pour un élément de la heat map (non 'Total')
+ * Se référer au CSS pour le style du tooltip
  *
- * @param {object} d The data associated to the hovered element
- * @returns {string} The tooltip contents
+ * @param {object} d La données associée à l'élément survolé
+ * @returns {string} Le contenu du tooltip
  */
 export function getContents_Streams (d) {
-  // Generate tooltip contents
   let tooltip_string = '<span class="tooltip-value-streams">'
   tooltip_string += '<strong> Date : </strong> '+ helper.formatDate(d["Date"]) +'<br>'
   tooltip_string += '<strong> Streams : </strong> '+ helper.formatNumber(d["Streams"])
@@ -16,13 +16,13 @@ export function getContents_Streams (d) {
 }
 
 /**
- * Defines the contents of the tooltip for total heat map. See CSS for tooltip styling.
+ * Définit le contenu du tooltip pour un élément de la heat map 'Total'
+ * Se référer au CSS pour le style du tooltip
  *
- * @param {object} d The data associated to the hovered element
- * @returns {string} The tooltip contents
+ * @param {object} d La données associée à l'élément survolé
+ * @returns {string} Le contenu du tooltip
  */
 export function getContents_Total (d) {
-  // Generate tooltip contents
   let tooltip_string = '<span class="tooltip-value-total">'
   tooltip_string += '<strong> Date : </strong> '+ helper.formatDate(d["Date"]) +'<br>'
   tooltip_string += '<strong> Streams : </strong> '+ helper.formatNumber(d["Streams"])
@@ -31,13 +31,13 @@ export function getContents_Total (d) {
 }
 
 /**
- * Defines the contents of the tooltip for title item 
+ * Définit le contenu du tooltip pour un élément Titre (pour afficher l'artiste et éventuellement le titre non tronqué)
+ * Se référer au CSS pour le style du tooltip
  *
- * @param {object} d The data associated to the hovered element
- * @returns {string} The tooltip contents
+ * @param {object} d La données associée à l'élément survolé
+ * @returns {string} Le contenu du tooltip
  */
  export function getContents_Track (d) {
-  // Generate tooltip contents
   let tooltip_string = '<span class="tooltip-value-streams">'
   if (d.artist != undefined) tooltip_string += '<strong> Artiste : </strong> '+ d.artist +'<br>'
   if (d.title != undefined) tooltip_string += '<strong> Titre : </strong> '+ d.title +'<br>'

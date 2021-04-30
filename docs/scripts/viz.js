@@ -29,7 +29,8 @@ let pageID //Variable contenant l'objet principal de la page : le pays, artiste 
 /**
  * Affiche les échelles de couleurs
  *
- * @param {object} data Data pour la construction des échelles
+ * @param {object} dataTotal Data Total pour la construction de l'échelle Total
+ * @param {object} dataStreams Data Streams pour la construction de l'échelle par élément
  * @param {int} vizWidth Largeur de la viz pour le placement des éléments
  * @returns {object} Les colorscale à utiliser pour les heatmap
  */
@@ -207,7 +208,7 @@ let pageID //Variable contenant l'objet principal de la page : le pays, artiste 
  * @param {int} proportion Le pourcentage que représente le nombre de streams sur le nombre de streams total de l'artiste
  * @param {int} vizWidth La largeur de la viz pour le placement du text
  */
-  export function createStreamStats (g, index, streams, proportion, vizWidth) {
+  export function createStreamStats (g, streams, proportion, vizWidth) {
     let statText = '(' + (Math.round(proportion*100)/100).toFixed(2) + '%)'
     let percentage = g.append('text')
      .text(statText)
@@ -263,8 +264,7 @@ export function createHeatMap (g, data_line, key, color, xOffset, y) {
  * Map du hover (tooltip) pour l'interaction avec les rectangles des heatmaps
  *
  * @param {object} g La sélection dans laquelle on récupère les objets à map avec le tooltip
- * @param {*} tip_streams Le tooltip pour les streams
- * @param {*} tip_total Le tooltip pour le total
+ * @param {*} tip Le tooltip
  */
 export function setHoverHandler (g, tip) {
   g.selectAll("rect")
@@ -298,7 +298,9 @@ export function setHoverHandler (g, tip) {
 /**
  * Génère les lignes
  *
+ * @param {*} graphg La sélection dans laquelle créer la heatmap
  * @param {object} data La data à afficher
+ * @param {string} key La clé à utiliser
  * @param {object} colorScale L'échelle de couleur utilisée pour la heatmap
  * @param {object} vizWidth Largeur de la viz pour le placement des éléments
  * @param {object} tip_streams Tooltip à associer aux streams
@@ -325,7 +327,7 @@ export function setHoverHandler (g, tip) {
  }
 
  /**
- * Génère les lignes
+ * Initialise la visualisation
  *
  * @param {string} id L'ID de la page 
  * @returns {object} les différents tooltip apparaissant sur la page
@@ -390,7 +392,7 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
   else createLine(g, track[key], index, isTotal, key)
 
   //Affichage du nombre de streams et des statistiques
-  createStreamStats(g, index, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
+  createStreamStats(g, track.Count_total_streams, track.Proportion_total_streams*100, vizWidth)
 
   //Affichage de la heatmap
   let trackHeight = d3.select('.track'+String(index)).node().getBBox().height
@@ -401,7 +403,7 @@ export function appendLine(graphg, initialOffset, index, track, colorScale, tip,
 }
 
 /**
- * Set click handler for interactivity
+ * Mise en place de l'interaction (clic sur les titres des heatmaps pour se déplacer vers l'onglet adéquat)
  * @param {string} key 
  */
 function setClickHandler(key,g,title,artist,tip) {
